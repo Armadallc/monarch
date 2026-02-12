@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+
+# Environment and secrets (never commit)
+.env
+.env.local
+.env.*.local
+
+# OAuth / Google credentials (client secret)
+Google/
+
+# Logs and OS
+*.log
+.DS_Store
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
