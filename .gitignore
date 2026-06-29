@@ -1,5 +1,11 @@
 # Dependencies
 node_modules/
+**/dist/
+*.tsbuildinfo
+
+# MCP / Framer session temp (repo root)
+.mcp-*
+.framer-upload-*
 
 # Environment and secrets (never commit)
 .env
@@ -8,6 +14,9 @@ node_modules/
 
 # OAuth / Google credentials (client secret)
 Google/
+
+# Cursor MCP config (contains Framer MCP URL + secret)
+.cursor/mcp.json
 
 # Logs and OS
 *.log
