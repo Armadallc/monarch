@@ -1,0 +1,1265 @@
+// Instructions: Create a reusable Framer component called “Monarch Contact Card Form” that matches the site aesthetic and can be dropped near the bottom of multiple pages. Includes CTA row, fields, validation, anti-spam, and sends payload to a secure serverless webhook (no secrets in client).
+import * as React from "react"
+import { addPropertyControls, ControlType, RenderTarget } from "framer"
+
+type FontLike = any
+
+type ResponsiveImageLike = {
+    src: string
+    srcSet?: string
+    alt?: string
+}
+
+type Status = "idle" | "sending" | "success" | "error"
+
+type FieldErrors = Partial<
+    Record<"name" | "phone" | "email" | "message", string>
+>
+
+interface MonarchContactCardFormProps {
+    ctaText: string
+    submitButtonLabel: string
+    successMessage: string
+    errorMessage: string
+
+    destinationEmail: string
+    webhookUrl: string
+
+    namePlaceholder: string
+    phonePlaceholder: string
+    emailPlaceholder: string
+    messagePlaceholder: string
+
+    phoneRequired: boolean
+    clearOnSuccess: boolean
+
+    emailSubjectPrefix: string
+    includePageUrl: boolean
+    includeTimestamp: boolean
+
+    // Anti-spam
+    minSubmitIntervalMs: number
+    captchaEnabled: boolean
+
+    // Style
+    cardBackgroundColor: string
+    cardBorderColor: string
+    cardBorderWidth: number
+    cardCornerRadius: string
+    cardPadding: string
+    cardGap: number
+    cardShadow: string
+    enableShadow: boolean
+    backgroundBlur: number
+    enableBackgroundBlur: boolean
+
+    // Typography (Framer rule-compliant: use Font controls)
+    ctaFont: FontLike
+    labelFont: FontLike
+    inputFont: FontLike
+    helpFont: FontLike
+    buttonFont: FontLike
+
+    ctaColor: string
+    labelColor: string
+    inputColor: string
+    placeholderColor: string
+    helpTextColor: string
+
+    // Inputs/buttons
+    inputBackgroundColor: string
+    inputBorderColor: string
+    inputBorderRadius: string
+    inputHeight: number
+    textareaMinHeight: number
+    focusBorderColor: string
+
+    buttonBackgroundColor: string
+    buttonTextColor: string
+    buttonBorderRadius: string
+    buttonHoverBackgroundColor: string
+    buttonHoverTextColor: string
+    buttonBorderColor: string
+    buttonBorderWidth: number
+
+    // Optional footer note
+    footerNote: string
+    showFooterNote: boolean
+
+    style?: React.CSSProperties
+}
+
+/**
+ * Monarch Contact Card Form
+ *
+ * @framerIntrinsicWidth 760
+ * @framerIntrinsicHeight 520
+ *
+ * @framerSupportedLayoutWidth any-prefer-fixed
+ * @framerSupportedLayoutHeight any-prefer-fixed
+ */
+export default function MonarchContactCardForm(
+    props: MonarchContactCardFormProps
+) {
+    const {
+        ctaText,
+        submitButtonLabel,
+        successMessage,
+        errorMessage,
+        destinationEmail,
+        webhookUrl,
+
+        namePlaceholder,
+        phonePlaceholder,
+        emailPlaceholder,
+        messagePlaceholder,
+
+        phoneRequired,
+        clearOnSuccess,
+
+        emailSubjectPrefix,
+        includePageUrl,
+        includeTimestamp,
+
+        minSubmitIntervalMs,
+        captchaEnabled,
+
+        cardBackgroundColor,
+        cardBorderColor,
+        cardBorderWidth,
+        cardCornerRadius,
+        cardPadding,
+        cardGap,
+        cardShadow,
+        enableShadow,
+        backgroundBlur,
+        enableBackgroundBlur,
+
+        ctaFont,
+        labelFont,
+        inputFont,
+        helpFont,
+        buttonFont,
+
+        ctaColor,
+        labelColor,
+        inputColor,
+        placeholderColor,
+        helpTextColor,
+
+        inputBackgroundColor,
+        inputBorderColor,
+        inputBorderRadius,
+        inputHeight,
+        textareaMinHeight,
+        focusBorderColor,
+
+        buttonBackgroundColor,
+        buttonTextColor,
+        buttonBorderRadius,
+        buttonHoverBackgroundColor,
+        buttonHoverTextColor,
+        buttonBorderColor,
+        buttonBorderWidth,
+
+        footerNote,
+        showFooterNote,
+
+        style,
+    } = props
+
+    const [name, setName] = React.useState("")
+    const [phone, setPhone] = React.useState("")
+    const [email, setEmail] = React.useState("")
+    const [message, setMessage] = React.useState("")
+    const [honeypot, setHoneypot] = React.useState("")
+
+    const [errors, setErrors] = React.useState<FieldErrors>({})
+    const [status, setStatus] = React.useState<Status>("idle")
+    const [statusText, setStatusText] = React.useState<string>("")
+    const [isHovering, setIsHovering] = React.useState(false)
+    const [focused, setFocused] = React.useState<
+        null | "name" | "phone" | "email" | "message"
+    >(null)
+
+    const lastSubmitAtRef = React.useRef<number>(0)
+    const abortRef = React.useRef<AbortController | null>(null)
+
+    const isStatic =
+        RenderTarget.current() === RenderTarget.canvas ||
+        RenderTarget.current() === RenderTarget.thumbnail
+
+    const canSubmit = status !== "sending"
+
+    const pageUrl = React.useMemo(() => {
+        if (!includePageUrl) return ""
+        if (typeof window === "undefined") return ""
+        try {
+            return window.location.href || ""
+        } catch {
+            return ""
+        }
+    }, [includePageUrl])
+
+    const timestampIso = React.useMemo(() => {
+        if (!includeTimestamp) return ""
+        if (typeof window === "undefined") return ""
+        try {
+            return new Date().toISOString()
+        } catch {
+            return ""
+        }
+    }, [includeTimestamp])
+
+    const validateEmail = React.useCallback((value: string) => {
+        const v = value.trim()
+        if (!v) return false
+        // Simple, pragmatic email validation
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i
+        return re.test(v)
+    }, [])
+
+    const validate = React.useCallback((): {
+        ok: boolean
+        nextErrors: FieldErrors
+    } => {
+        const nextErrors: FieldErrors = {}
+        const n = name.trim()
+        const e = email.trim()
+        const m = message.trim()
+        const p = phone.trim()
+
+        if (!n) nextErrors.name = "Please enter your name."
+        if (!e) nextErrors.email = "Please enter your email."
+        else if (!validateEmail(e))
+            nextErrors.email = "Please enter a valid email."
+        if (!m) nextErrors.message = "Please enter a message."
+        if (phoneRequired && !p)
+            nextErrors.phone = "Please enter your phone number."
+
+        return { ok: Object.keys(nextErrors).length === 0, nextErrors }
+    }, [name, email, message, phone, phoneRequired, validateEmail])
+
+    const clearForm = React.useCallback(() => {
+        React.startTransition(() => {
+            setName("")
+            setPhone("")
+            setEmail("")
+            setMessage("")
+            setErrors({})
+        })
+    }, [])
+
+    const setStatusSafe = React.useCallback((next: Status, text: string) => {
+        React.startTransition(() => {
+            setStatus(next)
+            setStatusText(text)
+        })
+    }, [])
+
+    const submit = React.useCallback(
+        async (e?: React.FormEvent) => {
+            if (e?.preventDefault) e.preventDefault()
+            if (!canSubmit) return
+
+            // Honeypot filled -> silently succeed but do nothing
+            if (honeypot.trim().length > 0) {
+                setStatusSafe("success", successMessage)
+                if (clearOnSuccess) clearForm()
+                return
+            }
+
+            // Throttle
+            const now = typeof window !== "undefined" ? Date.now() : 0
+            if (now && minSubmitIntervalMs > 0) {
+                const delta = now - lastSubmitAtRef.current
+                if (delta >= 0 && delta < minSubmitIntervalMs) {
+                    setStatusSafe(
+                        "error",
+                        "Please wait a moment and try again."
+                    )
+                    return
+                }
+            }
+
+            const { ok, nextErrors } = validate()
+            React.startTransition(() => setErrors(nextErrors))
+            if (!ok) {
+                setStatusSafe("idle", "")
+                return
+            }
+
+            // Require webhook in preview/live; allow canvas to remain non-functional
+            const url = (webhookUrl || "").trim()
+            if (!url) {
+                setStatusSafe(
+                    "error",
+                    isStatic
+                        ? "Set a Webhook URL in properties to enable submission."
+                        : "Submission is not configured. Please try again later."
+                )
+                return
+            }
+
+            // Cancel prior
+            try {
+                abortRef.current?.abort()
+            } catch {
+                // ignore
+            }
+            const ac = new AbortController()
+            abortRef.current = ac
+
+            if (now) lastSubmitAtRef.current = now
+
+            setStatusSafe("sending", "Sending…")
+
+            const payload = {
+                destinationEmail: (destinationEmail || "").trim(),
+                emailSubjectPrefix: (emailSubjectPrefix || "").trim(),
+                fromName: name.trim(),
+                fromEmail: email.trim(),
+                phone: phone.trim(),
+                message: message.trim(),
+                pageUrl: includePageUrl ? pageUrl : "",
+                timestamp: includeTimestamp ? timestampIso : "",
+                meta: {
+                    userAgent:
+                        typeof window !== "undefined"
+                            ? window.navigator.userAgent
+                            : "",
+                    referrer:
+                        typeof document !== "undefined"
+                            ? document.referrer
+                            : "",
+                    pathname:
+                        typeof window !== "undefined"
+                            ? window.location.pathname
+                            : "",
+                },
+                captcha: captchaEnabled
+                    ? { enabled: true, token: null }
+                    : { enabled: false },
+            }
+
+            try {
+                const res = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                    signal: ac.signal,
+                })
+
+                if (!res.ok) {
+                    let hint = ""
+                    try {
+                        hint = await res.text()
+                    } catch {
+                        // ignore
+                    }
+                    setStatusSafe(
+                        "error",
+                        hint ? `${errorMessage}` : errorMessage
+                    )
+                    return
+                }
+
+                setStatusSafe("success", successMessage)
+                if (clearOnSuccess) clearForm()
+            } catch (err: any) {
+                if (err?.name === "AbortError") return
+                setStatusSafe("error", errorMessage)
+            }
+        },
+        [
+            canSubmit,
+            honeypot,
+            successMessage,
+            clearOnSuccess,
+            clearForm,
+            minSubmitIntervalMs,
+            validate,
+            webhookUrl,
+            destinationEmail,
+            emailSubjectPrefix,
+            name,
+            email,
+            phone,
+            message,
+            includePageUrl,
+            includeTimestamp,
+            pageUrl,
+            timestampIso,
+            captchaEnabled,
+            errorMessage,
+            isStatic,
+            setStatusSafe,
+        ]
+    )
+
+    React.useEffect(() => {
+        return () => {
+            try {
+                abortRef.current?.abort()
+            } catch {
+                // ignore
+            }
+        }
+    }, [])
+
+    const cardStyle = React.useMemo<React.CSSProperties>(() => {
+        const blur = enableBackgroundBlur
+            ? `blur(${Math.max(0, backgroundBlur)}px)`
+            : undefined
+        return {
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "column",
+            gap: Math.max(0, cardGap),
+            padding: cardPadding,
+            borderRadius: cardCornerRadius,
+            background: cardBackgroundColor,
+            border: `${Math.max(0, cardBorderWidth)}px solid ${cardBorderColor}`,
+            boxShadow: enableShadow ? cardShadow : "none",
+            backdropFilter: blur,
+            WebkitBackdropFilter: blur,
+            overflow: "hidden",
+            ...style,
+        }
+    }, [
+        enableBackgroundBlur,
+        backgroundBlur,
+        enableShadow,
+        cardShadow,
+        cardGap,
+        cardPadding,
+        cardCornerRadius,
+        cardBackgroundColor,
+        cardBorderWidth,
+        cardBorderColor,
+        style,
+    ])
+
+    const inputBaseStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            width: "100%",
+            boxSizing: "border-box",
+            background: inputBackgroundColor,
+            color: inputColor,
+            border: `1px solid ${inputBorderColor}`,
+            borderRadius: inputBorderRadius,
+            height: Math.max(36, inputHeight),
+            padding: "10px 12px",
+            outline: "none",
+            ...inputFont,
+        }),
+        [
+            inputBackgroundColor,
+            inputColor,
+            inputBorderColor,
+            inputBorderRadius,
+            inputHeight,
+            inputFont,
+        ]
+    )
+    const contentLayoutStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            display: "grid",
+            gridTemplateColumns: "minmax(220px, 0.9fr) minmax(360px, 1.6fr)",
+            gap: 28,
+            width: "100%",
+            alignItems: "start",
+        }),
+        []
+    )
+
+    const ctaPanelStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
+            minHeight: 140,
+        }),
+        []
+    )
+
+    const ctaRowStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+        }),
+        []
+    )
+
+    const ctaDotStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            width: 10,
+            height: 10,
+            borderRadius: "50%",
+            background: ctaColor,
+            flex: "0 0 auto",
+        }),
+        [ctaColor]
+    )
+
+    const textareaStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            ...inputBaseStyle,
+            height: "auto",
+            minHeight: Math.max(72, textareaMinHeight),
+            paddingTop: 12,
+            paddingBottom: 12,
+            resize: "vertical",
+            lineHeight: inputFont?.lineHeight ?? "1.35em",
+        }),
+        [inputBaseStyle, textareaMinHeight, inputFont?.lineHeight]
+    )
+
+    const buttonStyle = React.useMemo<React.CSSProperties>(() => {
+        const bg =
+            isHovering && canSubmit
+                ? buttonHoverBackgroundColor
+                : buttonBackgroundColor
+        const fg =
+            isHovering && canSubmit ? buttonHoverTextColor : buttonTextColor
+        return {
+            appearance: "none",
+            border: `${Math.max(0, buttonBorderWidth)}px solid ${buttonBorderColor}`,
+            borderRadius: buttonBorderRadius,
+            background: canSubmit ? bg : buttonBackgroundColor,
+            color: fg,
+            cursor: canSubmit ? "pointer" : "not-allowed",
+            opacity: status === "sending" ? 0.85 : 1,
+            height: 44,
+            padding: "0 16px",
+            width: "100%",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 10,
+            userSelect: "none",
+            ...buttonFont,
+        }
+    }, [
+        isHovering,
+        canSubmit,
+        buttonHoverBackgroundColor,
+        buttonBackgroundColor,
+        buttonHoverTextColor,
+        buttonTextColor,
+        buttonBorderColor,
+        buttonBorderWidth,
+        buttonBorderRadius,
+        buttonFont,
+        status,
+    ])
+
+    const ctaStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            width: "100%",
+            boxSizing: "border-box",
+            color: ctaColor,
+            textTransform: "uppercase",
+            ...ctaFont,
+        }),
+        [ctaColor, ctaFont]
+    )
+
+    const labelStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            color: labelColor,
+            margin: 0,
+            ...labelFont,
+        }),
+        [labelColor, labelFont]
+    )
+
+    const helpStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            color: helpTextColor,
+            margin: 0,
+            ...helpFont,
+        }),
+        [helpTextColor, helpFont]
+    )
+
+    const fieldWrapStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            display: "flex",
+            flexDirection: "column",
+            gap: 6,
+        }),
+        []
+    )
+
+    const errorTextStyle = React.useMemo<React.CSSProperties>(
+        () => ({
+            ...helpStyle,
+            color: helpTextColor,
+        }),
+        [helpStyle, helpTextColor]
+    )
+
+    const statusIsVisible = status === "success" || status === "error"
+
+    const effectiveStatusColor =
+        status === "success" ? helpTextColor : helpTextColor
+
+    const focusRing = (field: "name" | "phone" | "email" | "message") => {
+        const isFocused = focused === field
+        return isFocused
+            ? {
+                  borderColor: focusBorderColor,
+                  boxShadow: `0 0 0 3px color-mix(in srgb, ${focusBorderColor} 30%, transparent)`,
+              }
+            : {}
+    }
+
+    const showCanvasHint =
+        isStatic && (!webhookUrl || webhookUrl.trim().length === 0)
+
+    const ariaStatusId = React.useId()
+    const nameErrorId = React.useId()
+    const phoneErrorId = React.useId()
+    const emailErrorId = React.useId()
+    const messageErrorId = React.useId()
+
+    return (
+        <section style={cardStyle} aria-label="Contact form card">
+            <style>{`
+                .monarch-input::placeholder { color: ${placeholderColor}; opacity: 1; }
+                .monarch-textarea::placeholder { color: ${placeholderColor}; opacity: 1; }
+                .monarch-input:disabled, .monarch-textarea:disabled { opacity: 0.75; cursor: not-allowed; }
+            `}</style>
+
+            <div style={contentLayoutStyle}>
+                <div style={ctaPanelStyle}>
+                    <div style={ctaRowStyle}>
+                        <span style={ctaDotStyle} />
+                        <div style={ctaStyle}>{ctaText}</div>
+                    </div>
+
+                    {showCanvasHint && (
+                        <p style={{ ...helpStyle }} aria-live="polite">
+                            Configure “Webhook URL” in properties to enable
+                            sending.
+                        </p>
+                    )}
+                </div>
+
+                <form
+                    onSubmit={submit}
+                    style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: Math.max(0, cardGap),
+                    }}
+                    aria-describedby={statusIsVisible ? ariaStatusId : undefined}
+                >
+                {/* Honeypot */}
+                <div
+                    style={{
+                        position: "absolute",
+                        left: -10000,
+                        top: "auto",
+                        width: 1,
+                        height: 1,
+                        overflow: "hidden",
+                    }}
+                    aria-hidden="true"
+                >
+                    <label>
+                        Leave this field empty
+                        <input
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={honeypot}
+                            onChange={(e) =>
+                                React.startTransition(() =>
+                                    setHoneypot(e.target.value)
+                                )
+                            }
+                        />
+                    </label>
+                </div>
+
+                <div style={fieldWrapStyle}>
+                    <label style={labelStyle} htmlFor="monarch-name">
+                        Name
+                    </label>
+                    <input
+                        id="monarch-name"
+                        className="monarch-input"
+                        type="text"
+                        value={name}
+                        placeholder={namePlaceholder}
+                        onChange={(e) =>
+                            React.startTransition(() => setName(e.target.value))
+                        }
+                        onFocus={() =>
+                            React.startTransition(() => setFocused("name"))
+                        }
+                        onBlur={() =>
+                            React.startTransition(() => setFocused(null))
+                        }
+                        style={{ ...inputBaseStyle, ...focusRing("name") }}
+                        aria-invalid={Boolean(errors.name)}
+                        aria-describedby={errors.name ? nameErrorId : undefined}
+                        autoComplete="name"
+                        disabled={status === "sending"}
+                    />
+                    {errors.name ? (
+                        <p id={nameErrorId} style={errorTextStyle} role="alert">
+                            {errors.name}
+                        </p>
+                    ) : null}
+                </div>
+
+                <div style={fieldWrapStyle}>
+                    <label style={labelStyle} htmlFor="monarch-phone">
+                        Phone{phoneRequired ? " *" : ""}
+                    </label>
+                    <input
+                        id="monarch-phone"
+                        className="monarch-input"
+                        type="tel"
+                        value={phone}
+                        placeholder={phonePlaceholder}
+                        onChange={(e) =>
+                            React.startTransition(() =>
+                                setPhone(e.target.value)
+                            )
+                        }
+                        onFocus={() =>
+                            React.startTransition(() => setFocused("phone"))
+                        }
+                        onBlur={() =>
+                            React.startTransition(() => setFocused(null))
+                        }
+                        style={{ ...inputBaseStyle, ...focusRing("phone") }}
+                        aria-invalid={Boolean(errors.phone)}
+                        aria-describedby={
+                            errors.phone ? phoneErrorId : undefined
+                        }
+                        autoComplete="tel"
+                        disabled={status === "sending"}
+                    />
+                    {errors.phone ? (
+                        <p
+                            id={phoneErrorId}
+                            style={errorTextStyle}
+                            role="alert"
+                        >
+                            {errors.phone}
+                        </p>
+                    ) : null}
+                </div>
+
+                <div style={fieldWrapStyle}>
+                    <label style={labelStyle} htmlFor="monarch-email">
+                        Email
+                    </label>
+                    <input
+                        id="monarch-email"
+                        className="monarch-input"
+                        type="email"
+                        value={email}
+                        placeholder={emailPlaceholder}
+                        onChange={(e) =>
+                            React.startTransition(() =>
+                                setEmail(e.target.value)
+                            )
+                        }
+                        onFocus={() =>
+                            React.startTransition(() => setFocused("email"))
+                        }
+                        onBlur={() =>
+                            React.startTransition(() => setFocused(null))
+                        }
+                        style={{ ...inputBaseStyle, ...focusRing("email") }}
+                        aria-invalid={Boolean(errors.email)}
+                        aria-describedby={
+                            errors.email ? emailErrorId : undefined
+                        }
+                        autoComplete="email"
+                        disabled={status === "sending"}
+                    />
+                    {errors.email ? (
+                        <p
+                            id={emailErrorId}
+                            style={errorTextStyle}
+                            role="alert"
+                        >
+                            {errors.email}
+                        </p>
+                    ) : null}
+                </div>
+
+                <div style={fieldWrapStyle}>
+                    <label style={labelStyle} htmlFor="monarch-message">
+                        Message
+                    </label>
+                    <textarea
+                        id="monarch-message"
+                        className="monarch-textarea"
+                        value={message}
+                        placeholder={messagePlaceholder}
+                        onChange={(e) =>
+                            React.startTransition(() =>
+                                setMessage(e.target.value)
+                            )
+                        }
+                        onFocus={() =>
+                            React.startTransition(() => setFocused("message"))
+                        }
+                        onBlur={() =>
+                            React.startTransition(() => setFocused(null))
+                        }
+                        style={{ ...textareaStyle, ...focusRing("message") }}
+                        aria-invalid={Boolean(errors.message)}
+                        aria-describedby={
+                            errors.message ? messageErrorId : undefined
+                        }
+                        disabled={status === "sending"}
+                    />
+                    {errors.message ? (
+                        <p
+                            id={messageErrorId}
+                            style={errorTextStyle}
+                            role="alert"
+                        >
+                            {errors.message}
+                        </p>
+                    ) : null}
+                </div>
+
+                {captchaEnabled ? (
+                    <p style={helpStyle} aria-live="polite">
+                        CAPTCHA placeholder is enabled (add integration in your
+                        webhook endpoint).
+                    </p>
+                ) : null}
+
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 10,
+                        }}
+                    >
+                        <button
+                            type="submit"
+                            style={buttonStyle}
+                            disabled={!canSubmit}
+                            aria-disabled={!canSubmit}
+                            onMouseEnter={() =>
+                                React.startTransition(() => setIsHovering(true))
+                            }
+                            onMouseLeave={() =>
+                                React.startTransition(() => setIsHovering(false))
+                            }
+                        >
+                            {status === "sending"
+                                ? "Sending…"
+                                : submitButtonLabel}
+                        </button>
+
+                        {statusIsVisible ? (
+                            <p
+                                id={ariaStatusId}
+                                style={{
+                                    ...helpStyle,
+                                    color: effectiveStatusColor,
+                                }}
+                                role={status === "error" ? "alert" : "status"}
+                                aria-live="polite"
+                            >
+                                {statusText}
+                            </p>
+                        ) : null}
+
+                        {showFooterNote && footerNote ? (
+                            <p style={helpStyle}>{footerNote}</p>
+                        ) : null}
+                    </div>
+                </form>
+            </div>
+        </section>
+    )
+}
+
+addPropertyControls(MonarchContactCardForm, {
+    // Content
+    ctaText: {
+        type: ControlType.String,
+        title: "CTA Text",
+        defaultValue:
+            "Ready to talk? Send us a message and we’ll get back to you.",
+        displayTextArea: true,
+    },
+    submitButtonLabel: {
+        type: ControlType.String,
+        title: "Button Label",
+        defaultValue: "Send",
+    },
+    successMessage: {
+        type: ControlType.String,
+        title: "Success Message",
+        defaultValue: "Thanks — your message has been sent.",
+        displayTextArea: true,
+    },
+    errorMessage: {
+        type: ControlType.String,
+        title: "Error Message",
+        defaultValue: "Sorry — something went wrong. Please try again.",
+        displayTextArea: true,
+    },
+    destinationEmail: {
+        type: ControlType.String,
+        title: "Destination Email",
+        defaultValue: "hello@monarch.example",
+        placeholder: "recipient@domain.com",
+    },
+    webhookUrl: {
+        type: ControlType.Link,
+        title: "Webhook URL",
+        defaultValue: "",
+    },
+
+    // Placeholders
+    namePlaceholder: {
+        type: ControlType.String,
+        title: "Name Placeholder",
+        defaultValue: "Your name",
+    },
+    phonePlaceholder: {
+        type: ControlType.String,
+        title: "Phone Placeholder",
+        defaultValue: "Phone (optional)",
+    },
+    emailPlaceholder: {
+        type: ControlType.String,
+        title: "Email Placeholder",
+        defaultValue: "you@company.com",
+    },
+    messagePlaceholder: {
+        type: ControlType.String,
+        title: "Message Placeholder",
+        defaultValue: "How can we help?",
+        displayTextArea: false,
+    },
+
+    // Behavior
+    phoneRequired: {
+        type: ControlType.Boolean,
+        title: "Phone Required",
+        defaultValue: false,
+        enabledTitle: "Required",
+        disabledTitle: "Optional",
+    },
+    clearOnSuccess: {
+        type: ControlType.Boolean,
+        title: "Clear on Success",
+        defaultValue: true,
+        enabledTitle: "Clear",
+        disabledTitle: "Keep",
+    },
+
+    emailSubjectPrefix: {
+        type: ControlType.String,
+        title: "Subject Prefix",
+        defaultValue: "[Website] ",
+    },
+    includePageUrl: {
+        type: ControlType.Boolean,
+        title: "Include Page URL",
+        defaultValue: true,
+        enabledTitle: "Yes",
+        disabledTitle: "No",
+    },
+    includeTimestamp: {
+        type: ControlType.Boolean,
+        title: "Include Timestamp",
+        defaultValue: true,
+        enabledTitle: "Yes",
+        disabledTitle: "No",
+    },
+
+    // Anti-spam
+    minSubmitIntervalMs: {
+        type: ControlType.Number,
+        title: "Min Interval",
+        defaultValue: 6000,
+        min: 0,
+        max: 60000,
+        step: 500,
+        unit: "ms",
+    },
+    captchaEnabled: {
+        type: ControlType.Boolean,
+        title: "CAPTCHA Placeholder",
+        defaultValue: false,
+        enabledTitle: "On",
+        disabledTitle: "Off",
+    },
+
+    // Style
+    cardBackgroundColor: {
+        type: ControlType.Color,
+        title: "Card Bg",
+        defaultValue: "rgb(43, 40, 40)",
+    },
+    cardBorderColor: {
+        type: ControlType.Color,
+        title: "Card Border",
+        defaultValue: "#EEEEEE",
+    },
+    cardBorderWidth: {
+        type: ControlType.Number,
+        title: "Border Width",
+        defaultValue: 0,
+        min: 0,
+        max: 8,
+        step: 1,
+        unit: "px",
+    },
+    cardCornerRadius: {
+        type: ControlType.BorderRadius,
+        title: "Corner Radius",
+        defaultValue: "0px",
+    },
+    cardPadding: {
+        type: ControlType.Padding,
+        title: "Padding",
+        defaultValue: "40px",
+    },
+    cardGap: {
+        type: ControlType.Number,
+        title: "Gap",
+        defaultValue: 14,
+        min: 0,
+        max: 40,
+        step: 1,
+        unit: "px",
+    },
+    enableShadow: {
+        type: ControlType.Boolean,
+        title: "Shadow",
+        defaultValue: false,
+        enabledTitle: "On",
+        disabledTitle: "Off",
+    },
+    cardShadow: {
+        type: ControlType.BoxShadow,
+        title: "Card Shadow",
+        defaultValue: "0 10px 30px rgba(0,0,0,0.08)",
+        hidden: ({ enableShadow }) => !enableShadow,
+    },
+    enableBackgroundBlur: {
+        type: ControlType.Boolean,
+        title: "Background Blur",
+        defaultValue: false,
+        enabledTitle: "On",
+        disabledTitle: "Off",
+    },
+    backgroundBlur: {
+        type: ControlType.Number,
+        title: "Blur Amount",
+        defaultValue: 10,
+        min: 0,
+        max: 30,
+        step: 1,
+        unit: "px",
+        hidden: ({ enableBackgroundBlur }) => !enableBackgroundBlur,
+    },
+
+    // Typography (Font controls)
+    ctaFont: {
+        type: ControlType.Font,
+        title: "CTA Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: {
+            fontSize: "18px",
+            variant: "Medium",
+            letterSpacing: "0.4em",
+            lineHeight: "2.1em",
+        },
+    },
+    labelFont: {
+        type: ControlType.Font,
+        title: "Label Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: {
+            fontSize: "13px",
+            variant: "Medium",
+            letterSpacing: "-0.01em",
+            lineHeight: "1.1em",
+        },
+    },
+    inputFont: {
+        type: ControlType.Font,
+        title: "Input Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: {
+            fontSize: "15px",
+            variant: "Medium",
+            letterSpacing: "-0.01em",
+            lineHeight: "1.3em",
+        },
+    },
+    helpFont: {
+        type: ControlType.Font,
+        title: "Help Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: {
+            fontSize: "13px",
+            variant: "Regular",
+            letterSpacing: "-0.01em",
+            lineHeight: "1.3em",
+        },
+    },
+    buttonFont: {
+        type: ControlType.Font,
+        title: "Button Font",
+        controls: "extended",
+        defaultFontType: "sans-serif",
+        defaultValue: {
+            fontSize: "14px",
+            variant: "Semibold",
+            letterSpacing: "-0.01em",
+            lineHeight: "1em",
+        },
+    },
+
+    ctaColor: {
+        type: ControlType.Color,
+        title: "CTA Color",
+        defaultValue: "rgb(248, 246, 241)",
+    },
+    labelColor: {
+        type: ControlType.Color,
+        title: "Label Color",
+        defaultValue: "rgb(248, 246, 241)",
+    },
+    inputColor: {
+        type: ControlType.Color,
+        title: "Input Color",
+        defaultValue: "rgb(248, 246, 241)",
+    },
+    placeholderColor: {
+        type: ControlType.Color,
+        title: "Placeholder",
+        defaultValue: "rgba(248, 246, 241, 0.6)",
+    },
+    helpTextColor: {
+        type: ControlType.Color,
+        title: "Help Text",
+        defaultValue: "rgba(248, 246, 241, 0.9)",
+    },
+
+    // Inputs/buttons
+    inputBackgroundColor: {
+        type: ControlType.Color,
+        title: "Input Bg",
+        defaultValue: "rgba(255, 255, 255, 0.08)",
+    },
+    inputBorderColor: {
+        type: ControlType.Color,
+        title: "Input Border",
+        defaultValue: "rgba(248, 246, 241, 0.2)",
+    },
+    inputBorderRadius: {
+        type: ControlType.BorderRadius,
+        title: "Input Radius",
+        defaultValue: "0px",
+    },
+    inputHeight: {
+        type: ControlType.Number,
+        title: "Input Height",
+        defaultValue: 44,
+        min: 36,
+        max: 72,
+        step: 1,
+        unit: "px",
+    },
+    textareaMinHeight: {
+        type: ControlType.Number,
+        title: "Textarea Min",
+        defaultValue: 120,
+        min: 72,
+        max: 320,
+        step: 4,
+        unit: "px",
+    },
+    focusBorderColor: {
+        type: ControlType.Color,
+        title: "Focus Border",
+        defaultValue: "rgb(248, 246, 241)",
+    },
+
+    buttonBackgroundColor: {
+        type: ControlType.Color,
+        title: "Button Bg",
+        defaultValue: "rgb(248, 246, 241)",
+    },
+    buttonTextColor: {
+        type: ControlType.Color,
+        title: "Button Text",
+        defaultValue: "rgb(43, 40, 40)",
+    },
+    buttonBorderRadius: {
+        type: ControlType.BorderRadius,
+        title: "Button Radius",
+        defaultValue: "999px",
+    },
+    buttonHoverBackgroundColor: {
+        type: ControlType.Color,
+        title: "Button Hover Bg",
+        defaultValue: "rgb(245, 228, 200)",
+    },
+    buttonHoverTextColor: {
+        type: ControlType.Color,
+        title: "Button Hover Text",
+        defaultValue: "rgb(43, 40, 40)",
+    },
+    buttonBorderColor: {
+        type: ControlType.Color,
+        title: "Button Border",
+        defaultValue: "rgba(248, 246, 241, 0.35)",
+    },
+    buttonBorderWidth: {
+        type: ControlType.Number,
+        title: "Btn Border W",
+        defaultValue: 0,
+        min: 0,
+        max: 6,
+        step: 1,
+        unit: "px",
+    },
+
+    // Footer note
+    showFooterNote: {
+        type: ControlType.Boolean,
+        title: "Footer Note",
+        defaultValue: false,
+        enabledTitle: "Show",
+        disabledTitle: "Hide",
+    },
+    footerNote: {
+        type: ControlType.String,
+        title: "Note Text",
+        defaultValue: "By submitting, you agree to be contacted by Monarch.",
+        displayTextArea: true,
+        hidden: ({ showFooterNote }) => !showFooterNote,
+    },
+})

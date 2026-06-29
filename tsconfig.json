@@ -16,5 +16,5 @@
     "paths": {}
   },
   "include": ["Code/**/*.ts", "Code/**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "Code/Framer/Workshop/**", "Code/playground/**"]
 }

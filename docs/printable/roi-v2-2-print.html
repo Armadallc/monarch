@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Authorization for Release of Protected Health Information (Print) — Monarch Competency ROI v2.2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #0d0d0d;
+      --shell: #fafafa;
+      --coconut: #eff6ff;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --border: rgba(13, 13, 13, 0.12);
+      --muted: rgba(13, 13, 13, 0.65);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 9.5pt;
+      line-height: 1.38;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.5in 0.6in 0.65in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.45in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.65rem;
+      padding-bottom: 1rem;
+      margin-bottom: 0.85rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark img {
+      max-height: 112px;
+      max-width: min(100%, 420px);
+      width: auto;
+      height: auto;
+      display: block;
+    }
+    .title-block h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+      text-transform: uppercase;
+    }
+    .title-block .legal-ref {
+      margin: 0;
+      font-size: 8.5pt;
+      color: var(--stone);
+      font-weight: 500;
+    }
+    .submit-box {
+      margin: 0.85rem 0;
+      padding: 0.65rem 0.85rem;
+      border: 2px solid var(--moon);
+      border-radius: 10px;
+      background: var(--shell);
+      font-size: 9.5pt;
+    }
+    .submit-box strong { color: var(--ash); }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1rem 0 0.4rem;
+      font-size: 10pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.28rem;
+    }
+    h2:first-of-type { margin-top: 0.35rem; }
+    p.lead, p.section-intro {
+      margin: 0 0 0.5rem;
+      font-size: 9pt;
+      color: var(--muted);
+    }
+    .small { font-size: 8.5pt; color: var(--muted); }
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.35rem 0 0.65rem;
+      font-size: 9pt;
+    }
+    table.fields th,
+    table.fields td {
+      border: 1px solid var(--border);
+      padding: 0.28rem 0.38rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.fields th {
+      background: var(--shell);
+      font-weight: 600;
+    }
+    table.fields td.blank { min-height: 1.35rem; background: #fff; }
+    table.party-table th { font-size: 8.5pt; text-align: center; }
+    table.party-table td { min-height: 1.5rem; }
+    table.initials-table th { font-size: 8.5pt; }
+    table.initials-table td.init-cell { width: 2.5rem; text-align: center; }
+    .cb-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin: 0.15rem 0;
+      break-inside: avoid;
+    }
+    .cb {
+      flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid var(--ash);
+      border-radius: 2px;
+      margin-top: 0.1rem;
+      background: #fff;
+    }
+    .cb-label { flex: 1; }
+    .cb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.1rem 0.85rem;
+      margin: 0.35rem 0 0.6rem;
+    }
+    .cb-grid-1 { display: grid; grid-template-columns: 1fr; gap: 0.1rem; margin: 0.35rem 0 0.6rem; }
+    .callout {
+      margin: 0.45rem 0;
+      padding: 0.45rem 0.6rem;
+      background: var(--coconut);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 8.5pt;
+      color: var(--stone);
+    }
+    .page-footer-note {
+      margin-top: 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 7.5pt;
+      color: var(--muted);
+      text-align: center;
+    }
+    .sig-block { margin: 0.5rem 0; }
+    .sig-line {
+      border-bottom: 1px solid var(--border);
+      min-height: 2rem;
+      margin: 0.35rem 0 0.15rem;
+    }
+    .internal-block {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border: 1px dashed var(--border);
+      font-size: 8.5pt;
+    }
+    .part2-notice {
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--shell);
+      font-size: 8pt;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Print → Save as PDF · Upload to Supabase <code>assets</code> · Add to ResourcePDFList</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <img
+          src="assets/monarch-logo.png"
+          alt="Monarch Competency"
+          width="420"
+          height="auto"
+          onerror="this.onerror=null;this.src='https://esbmnympligtknhtkary.supabase.co/storage/v1/object/public/assets/monarch-logo.png'"
+        />
+      </div>
+      <div class="title-block">
+        <h1>Authorization for Release of Protected Health Information</h1>
+        <p class="legal-ref">HIPAA 45 CFR §164.508 · 42 CFR Part 2 · C.R.S. §27-65-124 · ROI v2.2</p>
+      </div>
+    </header>
+
+    <div class="submit-box">
+      <strong>How to submit this authorization</strong><br />
+      When available, use the secure online portal and e-signature to sign electronically.<br />
+      Otherwise, print, sign, and return a scanned or photographed copy to
+      <strong>Referrals@monarchcompetency.com</strong>.<br />
+      <span class="small">Questions: +1 (877) 835-1545 · www.monarchcompetency.com</span>
+    </div>
+
+    <p class="lead"><strong>Instructions:</strong> Complete legibly in ink. Mark checkboxes (☐) where indicated. Initial where required.</p>
+
+    <!-- SECTION 1 -->
+    <h2>Section 1 — Client information</h2>
+    <table class="fields">
+      <tr>
+        <th>Legal first name</th><td class="blank"></td>
+        <th>Legal middle name</th><td class="blank"></td>
+        <th>Legal last name</th><td class="blank"></td>
+      </tr>
+      <tr>
+        <th>Date of birth (MM/DD/YYYY)</th><td class="blank" colspan="2"></td>
+        <th>Last four digits of SSN <span class="small">(optional — ID only)</span></th><td class="blank" colspan="2"></td>
+      </tr>
+    </table>
+    <p class="small">Current location (mark one):</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Community</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Jail / Detention</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Hospital</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Treatment facility</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Other (specify): _______________________</span></div>
+    </div>
+    <table class="fields">
+      <tr><th>Facility name (if applicable)</th><td class="blank"></td></tr>
+      <tr><th>Facility address (if applicable)</th><td class="blank"></td></tr>
+      <tr><th>Case / docket number</th><td class="blank"></td></tr>
+      <tr><th>Court of jurisdiction</th><td class="blank"></td></tr>
+    </table>
+
+    <!-- SECTION 2 -->
+    <h2>Section 2 — Authorizing party</h2>
+    <p class="section-intro">I am signing this authorization as (mark one):</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">The individual named above (self)</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Legal guardian of the individual named above</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Power of attorney for healthcare</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Court-appointed representative</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Other legal authority (specify): _______________________</span></div>
+    </div>
+    <div class="callout">
+      If signing as someone other than the client, complete the following and attach a copy of legal documentation
+      granting this authority (guardianship order, POA, court appointment, etc.).
+    </div>
+    <table class="fields">
+      <tr><th>Authorizing party — full legal name</th><td class="blank"></td></tr>
+      <tr><th>Relationship to client</th><td class="blank"></td></tr>
+      <tr><th>Phone number</th><td class="blank"></td></tr>
+      <tr><th>Email address</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Attach corresponding documents granting legal authority:</p>
+    <div class="sig-line" style="min-height:2.5rem"></div>
+
+    <div class="page-break"></div>
+
+    <!-- SECTION 3 -->
+    <h2>Section 3 — Parties authorized to release information to Monarch</h2>
+    <p class="section-intro">
+      I authorize the following individuals, agencies, or institutions to release my protected health information to
+      Monarch Competency and its clinical, medical, and administrative staff for the purposes described in Section 6.
+    </p>
+    <div class="cb-line"><span class="cb"></span><span class="cb-label"><strong>General authorization:</strong> Authorize Monarch to request records from ALL providers, agencies, and individuals involved in my current or past mental health, medical, substance use, or legal matters. (This general authorization supplements the specific parties listed below.)</span></div>
+    <table class="fields party-table">
+      <tr>
+        <th style="width:2rem">#</th>
+        <th>Name / organization</th>
+        <th>Role or relationship</th>
+        <th>Phone or email</th>
+      </tr>
+      <tr><td>1</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>2</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>3</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>4</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>5</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>6</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+    </table>
+
+    <!-- SECTION 4 -->
+    <h2>Section 4 — Parties authorized to receive information from Monarch</h2>
+    <p class="section-intro">
+      I authorize Monarch Competency to release my protected health information to the following individuals,
+      agencies, or institutions for the purposes described in Section 6.
+    </p>
+    <table class="fields party-table">
+      <tr>
+        <th style="width:2rem">#</th>
+        <th>Name / organization</th>
+        <th>Role or relationship</th>
+        <th>Phone or email</th>
+      </tr>
+      <tr><td>1</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>2</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>3</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>4</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>5</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+      <tr><td>6</td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- SECTION 5 -->
+    <h2>Section 5 — Information authorized for release</h2>
+    <p class="section-intro">I authorize the release of the following categories of information (check all that apply):</p>
+    <p class="small"><strong>General health records</strong></p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Intake / admission assessment</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Treatment plans and updates</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Progress notes / session summaries</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Discharge summary and aftercare plan</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Psychiatric evaluation</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Psychological testing results</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Medical records and physical exams</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Medication records (MAR)</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Laboratory and diagnostic results</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Competency restoration records</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Court reports / legal correspondence</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Case management notes</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Incident reports (if applicable)</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">All records maintained by Monarch</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Other (specify): _______________________</span></div>
+    </div>
+
+    <p class="small"><strong>Specially protected information — initial each category you authorize</strong></p>
+    <table class="fields initials-table">
+      <tr>
+        <th class="init-cell">Initials</th>
+        <th>Category</th>
+        <th>Legal protection</th>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td>Substance use disorder (SUD) treatment records</td>
+        <td class="small">Protected under 42 CFR Part 2. Re-disclosure is prohibited without additional written consent.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td>Mental health treatment records</td>
+        <td class="small">Protected under C.R.S. §27-65-124. Disclosure limited to purposes authorized under the Colorado Mental Health Code.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td>Genetic information</td>
+        <td class="small">Protected under the Genetic Information Nondiscrimination Act (GINA).</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td>Psychotherapy notes (if maintained separately)</td>
+        <td class="small">Protected under HIPAA 45 CFR §164.508(a)(2).</td>
+      </tr>
+    </table>
+
+    <!-- SECTION 6 -->
+    <h2>Section 6 — Purpose of disclosure</h2>
+    <p class="section-intro">This information is being released for the following purpose(s) (check all that apply):</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Intake assessment and admission determination</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Treatment planning and care coordination</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Competency restoration services and court reporting</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Communication with legal representatives</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Communication with court / legal system</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Communication with probation, parole, or corrections</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Communication with referring agency or professional</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Communication with family members or support persons</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Discharge planning and continuity of care</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Insurance verification and billing</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Other (specify): _______________________</span></div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- SECTION 7 -->
+    <h2>Section 7 — Expiration of authorization</h2>
+    <p class="section-intro">This authorization shall remain in effect (select one):</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Until discharge from Monarch Competency, plus 90 days for aftercare coordination</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">For a period of 12 months from the date signed</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">For a period of ______ months from the date signed</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Until the following specific date: _______________________</span></div>
+      <div class="cb-line"><span class="cb"></span><span class="cb-label">Until revoked in writing by the undersigned</span></div>
+    </div>
+    <p class="small">If no option is selected, this authorization will automatically expire 12 months from the date of signature.</p>
+
+    <!-- SECTION 8 -->
+    <h2>Section 8 — Client rights and acknowledgments</h2>
+    <p class="section-intro">Please read each statement carefully and initial in the space provided to confirm your understanding.</p>
+    <table class="fields initials-table">
+      <tr><th class="init-cell">Initials</th><th>Right</th><th>Statement</th></tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Right to revoke</strong></td>
+        <td class="small">I may revoke this authorization at any time by submitting a written request to Monarch Competency. Revocation will not affect information already released in reliance on this authorization prior to receipt of my written revocation.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Voluntary authorization</strong></td>
+        <td class="small">Signing this authorization is voluntary. Monarch Competency will not condition my treatment on whether I sign this authorization, except where disclosure is necessary for treatment, payment, or healthcare operations, or where treatment is provided solely to create records for a third party.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Potential for re-disclosure</strong></td>
+        <td class="small">Once my information is disclosed, it may be subject to re-disclosure by the recipient and may no longer be protected by federal privacy regulations. However, SUD records protected under 42 CFR Part 2 may not be re-disclosed without my specific written consent, except as otherwise permitted by law.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Right to a copy</strong></td>
+        <td class="small">I have the right to receive a copy of this signed authorization upon request.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Right to inspect records</strong></td>
+        <td class="small">I have the right to inspect and obtain a copy of my health information maintained by Monarch Competency, subject to applicable law.</td>
+      </tr>
+      <tr>
+        <td class="init-cell blank"></td>
+        <td><strong>Court communication &amp; competency restoration</strong></td>
+        <td class="small">Monarch Competency is required by Colorado law and my court order to communicate with the court regarding my competency restoration progress, including admission status, treatment engagement, progress reports, significant incidents, and discharge recommendations. This obligation exists independently of, and is not affected by, this authorization or any revocation of it.</td>
+      </tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- SECTION 9 -->
+    <h2>Section 9 — Signatures</h2>
+    <p class="section-intro"><strong>Client or authorized representative</strong></p>
+    <p class="small">
+      By signing below, I confirm that I have read and understand this authorization, have had the opportunity to ask
+      questions, and am signing voluntarily and of my own free will. All information provided is accurate to the best
+      of my knowledge.
+    </p>
+    <p class="small">
+      A witness signature is required if the client is incarcerated, hospitalized, or residing in a treatment facility,
+      or if there is any question regarding the client's capacity to consent.
+    </p>
+    <table class="fields">
+      <tr><th>Signature</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Date</th><td class="blank"></td></tr>
+      <tr><th>Printed name</th><td class="blank"></td></tr>
+      <tr><th>If signing as representative — legal authority / role</th><td class="blank"></td></tr>
+    </table>
+    <h3 style="font-size:10pt;margin:1rem 0 0.35rem">Witness (if required)</h3>
+    <table class="fields">
+      <tr><th>Witness signature</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Date</th><td class="blank"></td></tr>
+      <tr><th>Witness printed name</th><td class="blank"></td></tr>
+      <tr><th>Title / organization</th><td class="blank"></td></tr>
+    </table>
+
+    <!-- SECTION 10 -->
+    <h2>Section 10 — Revocation of prior authorization <span class="small">(complete only if revoking)</span></h2>
+    <p class="small">
+      I, _________________________________, hereby revoke the Authorization for Release of Protected Health Information
+      that I signed on _________________. I understand that this revocation will not affect any information already
+      disclosed in reliance on my prior authorization before Monarch Competency received this written revocation.
+    </p>
+    <table class="fields">
+      <tr><th>Signature</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Date</th><td class="blank"></td></tr>
+      <tr><th>Printed name</th><td class="blank"></td></tr>
+    </table>
+
+    <div class="part2-notice">
+      <strong>Notice regarding substance use disorder records — 42 CFR Part 2</strong><br />
+      This information has been disclosed from records protected by federal confidentiality rules (42 CFR Part 2).
+      The federal rules prohibit you from making any further disclosure of this information unless expressly permitted
+      by the written consent of the person to whom it pertains, or as otherwise permitted by 42 CFR Part 2. A general
+      authorization for the release of medical or other information is NOT sufficient for this purpose (see §2.31).
+      The federal rules restrict any use of this information to criminally investigate or prosecute any alcohol or drug
+      abuse patient, except as provided at §§2.12(c)(5) and 2.65.
+    </div>
+
+    <div class="internal-block">
+      <strong>Monarch Competency — internal use only</strong><br />
+      Received by (printed name): _________________________ &nbsp; Date received: ___________<br />
+      Reference code: _________________________ &nbsp; Admission date: ___________<br />
+      ☐ Admitted &nbsp; Date entered: ___________ &nbsp; Entered by: _________________________<br />
+      Notes:<br />
+      <div class="sig-line" style="min-height:2rem;margin-top:0.35rem"></div>
+    </div>
+
+    <div class="page-footer-note">
+      This form complies with HIPAA 45 CFR §164.508, 42 CFR Part 2 (SUD records), C.R.S. §27-65-124.<br />
+      Monarch Competency · Referrals@monarchcompetency.com · +1 (877) 835-1545 · www.monarchcompetency.com · ROI v2.2
+    </div>
+  </div>
+</body>
+</html>

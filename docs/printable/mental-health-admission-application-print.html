@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Application for Admission (Print) — Monarch Mental Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #0d0d0d;
+      --shell: #fafafa;
+      --coconut: #eff6ff;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --tangerine: #ffa089;
+      --border: rgba(13, 13, 13, 0.12);
+      --muted: rgba(13, 13, 13, 0.65);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.55in 0.65in 0.75in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.5in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .brand-mark img {
+      max-height: 128px;
+      max-width: min(100%, 360px);
+      width: auto;
+      height: auto;
+      display: block;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+    }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1.15rem 0 0.45rem;
+      font-size: 11pt;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.3rem;
+    }
+    h2:first-of-type { margin-top: 0.35rem; }
+    p.intro, p.lead {
+      margin: 0 0 0.65rem;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    p.intro strong { color: var(--ash); }
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.45rem 0 0.85rem;
+      font-size: 10pt;
+    }
+    table.fields th,
+    table.fields td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.45rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.fields th {
+      background: var(--shell);
+      font-weight: 600;
+      width: 38%;
+    }
+    table.fields td.blank {
+      min-height: 1.35rem;
+      background: #fff;
+    }
+    .submit-box {
+      margin: 1rem 0;
+      padding: 0.75rem 0.9rem;
+      border: 2px solid var(--moon);
+      border-radius: 10px;
+      background: var(--shell);
+      font-size: 10pt;
+    }
+    .submit-box strong { color: var(--ash); }
+    .small { font-size: 9pt; color: var(--muted); }
+    .yn-row td { padding-top: 0.5rem; }
+    .yn { white-space: nowrap; }
+    .question {
+      margin: 0.85rem 0 0.35rem;
+      font-size: 10pt;
+      font-weight: 600;
+      color: var(--ash);
+    }
+    .answer-box {
+      border: 1px solid var(--border);
+      min-height: 3.25rem;
+      margin: 0.25rem 0 0.75rem;
+      background: #fff;
+    }
+    .answer-box.tall { min-height: 5rem; }
+    .checklist {
+      margin: 0.5rem 0 1rem;
+      padding-left: 0;
+      list-style: none;
+    }
+    .checklist li {
+      margin: 0.35rem 0;
+      padding-left: 1.35rem;
+      position: relative;
+      font-size: 10pt;
+    }
+    .checklist li:before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      font-family: inherit;
+    }
+    .return-box {
+      margin-top: 1rem;
+      padding: 0.75rem 0.9rem;
+      background: var(--coconut);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Open in browser → Print → “Save as PDF”. Upload to Supabase <code>assets</code> and add to ResourcePDFList.</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <img
+          src="assets/monarch-mental-health-logo.png"
+          alt="Monarch Mental Health"
+          width="360"
+          height="auto"
+        />
+      </div>
+      <div class="title-block">
+        <h1>Application for Admission</h1>
+      </div>
+    </header>
+
+    <div class="submit-box">
+      <strong>Contact &amp; submission</strong><br />
+      Email completed packet: <strong>hello@monarchmentalhealth.org</strong><br />
+      Phone: <strong>1 (800) 618-8719</strong> — Admissions <strong>EXT 0</strong> · Case management <strong>EXT 1</strong> · Clinical <strong>EXT 2</strong>
+    </div>
+
+    <p class="intro">
+      Monarch Mental Health is a level two Mental Health Transitional Living Home (MHTL). We are dedicated to providing
+      comprehensive and client-centered care for individuals transitioning from various settings, including state hospitals
+      and other institutions, to community living. Monarch offers a supportive environment where clients can reintegrate
+      into society with the necessary therapeutic support. We provide individual therapy services, group therapy sessions,
+      comprehensive case management, medication management, and other recreational therapy services.
+    </p>
+    <p class="intro">
+      <strong>Monarch Mental Health accepts Medicaid/Medicare insurance only.</strong> Please note, private insurance is not accepted.
+    </p>
+    <p class="lead"><strong>Please complete the following application packet in its entirety.</strong></p>
+
+    <h2>Referral &amp; client information</h2>
+    <table class="fields">
+      <tr><th>Referring agency / party</th><td class="blank"></td></tr>
+      <tr><th>Referring agency’s address</th><td class="blank"></td></tr>
+      <tr><th>Phone #</th><td class="blank"></td></tr>
+      <tr><th>Email</th><td class="blank"></td></tr>
+      <tr><th>Referral date</th><td class="blank"></td></tr>
+      <tr><th>Client’s name</th><td class="blank"></td></tr>
+      <tr><th>Client’s legal name</th><td class="blank"></td></tr>
+      <tr><th>Date of birth</th><td class="blank"></td></tr>
+      <tr><th>Gender</th><td class="blank"></td></tr>
+      <tr><th>Pronouns</th><td class="blank"></td></tr>
+      <tr><th>Race</th><td class="blank"></td></tr>
+      <tr><th>Ethnicity</th><td class="blank"></td></tr>
+      <tr><th>Military affiliation</th><td class="blank"></td></tr>
+      <tr><th>Social Security number</th><td class="blank"></td></tr>
+      <tr><th>Medicaid number</th><td class="blank"></td></tr>
+      <tr><th>Medicaid RAE</th><td class="blank"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>Guardian &amp; payee</h2>
+    <table class="fields">
+      <tr><th>Guardian’s name</th><td class="blank"></td></tr>
+      <tr><th>Guardian’s phone #</th><td class="blank"></td></tr>
+      <tr><th>Guardian’s email</th><td class="blank"></td></tr>
+      <tr><th>Payee’s name</th><td class="blank"></td></tr>
+      <tr><th>Payee’s phone #</th><td class="blank"></td></tr>
+      <tr><th>Payee’s email</th><td class="blank"></td></tr>
+    </table>
+
+    <h2>Current providers</h2>
+    <table class="fields">
+      <tr><th>Current primary care provider’s name</th><td class="blank"></td></tr>
+      <tr><th>Current primary care provider’s phone #</th><td class="blank"></td></tr>
+      <tr><th>Current psychiatric provider’s name</th><td class="blank"></td></tr>
+      <tr><th>Current psychiatric provider’s phone #</th><td class="blank"></td></tr>
+    </table>
+
+    <h2>Clinical questions</h2>
+
+    <p class="question">1. Briefly describe the reason for the application/referral:</p>
+    <div class="answer-box tall"></div>
+
+    <p class="question">2. Does the client have a legal history? If so, please describe:</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+    <div class="answer-box"></div>
+
+    <p class="question">3. Has the client had any documented incidents in the past six (6) months? If so, please describe:</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+    <div class="answer-box"></div>
+
+    <p class="question">4. Please provide the client’s most recent and up-to-date mental health, substance use disorders, and co-occurring diagnosis(es):</p>
+    <div class="answer-box tall"></div>
+
+    <div class="page-break"></div>
+
+    <p class="question">5. Will the client be on court-ordered medications upon discharge? If so, please provide documentation.</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+    <div class="answer-box"></div>
+
+    <p class="question">6. Will the client be on an outpatient certification upon discharge? If so, please provide documentation.</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+    <div class="answer-box"></div>
+
+    <p class="question">7. Does the client have any medical conditions/needs requiring nursing care? If so, please describe and provide documentation.</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+    <div class="answer-box"></div>
+
+    <p class="question">8. Does the client use tobacco products?</p>
+    <table class="fields yn-row">
+      <tr><td colspan="2" class="yn">☐ Yes &nbsp;&nbsp; ☐ No</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>Referral packet checklist</h2>
+    <p class="small">Include the following with your completed application:</p>
+    <ul class="checklist">
+      <li>Completed Application for Admission packet</li>
+      <li>Copy of Medicaid/Medicare cards</li>
+      <li>Current medication list (MAR), including PRN medications</li>
+      <li>Most recent psychiatric progress notes</li>
+      <li>Most recent nursing notes</li>
+      <li>Most recent social work progress notes</li>
+      <li>Any incident reports</li>
+      <li>Releases of information (including emergency contact)</li>
+      <li>Legal history</li>
+      <li>Collateral information (biopsychosocial assessment(s), treatment plans, therapy notes, etc.)</li>
+    </ul>
+
+    <div class="return-box">
+      <strong>Please return this completed packet and all requested information to:</strong><br />
+      <strong>hello@monarchmentalhealth.org</strong><br />
+      <span class="small">Phone: 1 (800) 618-8719 — Admissions EXT 0 · Case management EXT 1 · Clinical EXT 2</span>
+    </div>
+
+    <h2>Signature &amp; date</h2>
+    <table class="fields">
+      <tr><th>Referring party signature</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Date</th><td class="blank"></td></tr>
+      <tr><th>Printed name &amp; title</th><td class="blank"></td></tr>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+/** Auto-generated — do not edit. Run: npx tsx Code/theme/sync-framer-theme.ts */
+export const MONARCH_THEME_INJECT_CSS = `:root {
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-heading: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.141 0.005 285.823);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.141 0.005 285.823);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.141 0.005 285.823);
+  --primary: oklch(0.488 0.243 264.376);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.967 0.001 286.375);
+  --secondary-foreground: oklch(0.21 0.006 285.885);
+  --muted: oklch(0.967 0.001 286.375);
+  --muted-foreground: oklch(0.552 0.016 285.938);
+  --accent: oklch(0.967 0.001 286.375);
+  --accent-foreground: oklch(0.21 0.006 285.885);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.004 286.32);
+  --input: oklch(0.92 0.004 286.32);
+  --ring: oklch(0.705 0.015 286.067);
+  --radius: 0.45rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.141 0.005 285.823);
+  --sidebar-primary: oklch(0.546 0.245 262.881);
+  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-accent: oklch(0.967 0.001 286.375);
+  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+  --sidebar-border: oklch(0.92 0.004 286.32);
+  --sidebar-ring: oklch(0.705 0.015 286.067);
+
+  --overlay: oklch(0.141 0.005 285.823 / 45%);
+  --shadow-card: 0 1px 2px oklch(0.141 0.005 285.823 / 6%), 0 1px 3px oklch(0.141 0.005 285.823 / 8%);
+  --shadow-card-hover: 0 4px 12px oklch(0.141 0.005 285.823 / 10%);
+  --shadow-modal: 0 24px 48px -12px oklch(0.141 0.005 285.823 / 18%);
+
+  --success: oklch(0.527 0.154 150.069);
+  --success-bg: oklch(0.962 0.044 156.743);
+  --success-foreground: oklch(0.447 0.119 151.328);
+  --warning: oklch(0.555 0.163 48.998);
+  --warning-bg: oklch(0.98 0.016 73.684);
+  --warning-foreground: oklch(0.47 0.157 37.304);
+  --warning-border: oklch(0.9 0.058 72.659);
+  --info-bg: oklch(0.97 0.014 254.604);
+  --info-border: oklch(0.882 0.059 254.128);
+  --info-foreground: oklch(0.809 0.105 251.813);
+  --info-text: oklch(0.424 0.199 265.638);
+  --destructive-bg: oklch(0.97 0.01 17);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+
+  --status-pending-bg: oklch(0.97 0.02 85);
+  --status-pending-text: oklch(0.35 0.03 85);
+  --status-review-bg: oklch(0.95 0.03 254);
+  --status-review-text: oklch(0.424 0.199 265.638);
+  --status-waitlist-bg: oklch(0.967 0.001 286.375);
+  --status-waitlist-text: oklch(0.552 0.016 285.938);
+  --status-accepted-bg: var(--success-bg);
+  --status-accepted-text: var(--success-foreground);
+  --status-declined-bg: var(--destructive-bg);
+  --status-declined-text: var(--destructive-foreground);
+
+  --primary-muted: oklch(0.95 0.04 254);
+  --accent-subtle: oklch(0.967 0.001 286.375 / 60%);
+
+  /* shadcn-style field surfaces — light: card; dark: input @ 30% (see .dark) */
+  --input-background: var(--card);
+  --checkbox-background: transparent;
+}
+
+.dark {
+  --background: oklch(0.141 0.005 285.823);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.21 0.006 285.885);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.424 0.199 265.638);
+  --primary-foreground: oklch(0.97 0.014 254.604);
+  --secondary: oklch(0.274 0.006 286.033);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.274 0.006 286.033);
+  --muted-foreground: oklch(0.705 0.015 286.067);
+  --accent: oklch(0.274 0.006 286.033);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.552 0.016 285.938);
+  --sidebar: oklch(0.21 0.006 285.885);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.623 0.214 259.815);
+  --sidebar-primary-foreground: oklch(0.97 0.014 254.604);
+  --sidebar-accent: oklch(0.274 0.006 286.033);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.552 0.016 285.938);
+
+  --overlay: oklch(0.05 0.005 285.823 / 65%);
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 25%), 0 1px 3px oklch(0 0 0 / 35%);
+  --shadow-card-hover: 0 4px 12px oklch(0 0 0 / 40%);
+  --shadow-modal: 0 24px 48px -12px oklch(0 0 0 / 55%);
+
+  --success: oklch(0.696 0.17 162.48);
+  --success-bg: oklch(0.26 0.05 152);
+  --success-foreground: oklch(0.765 0.177 163.223);
+  --warning: oklch(0.769 0.188 70.08);
+  --warning-bg: oklch(0.28 0.06 48);
+  --warning-foreground: oklch(0.828 0.189 84.429);
+  --warning-border: oklch(0.41 0.11 48);
+  --info-bg: oklch(0.25 0.04 264);
+  --info-border: oklch(0.35 0.08 264);
+  --info-foreground: oklch(0.809 0.105 251.813);
+  --info-text: oklch(0.809 0.105 251.813);
+  --destructive-bg: oklch(0.28 0.08 22);
+  --destructive-foreground: oklch(0.704 0.191 22.216);
+
+  --status-pending-bg: oklch(0.28 0.04 85);
+  --status-pending-text: oklch(0.85 0.06 85);
+  --status-review-bg: oklch(0.25 0.04 264);
+  --status-review-text: oklch(0.809 0.105 251.813);
+  --status-waitlist-bg: oklch(0.274 0.006 286.033);
+  --status-waitlist-text: oklch(0.705 0.015 286.067);
+  --status-accepted-bg: var(--success-bg);
+  --status-accepted-text: var(--success-foreground);
+  --status-declined-bg: var(--destructive-bg);
+  --status-declined-text: var(--destructive-foreground);
+
+  --primary-muted: oklch(0.28 0.06 264);
+  --accent-subtle: oklch(0.274 0.006 286.033 / 80%);
+
+  --input-background: color-mix(in oklab, var(--input) 30%, transparent);
+  --checkbox-background: color-mix(in oklab, var(--input) 30%, transparent);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* Native checkboxes — matches shadcn dark:bg-input/30 + border-input */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  border: 1px solid var(--input);
+  border-radius: calc(var(--radius) - 2px);
+  background-color: var(--checkbox-background);
+  cursor: pointer;
+  vertical-align: middle;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Form / settings lists — slightly larger hit target */
+input[type="checkbox"].checkbox-lg {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+input[type="checkbox"]:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+input[type="checkbox"]:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3e%3cpath d='M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z' fill='white'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+input[type="checkbox"]:indeterminate {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3e%3crect x='3' y='7' width='10' height='2' rx='1' fill='white'/%3e%3c/svg%3e");
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Text fields / selects — shadcn input surface token */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+select,
+textarea {
+  background-color: var(--input-background);
+  border-color: var(--input);
+  color: var(--foreground);
+}
+`

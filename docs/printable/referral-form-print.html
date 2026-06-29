@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Referral Questionnaire — Monarch Competency Restoration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #2b2828;
+      --shell: #f8f6f1;
+      --coconut: #e9edf6;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --border: rgba(43, 40, 40, 0.12);
+      --muted: rgba(43, 40, 40, 0.65);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.55in 0.65in 0.75in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.5in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark {
+      flex-shrink: 0;
+    }
+    .brand-mark img {
+      max-height: 56px;
+      width: auto;
+      display: block;
+    }
+    .title-block h1 {
+      margin: 0 0 0.35rem;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+    }
+    .title-block .subtitle {
+      margin: 0;
+      font-size: 10pt;
+      color: var(--stone);
+      font-weight: 500;
+    }
+    .meta {
+      margin-top: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      background: var(--shell);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 9.5pt;
+      color: var(--muted);
+    }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar button:hover { opacity: 0.92; }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1.35rem 0 0.5rem;
+      font-size: 12pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.35rem;
+    }
+    h2:first-of-type { margin-top: 0.25rem; }
+    h3 {
+      margin: 1rem 0 0.4rem;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--ash);
+    }
+    p.lead {
+      margin: 0 0 0.65rem;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.5rem 0 1rem;
+      font-size: 10pt;
+    }
+    table.fields th,
+    table.fields td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.45rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.fields th {
+      background: var(--shell);
+      font-weight: 600;
+      width: 38%;
+    }
+    table.fields td.blank {
+      min-height: 1.35rem;
+      background: #fff;
+    }
+    ul.opts {
+      margin: 0.35rem 0 0.85rem 1.15rem;
+      padding: 0;
+    }
+    ul.opts li { margin: 0.2rem 0; }
+    .callout {
+      margin: 0.65rem 0;
+      padding: 0.55rem 0.75rem;
+      background: var(--coconut);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 9.5pt;
+      color: var(--stone);
+    }
+    .small { font-size: 9pt; color: var(--muted); }
+    .page-break { margin-top: 0; }
+    footer.doc-footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+    .chk-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.25rem 1rem;
+      margin: 0.5rem 0 1rem;
+      font-size: 10pt;
+    }
+    @media print {
+      .chk-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .chk-item:before {
+      content: "☐ ";
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Use your browser’s print dialog → choose “Save as PDF” for a file copy.</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <!-- Same asset as DocumentUploadForm; replace URL if you host elsewhere -->
+        <!-- Drop your logo at assets/monarch-logo.png (same folder as this HTML); otherwise Supabase public asset loads -->
+        <img
+          src="assets/monarch-logo.png"
+          alt="Monarch Competency Restoration"
+          width="220"
+          height="auto"
+          onerror="this.onerror=null;this.src='https://esbmnympligtknhtkary.supabase.co/storage/v1/object/public/assets/monarch-logo.png'"
+        />
+      </div>
+      <div class="title-block">
+        <h1>Referral questionnaire</h1>
+        <p class="subtitle">Monarch Competency Restoration · Colorado</p>
+        <div class="meta">
+          Printable reference aligned with the online referral form (steps 0–13).
+          For office use, fax/mail, or intake prep — submit officially via the website when possible.
+        </div>
+      </div>
+    </header>
+
+    <p class="lead">
+      <strong>Instructions:</strong> Complete legibly in ink or digitally. Attach continuation sheets if needed.
+      Fields match database keys used by the secure referral form where noted.
+    </p>
+
+    <!-- Step 0 -->
+    <h2>Step 0 — Who is making this referral?</h2>
+    <p class="small">Choose one (referral_source_type)</p>
+    <div class="chk-grid">
+      <span class="chk-item">Court System</span>
+      <span class="chk-item">Legal Representative</span>
+      <span class="chk-item">Probation/Parole</span>
+      <span class="chk-item">Mental Health/Medical Facility</span>
+      <span class="chk-item">Case Management/Social Services</span>
+      <span class="chk-item">Other Professional</span>
+      <span class="chk-item">Family Member or Friend</span>
+      <span class="chk-item">Self-Referral</span>
+    </div>
+    <p class="small">Family/Friend and Self paths may use a shorter inquiry flow on the website; full clinical referral uses steps 1–13 below.</p>
+
+    <div class="page-break"></div>
+
+    <!-- Step 1 -->
+    <h2>Step 1 — Your contact information</h2>
+    <table class="fields">
+      <tr><th>Full Name</th><td class="blank"></td></tr>
+      <tr><th>Organization / Agency</th><td class="blank"></td></tr>
+      <tr><th>Title / Position</th><td class="blank"></td></tr>
+      <tr><th>Phone Number</th><td class="blank"></td></tr>
+      <tr><th>Email Address</th><td class="blank"></td></tr>
+      <tr><th>Can you provide collateral information?</th><td>☐ Yes &nbsp; ☐ No &nbsp; ☐ Partial / Some information</td></tr>
+      <tr><th>Referred to Monarch previously?</th><td>☐ Yes &nbsp; ☐ No &nbsp; ☐ Unknown</td></tr>
+      <tr><th>Request urgent placement</th><td>☐ Yes</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 2 -->
+    <h2>Step 2 — Additional contacts</h2>
+    <h3>Emergency contact</h3>
+    <table class="fields">
+      <tr><th>Name</th><td class="blank"></td></tr>
+      <tr><th>Phone</th><td class="blank"></td></tr>
+      <tr><th>Relationship to client</th><td class="blank"></td></tr>
+      <tr><th>Can provide collateral information</th><td>☐ Yes</td></tr>
+    </table>
+    <h3>Additional professional contacts</h3>
+    <p class="small">Repeat as needed — name, organization &amp; title, phone/email, role, can provide collateral (Y/N).</p>
+    <table class="fields">
+      <tr><th>Contact 1</th><td class="blank" style="min-height:4rem"></td></tr>
+      <tr><th>Contact 2</th><td class="blank" style="min-height:4rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 3 -->
+    <h2>Step 3 — Individual being referred — Demographics</h2>
+    <table class="fields">
+      <tr><th>Legal first / middle / last name</th><td class="blank"></td></tr>
+      <tr><th>Aliases / nicknames / previous names</th><td class="blank"></td></tr>
+      <tr><th>Date of birth</th><td class="blank"></td></tr>
+      <tr><th>SSN (if available)</th><td class="blank"></td></tr>
+      <tr><th>Gender identity</th><td>Male · Female · Non-binary · Transgender male · Transgender female · Other · Prefer not to say</td></tr>
+      <tr><th>Sex assigned at birth</th><td>☐ Male &nbsp; ☐ Female</td></tr>
+      <tr><th>Preferred pronouns</th><td>He/Him · She/Her · They/Them · Other</td></tr>
+      <tr><th>Primary language</th><td class="blank"></td></tr>
+      <tr><th>English proficiency</th><td>Fluent · Conversational · Limited · None · Unknown</td></tr>
+      <tr><th>Interpreter needed</th><td>☐ Yes</td></tr>
+      <tr><th>Racial/ethnic background</th><td class="small">American Indian/Alaska Native · Asian · Black/African American · Hispanic/Latino · NH/PI · White · Two or more races · Other · Prefer not to say</td></tr>
+      <tr><th>Marital status</th><td class="small">Single · Married · Divorced · Separated · Widowed · Domestic partnership · Unknown</td></tr>
+      <tr><th>Client phone / email</th><td class="blank"></td></tr>
+      <tr><th>Client consents to this referral?</th><td>☐ Yes &nbsp; ☐ No &nbsp; ☐ Unable to consent / Unknown</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 4 -->
+    <h2>Step 4 — Documents &amp; identification</h2>
+    <p class="small">Documents available (check all):</p>
+    <div class="chk-grid">
+      <span class="chk-item">Valid Colorado ID</span>
+      <span class="chk-item">Expired Colorado ID</span>
+      <span class="chk-item">Out-of-State ID</span>
+      <span class="chk-item">Social Security Card</span>
+      <span class="chk-item">Birth Certificate</span>
+      <span class="chk-item">Insurance Card(s)</span>
+      <span class="chk-item">Court Order / Competency Order</span>
+      <span class="chk-item">Competency Evaluation Report</span>
+      <span class="chk-item">Psychiatric Records</span>
+      <span class="chk-item">Medical Records</span>
+      <span class="chk-item">Medication List (MAR)</span>
+      <span class="chk-item">Signed ROI(s)</span>
+      <span class="chk-item">None Available</span>
+    </div>
+    <p class="small">Uploads (online): PDF, JPG, PNG, DOC/DOCX — max 10 MB/file. Per-file type may include “Competency Eval Report,” “Other,” etc.</p>
+    <table class="fields">
+      <tr><th>Document notes / descriptions</th><td class="blank" style="min-height:3.5rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 5 -->
+    <h2>Step 5 — Insurance &amp; benefits</h2>
+    <table class="fields">
+      <tr><th>Medicaid status</th><td>Active · Suspended · Application pending · Not eligible · Unknown</td></tr>
+      <tr><th>Medicaid number</th><td class="blank"></td></tr>
+      <tr><th>Medicare status</th><td>Active · Pending · Not eligible · Unknown</td></tr>
+      <tr><th>Medicare number</th><td class="blank"></td></tr>
+      <tr><th>Private insurance</th><td>☐ Has private insurance — details:</td></tr>
+      <tr><th colspan="2" class="blank" style="min-height:2.5rem"></th></tr>
+      <tr><th>SSI/SSDI status</th><td class="small">Receiving SSI · SSDI · Both · Applied/pending · Not receiving · Unknown</td></tr>
+      <tr><th>Additional benefits notes</th><td class="blank" style="min-height:2.5rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 6 -->
+    <h2>Step 6 — Legal status &amp; court information</h2>
+    <table class="fields">
+      <tr><th>County / judicial district</th><td class="blank"></td></tr>
+      <tr><th>Case number</th><td class="blank"></td></tr>
+      <tr><th>Assigned judge</th><td class="blank"></td></tr>
+      <tr><th>Courtroom</th><td class="blank"></td></tr>
+      <tr><th>Next court date</th><td class="blank"></td></tr>
+      <tr><th>Charges (brief)</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Competency status</th><td class="small">Evaluation ordered · Found incompetent · Restoration ordered · In restoration · Restored · Not restorable · Pending evaluation</td></tr>
+      <tr><th>Competency evaluation date</th><td class="blank"></td></tr>
+      <tr><th>Evaluating clinician / organization</th><td class="blank"></td></tr>
+      <tr><th>Defense attorney / phone / email</th><td class="blank"></td></tr>
+      <tr><th>On probation / officer contact</th><td class="blank"></td></tr>
+      <tr><th>On parole / officer contact</th><td class="blank"></td></tr>
+      <tr><th>Active warrants?</th><td>☐ Yes ☐ No ☐ Unknown</td></tr>
+      <tr><th>Bond holds?</th><td>☐ Yes ☐ No ☐ Unknown — details:</td></tr>
+      <tr><th>PR bond to Monarch?</th><td>☐ Yes ☐ No ☐ Pending ☐ N/A — Judge / DA / other contacts:</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 7 -->
+    <h2>Step 7 — Current location &amp; situation</h2>
+    <p class="small">Location type: County Jail · State Prison/DOC · Hospital (Medical) · Psychiatric Hospital · State Hospital (CMHIP) · Treatment Facility · Residential Program · Community (Supervised Release) · Community (Unsupervised) · Homeless/Shelter · Other</p>
+    <table class="fields">
+      <tr><th>Facility name / address</th><td class="blank"></td></tr>
+      <tr><th>Inmate / patient ID</th><td class="blank"></td></tr>
+      <tr><th>Facility contact / phone</th><td class="blank"></td></tr>
+      <tr><th>Currently incarcerated</th><td>☐ Yes · Expected release date:</td></tr>
+      <tr><th>Housing prior</th><td class="small">Own home · Family/friend · Group home/AL · Shelter · Homeless · Transitional · Other · Unknown</td></tr>
+      <tr><th>Post-program housing plan</th><td class="small">Return home · Family/friend · Group home · Transitional · Needs placement · Unknown/TBD</td></tr>
+      <tr><th>Housing notes</th><td class="blank" style="min-height:2rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 8 -->
+    <h2>Step 8 — Mental health &amp; clinical</h2>
+    <table class="fields">
+      <tr><th>Mental health diagnoses</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Medication compliance</th><td class="small">Compliant / as prescribed · Partial · Non-compliant · Not prescribed · Unknown</td></tr>
+      <tr><th>Current psychiatric medications</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Medication barriers</th><td class="blank"></td></tr>
+      <tr><th>Psychiatric history</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Previous treatment programs</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>TBI history?</th><td>☐ Yes ☐ No ☐ Suspected ☐ Unknown — details:</td></tr>
+      <tr><th>IDD?</th><td class="small">Documented · Undocumented/suspected · No · Unknown — details:</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 9 -->
+    <h2>Step 9 — Substance use history</h2>
+    <table class="fields">
+      <tr><th>Pattern</th><td class="small">No history · Historical only (1+ yr sober) · In recovery · Occasional/social · Regular · Daily · IV · Unknown</td></tr>
+      <tr><th>Current use (last 90 days)</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Past substance history</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Medically supervised detox?</th><td>☐ Yes ☐ No ☐ Possibly ☐ Unknown — details:</td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 10 -->
+    <h2>Step 10 — Medical &amp; somatic</h2>
+    <table class="fields">
+      <tr><th>Medical/somatic diagnoses</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Conditions controlled by meds?</th><td class="small">Well controlled · Partial · Uncontrolled · N/A · Unknown</td></tr>
+      <tr><th>Non-psychiatric medications</th><td class="blank" style="min-height:2rem"></td></tr>
+      <tr><th>Medication allergies</th><td class="blank"></td></tr>
+      <tr><th>Mobility / assistive needs</th><td class="small">Independent · Cane/walker · Wheelchair · Bedbound · Other</td></tr>
+      <tr><th>ADL support needed</th><td>☐ Yes — details:</td></tr>
+      <tr><th>Acute medical needs</th><td class="blank" style="min-height:2rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 11 -->
+    <h2>Step 11 — Safety &amp; risk assessment</h2>
+    <p class="small">For suicide, violence, elopement: timeframe — Current (within 30 days) · Recent (90 days) · Recovering (4–12 mo) · Historical (1+ yr) · No history</p>
+    <table class="fields">
+      <tr><th>Suicide / self-harm</th><td class="blank"></td></tr>
+      <tr><th>Violence / aggression</th><td class="blank"></td></tr>
+      <tr><th>Elopement / AMA</th><td class="blank"></td></tr>
+      <tr><th>Arson history/charges?</th><td class="small">Current · Historical · No · Unknown</td></tr>
+      <tr><th>RSO status?</th><td class="small">Registered · Pending charges · No · Unknown</td></tr>
+      <tr><th>Requires specialized medical care</th><td>☐ Yes</td></tr>
+      <tr><th>Additional safety notes</th><td class="blank" style="min-height:3rem"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 12 -->
+    <h2>Step 12 — Additional notes &amp; urgency</h2>
+    <table class="fields">
+      <tr><th>Referral urgency</th><td class="small">Immediate (ASAP) · Urgent (1–2 wks) · Standard (normal timeline) · Planning ahead</td></tr>
+      <tr><th>Reason for urgency</th><td class="blank"></td></tr>
+      <tr><th>Additional notes</th><td class="blank" style="min-height:3rem"></td></tr>
+      <tr><th>How did you hear about Monarch?</th><td class="small">Court · Colleague · Website · Conference · Prior experience · Other</td></tr>
+    </table>
+
+    <!-- Step 13 -->
+    <h2>Step 13 — Review &amp; submit</h2>
+    <p class="small">Online form: review all sections, then submit. You will receive a referral code; documents may be uploaded after submission.</p>
+
+    <!-- Family / self inquiry -->
+    <div class="page-break"></div>
+    <h2>Appendix — Family / self inquiry (short website flow)</h2>
+    <div class="callout">
+      On the website, family/self may complete a shorter inquiry. “Best time to contact” stores in field <strong>additional_notes</strong>;
+      “Brief description of situation” stores in <strong>safety_notes</strong> — distinct from the full multi-step labels above.
+    </div>
+    <table class="fields">
+      <tr><th>Who needs assistance?</th><td>☐ Myself ☐ A loved one (family/friend)</td></tr>
+      <tr><th>Your name / phone / email</th><td class="blank"></td></tr>
+      <tr><th>Best time to contact</th><td>Morning · Afternoon · Evening · Anytime</td></tr>
+      <tr><th>Brief description</th><td class="blank" style="min-height:4rem"></td></tr>
+    </table>
+
+    <!-- Districts compact -->
+    <div class="page-break"></div>
+    <h2>Appendix — Colorado judicial districts (reference)</h2>
+    <p class="small">1st Jefferson &amp; Gilpin · 2nd Denver · 3rd Huerfano &amp; Las Animas · 4th El Paso &amp; Teller · 5th Clear Creek, Eagle, Lake, Summit · 6th Archuleta, La Plata, San Juan · 7th Delta, Gunnison, Hinsdale, Montrose, Ouray, San Miguel · 8th Jackson &amp; Larimer · 9th Garfield, Pitkin, Rio Blanco · 10th Pueblo · 11th Chaffee, Custer, Fremont, Park · 12th Alamosa, Conejos, Costilla, Mineral, Rio Grande, Saguache · 13th Kit Carson, Logan, Morgan, Phillips, Sedgwick, Washington, Yuma · 14th Grand, Moffat, Routt · 15th Baca, Cheyenne, Kiowa, Prowers · 16th Bent, Crowley, Otero · 17th Adams &amp; Broomfield · 18th Arapahoe, Douglas, Elbert, Lincoln · 19th Weld · 20th Boulder · 21st Mesa · 22nd Dolores &amp; Montezuma</p>
+
+    <footer class="doc-footer">
+      Monarch Competency Restoration · Referral questionnaire (printable reference)<br />
+      Source: Code/Framer/ReferralForm.tsx · For official submission use the secure online referral experience on monarchcompetency.com<br />
+      Logo: public asset from project storage — replace <code>img src</code> in this file if branding moves.
+    </footer>
+  </div>
+</body>
+</html>

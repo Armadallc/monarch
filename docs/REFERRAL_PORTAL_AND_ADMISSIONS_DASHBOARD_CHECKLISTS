@@ -1,0 +1,178 @@
+# Referral portal and admissions dashboard — checklists
+
+This document splits **execution** (near-term checklist) from **architecture / backlog** (multi-program strategy, RBAC). Items are ordered **P0 → P1 → P2** within each area. *P0 is “do next” unless product explicitly overrides.*
+
+---
+
+## Implementation order (reprioritized — 2026-05-15)
+
+Order reflects a **live schema audit** (Supabase MCP + repo): app and DB must agree before new UX; security follows once behavior is correct.
+
+| Tier | Order | What | Why |
+|------|-------|------|-----|
+| **P0 — DB integrity** | 1–2 | **`referral_submissions`** status + `referral_source_type` CHECKs aligned with app. **Migration:** `20260520120000_align_referral_submissions_status_and_source_type_checks.sql` — **applied** via SQL Editor (recorded in `docs/SUPABASE.md`). | Done; keeps UI and DB in sync. |
+| **P0 — Ops** | 3 | **Migration workflow** — **Done (2026-05):** repo files use **14-digit** `YYYYMMDDHHmmss_*.sql` names; remote `schema_migrations` reconciled; **`supabase db push`** reports up to date. Ongoing: **`supabase db push`** after merges (see **`docs/SUPABASE.md`**, **`supabase/queries/inspect_remote_migration_history.sql`**). | Single path; no replay drift. |
+| **P1 — Security** | 4 | **RLS** on tables currently **off**: `referral_inquiries`, `referral_status_history`, `staff_program_memberships`, `programs`, `corporate_clients`, `public.users`, `tenant_roles`, `role_permissions`. **Design policies first**, then enable (do not enable without policies). | Advisor + defense in depth; inquiries are especially sensitive if anon can read broadly. |
+| **P1 — Product** | 5 | **Help / support** (admissions dashboard + portal) — still low coupling once P0 stable. | No dependency on schema fixes except peace of mind. |
+| **P1 — Docs** | 6 | Refresh **`DATABASE.md`** (and checklist changelog) from live `public` + `auth` FKs — row counts, RLS, status enums, `reviewed_by` → `auth.users`. | Keeps humans and AI aligned with truth. |
+| **P2 — Platform** | 7 | **M4 `referral_transfers`** when transfer UX is in scope. | Immutable transfer history. |
+| **P2 — Platform** | 8 | **M6 program-aware RLS** on `referral_submissions` **after** P0–P1 and **after** dashboard filter is verified in staging for all staff personas. | API must not bypass membership + `current_program_id`. |
+| **P2 — Portal** | 9 | Portal **table parity / mirror** admissions list — extra filters, actions, and UX polish beyond current columns. | Core **Program** + **Assigned to** columns **shipped** in repo; full mirror still optional. |
+
+**Already in good shape (maintain, don’t reopen as P0):**
+
+- **Program scope in app:** `ReferralDashboard` loads `staff_program_memberships` and filters `referral_submissions` with `.in("current_program_id", programIds)` (falls back with a warning if table missing).
+- **Admissions “My profile”:** `admissions_staff_profiles` + dashboard UI + CSV/detail wiring (see repo); keep synced to Framer copy if you duplicate TSX.
+- **Sort:** `last_activity_at` then `created_at`; `referral_viewed` does not bump `last_activity_at` (migration `20260512120000_log_referral_activity_skip_view_for_sort.sql`).
+- **Columns (repo):** Admissions grid includes **Program** + **Assignee** (name + title only in column; full contact in opened referral). Portal grid includes **Program** + **Assigned to** (same split).
+
+*Portal list now includes **Program** + **Assigned to** (name + title in grid; full contact in detail). Portal P0 help and P1 filters/full mirror can proceed in parallel.*
+
+<!-- ## Product note: “Last activity” vs “view only”
+
+- Admissions dashboard loads submissions with `.order("last_activity_at", { ascending: false })` then `created_at` — see [`Code/Framer/ReferralDashboard.tsx`](../Code/Framer/ReferralDashboard.tsx).
+- The RPC `log_referral_activity` appends to `referral_activity_log` and (for most activity types) bumps `referral_submissions.last_activity_at`. **View-only** opens from the referral source portal still write a `referral_viewed` audit row for HIPAA, but **`referral_viewed` no longer updates `last_activity_at`** (migration `20260512120000_log_referral_activity_skip_view_for_sort.sql`) so read-only views do not float a referral to the top of the admissions list.
+- Full audit history remains in `referral_activity_log` (including views). Staff can still see “who opened this” in the activity timeline where implemented. -->
+
+---
+
+## Admissions dashboard — execution
+
+### P0 — Next (default)
+
+1. **Schema alignment** — **Done (remote):** `20260520120000_align_referral_submissions_status_and_source_type_checks.sql` (P0 CHECKs) applied earlier via **SQL Editor**; logged in **`docs/SUPABASE.md`**. **Done (CLI):** migration filenames normalized to **14-digit** versions, remote history repaired, **`supabase db push`** clean — see **`docs/SUPABASE.md`** § Migration version format. **Going forward:** new migrations only via **`supabase db push`** (after `source .env` for `-p "$SUPABASE_DB_PASSWORD"`). **Verify:** if `20260522120000_admissions_staff_profiles_select_for_portal_assignees.sql` was marked `repair … applied` before its SQL ever ran, confirm policy **`admissions_staff_profiles_select_assignee_on_my_referral`** exists on `admissions_staff_profiles`; if not, run that file’s SQL once in the SQL Editor.
+
+2. **Sort by date (clarity + UX)**  
+   - **Done (behavior):** Default query sorts by `last_activity_at` desc, then `created_at` desc.  
+   - **Optional:** Expose an explicit column control for “Submitted date” vs “Last activity” in the UI so staff do not confuse the two.  
+   - **Related:** `referral_viewed` audit no longer bumps `last_activity_at` (see migration above).
+
+3. **Help / support page (dashboard)**  
+   - **Copy source:** `docs/ADMISSIONS_STAFF_ONBOARDING_AND_SOP.md` (v1.0); in-app FAQ/quickstart updated in `ReferralDashboard.tsx`.  
+   - Host SOP PDF → set `DASHBOARD_SOP_PDF_URL` in dashboard code.  
+   - Staff training page (non-public Framer) — outline in SOP Part III.  
+
+### P1 — After RLS / policy design (P0 CHECK migration applied on remote)
+
+4. **Profile settings for admissions users**  
+   - **Shipped in repo:** `admissions_staff_profiles` + My profile panel + assignee display + CSV columns (keep Framer duplicate in sync).  
+   - **Stretch:** Multi-domain published email rules (`@monarchcompetency.com`, …); SMS when notifications are wired.  
+   - **Program list:** Can surface rows from `staff_program_memberships` + `programs` (dashboard already uses memberships for **scope**).
+
+5. **RLS** — See implementation order P1 item 4 (includes `staff_program_memberships`, `referral_inquiries`, etc.).
+
+### P2 — Larger product / org
+
+6. **Help extras (wishlist)**  
+   - Tooltips across dense dashboard controls.
+
+---
+
+## Referral source portal — execution
+
+### P0 — Next slice (default)
+
+1. **Help / support link + page (portal)**  
+   - **Copy source:** `docs/REFERRAL_SOURCE_ONBOARDING.md` (v1.0); in-app FAQ/quickstart updated in `ReferralSourcePortal.tsx`.  
+   - **`/referrals`** page — use Part I of same doc for public sections (ROI, upload rules).  
+   - *Status CHECK alignment **done** on remote (see `docs/SUPABASE.md`).*
+
+### P1 — Depends on admissions + DB stability
+
+2. **Portal list: filters + columns (“match” admissions contextually)**  
+   - **Done (repo):** **Program** (`programs.name` via `current_program_id` / fallbacks) + **Assigned to** (name + title from `admissions_staff_profiles`; grid slim, **full contact** in referral detail header). Admissions dashboard: **Program** column + assignee column **name + title only** (detail modal keeps email/phone). Sync pasted Framer copies when you update `Code/Framer/`.  
+   - **Decisions still useful:** Priority vs Urgent copy for sources; whether portal needs archive/hide actions; any extra filters beyond current row.  
+   - **Resolved (remote):** `status` + `referral_source_type` CHECKs aligned with app (`20260520120000_align_…`; see `docs/SUPABASE.md`).  
+   - **Filtering (remaining):** tighten parity with admissions filters where product agrees.  
+   - **Related work:** Program transfer / reassignment needs **`current_program_id`** (M3 ✓) + optional **`referral_transfers`** (M4) before portal exposes reassignment; staff list filtering uses **`staff_program_memberships`** + **`current_program_id`** in **ReferralDashboard** — verify in staging for all personas.  
+   - **Collateral / Step 2:** Per-contact tokens, audit who completed what, optional doc checklist — ties to share-link + collateral work; scope separately from a full “task system.”
+
+3. **“Mirror” portal table to admissions dashboard**  
+   - Same direction as §P1 item 2; **column baseline** is aligned; remaining work is filters, actions, and polish once product signs off.
+
+### P2 — Policy and engineering heavy
+
+4. **Referring sources edit their own referrals**  
+   - Spelling/DOB fixes; add missing info post-submit.  
+   - Requires: RLS, audit trail, PHI policy, conflict rules with staff edits.
+
+---
+
+## Architecture and backlog (not sprint-ordered)
+
+These items stay here so the execution checklists stay scannable. Rename options when discussing so “Option A/B” is not overloaded.
+
+### A — Multi-program admissions dashboards (strategy)
+
+- **Repo template (Competency v1):** `Code/config/monarchProgramCompetency.ts` centralizes staff domains, dashboard subtitle, admissions support email, and CSV export prefixes; `ReferralDashboard`, `Code/OAuth/AuthGateway.tsx`, and Framer’s `Code/Framer/AuthGateway.tsx` (duplicated domains list) consume it. Add sibling configs when other programs ship.
+- **Option A — Separate dashboards per program (same database):** Each LLC/program has its own admissions experience; reassignment moves a referral into another program’s queue; one database across Monarch sites.  
+- **Option B — Unified tabbed dashboard:** One shell; `@monarch…` staff see only their program’s data (literal tabs or shared component + conditional forms).  
+- **Question:** Is a unified dashboard more practical if allowable URLs are added to Supabase + Google (and Apple) as each site deploys? *Answer is “partly”: redirect URLs must be allowlisted; row-level access and UX still need explicit design.*
+
+### B — Unified referral source portal (strategy)
+
+*Future build once per-site dashboards and referral flows exist.*
+
+- **Objective:** One place for sources to track referrals, upload documents, and organize collateral — as comprehensive and navigable as practical.  
+- **Workflow:** One source may refer to Competency and Sober Living the same day; after review, a case might move toward Mental Health or Launch — portal UX should reflect that reality.
+
+**Portal unification — Option A (single portal, all programs):**  
+One login surface; dashboard filters or tabs by program; selector before “new referral / upload docs” once multiple program forms exist; opening an existing referral skips program pick.
+
+**Portal unification — Option B (dashboard per program site):**  
+Same person uses multiple sites → avoid duplicate Supabase identities if possible.
+
+**Intent:** Same portal URL across consumer sites; one user row per email; login from Competency vs Mental Health vs Sober Living still lands on the **same** portal when desired. *Possible with shared Supabase project + OAuth redirect allowlists for each deployed origin;* product rules still define what each user sees.
+
+---
+
+## Schema, tenant model, and roles (backlog)
+
+**Corporate client vs programs:** Monarch is the **umbrella**; clinical lines are **programs** (Competency, Mental Health, Sober Living, Launch). In the database, use **one** corporate anchor for referral ops (e.g. `corporate_clients.id = monarch_referral_admissions`, display name “Monarch Referral & Admissions” or rename to “Monarch” per product) and **`programs.slug`** `competency` | `mental_health` | `sober_living` | `launch` — not a program name as the corporate row. See **`docs/TENANT_AND_PROGRAM_DATABASE_REFERENCE.md`** for implementation order M1→M5.
+
+**DB progress (migrations in repo; apply per environment):**
+
+- **M1 — org + programs:** `20260513120000_m1_monarch_corporate_client_and_programs.sql`  
+- **Consolidate legacy client + mock program:** `20260514120000_remove_client_monarch_and_prog_monarch_ny.sql`  
+- **Remove driver/dispatch tenant_roles:** `20260515120000_remove_driver_dispatch_tenant_roles.sql`  
+- **role_permissions transport cleanup + repoint + orphans:** `20260516120000_role_permissions_transport_cleanup.sql`  
+- **M2 — staff_program_memberships:** `20260517120000_m2_staff_program_memberships.sql` — **applied**; ensure every real staff user has at least one membership row (e.g. Competency).  
+- **M3 — referral routing columns:** `20260518120000_m3_referral_program_routing_columns.sql` — **applied**; **backfill verified:** 100% of submitted referrals have **`current_program_id` = `prog_competency`** (Competency custody to date).
+
+**Next logical step (engineering):** **(Done in repo)** `ReferralDashboard` filters **`referral_submissions`** by **`current_program_id`** ∈ `staff_program_memberships.program_id` for `auth.uid()`. **Done (remote):** P0 **`status`** + **`referral_source_type`** CHECK alignment (`20260520120000_align_…`; see `docs/SUPABASE.md`). **Done (CLI):** migration history matches repo (**14-digit** file names + `db push` clean). **Next:** **RLS policy design** for unprotected tables, then **M6** on submissions after staging sign-off. **Optional next (DB):** **M4 — `referral_transfers`** when transfer UI is in scope. See **`docs/CROSS_PROGRAM_REFERRAL_MIGRATION_CHECKLIST_V1.md`** and **`docs/TENANT_AND_PROGRAM_DATABASE_REFERENCE.md`** §7.
+
+**Product in parallel:** dashboard + portal **help / support** pages (low coupling; schema P0 still recommended first if same team).
+
+**Proposed hierarchy (illustrative):**
+
+```text
+Corporate anchor (referral DB tenant)
+└── Monarch (e.g. monarch_referral_admissions) — umbrella, not a program
+    └── programs.slug: competency | mental_health | sober_living | launch
+            └── each program: admissions queue, branding, rules over time
+```
+
+**Roles (simplify toward):** Super Admin; Admissions Director; Admissions User (program user); Referral source user; optional third-party user. Super Admin owns system integrity; Admissions Director owns user creation, roles, and internal protocols for their program. *Open to simplifying further — avoid locking in the deep tree until product confirms.*
+
+---
+
+## Dependencies (quick reference)
+
+| Portal execution | Waits on |
+|------------------|----------|
+| Portal table parity / mirror | **P2:** filters, actions, polish (Program + Assigned **shipped**; P0 CHECK + CLI migration baseline **done**) |
+| Portal edit referrals | Policy + RLS + audit design |
+
+---
+
+## Changelog (doc maintenance)
+
+- Restructured into P0/P1/P2, split strategy from execution, fixed duplicate “Priority” filter bullet, typos, and completed truncated role sentence (see simplified roles above).
+- Documented `last_activity_at` / `referral_viewed` / admissions sort behavior and linked migration for view-only not affecting dashboard sort order.
+- **2026-05-14** — Schema/tenant section: replaced obsolete `client_monarch` / `prog_monarch_*` tree with M1-aligned model; added DB migration progress list and explicit **next: M2** pointer.
+- **2026-05-14** — M2 migration file added; “next” pointer advanced to **M3** after apply + seed.
+- **2026-05-14** — M3 migration `20260518120000_m3_referral_program_routing_columns.sql`; “next” → M4 or app + M6 RLS.
+- **2026-05-14** — M2/M3 marked applied; backfill 100% `current_program_id` → `prog_competency`. Added **Execution priority (current)**; next logical step = **dashboard filter by memberships + `current_program_id`** before M6 RLS; M4 optional for transfers; P0 help pages in parallel. Dependencies row updated.
+- **2026-05-15** — **Reprioritized implementation order:** P0 = DB integrity (`status` CHECK vs app, `referral_source_type` CHECK vs form), migration tracking hygiene, then P1 RLS + help + docs refresh, then P2 M4/M6/portal mirror. Noted **dashboard program filter + admissions_staff_profiles** already in repo; removed stale “wire dashboard” as next step.
+- **2026-05-16** — P0 migration `20260520120000_align_referral_submissions_status_and_source_type_checks.sql` added; **applied on remote via SQL Editor** (success); logged in `docs/SUPABASE.md` **Applied migrations log**. **Policy:** new migrations via **`supabase db push`**; run **`supabase migration repair 20260520120000 --status applied`** before next `db push` so the CLI does not replay this file. `docs/SUPABASE.md` § Migration workflow updated.
+- **2026-05-17** — **Migration CLI baseline:** all `supabase/migrations/*.sql` renamed to **14-digit** `YYYYMMDDHHmmss_*` prefixes; remote `schema_migrations` aligned (`UPDATE` legacy `20260211` row + **`supabase migration repair … --status applied`** for each version); **`supabase db push`** reports remote up to date. Added **`supabase/queries/inspect_remote_migration_history.sql`**. **Portal + dashboard:** Program + Assignee columns (see admissions §P1 / portal §P1). **Checklist:** verify **`admissions_staff_profiles_select_assignee_on_my_referral`** exists if `20260522120000_…` was repair-only before SQL apply.

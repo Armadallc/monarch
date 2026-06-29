@@ -1,0 +1,170 @@
+## Ritten CSV Export Mapping Spec (v1)
+
+**Status:** Implemented (Dashboard export menu + full/ritten profiles + warnings + safer filename conventions).
+
+### Scope
+- Add a second dashboard export option:
+  - `CSV — Full Referral` (existing, unchanged)
+  - `CSV — Ritten Import (Competency v1)` (new spec below)
+- Applies to `referral_submissions` export only.
+- This profile supports Monarch Competency's real workflow where some admitted clients do not yet have active insurance.
+
+---
+
+## 1) Output file profile
+
+### File name
+- Dynamic safer naming in dashboard:
+  - Single selected, full: `MC-FULL-{admin_ref_id|referral_code}-{YYYY-MM-DD}.csv`
+  - Single selected, ritten: `MC-RITTEN-{admin_ref_id|referral_code}-{YYYY-MM-DD}.csv`
+  - Selected (multiple), full: `MC-FULL-SELECTED-{count}-{YYYY-MM-DD}.csv`
+  - Selected (multiple), ritten: `MC-RITTEN-SELECTED-{count}-{YYYY-MM-DD}.csv`
+  - All, full: `MC-FULL-ALL-{YYYY-MM-DD}.csv`
+  - All, ritten: `MC-RITTEN-ALL-{YYYY-MM-DD}.csv`
+
+### Encoding / format
+- UTF-8 CSV
+- Comma delimited
+- Quote values when needed (commas, quotes, line breaks)
+- Header row required
+- Empty values must be exported as empty cells (`""`), not the strings `null` or `undefined`.
+
+---
+
+## 2) Required header row (exact names)
+
+Use these exact column names, in this order:
+
+1. `First Name`
+2. `Last Name`
+3. `Date of Birth`
+4. `Birth Sex`
+5. `Diagnosis`
+6. `Payer`
+7. `Member ID`
+
+> Competency v1 does not require other-insured or insured-address fields.
+
+---
+
+## 3) Field mapping (source → export column)
+
+| Export Column | Source field(s) | Mapping rule |
+|---|---|---|
+| `First Name` | `client_first_name` | Trim string; blank if null |
+| `Last Name` | `client_last_name` | Trim string; blank if null |
+| `Date of Birth` | `client_dob` | Format as `YYYY-MM-DD`; blank if invalid/missing |
+| `Birth Sex` | `client_sex_at_birth` fallback `client_gender` | Normalize to allowed chart value (`Male` / `Female` if possible); else blank |
+| `Diagnosis` | `current_diagnoses` | Use raw text (or first diagnosis if later required) |
+| `Payer` | derived | `self` when unknown or not yet insured. Can be blank if team prefers null-equivalent export. |
+| `Member ID` | `medicaid_number`, `medicare_number`, fallback parse from `private_insurance_details` | Precedence: Medicaid → Medicare → parsed private insurance token; else blank |
+
+---
+
+## 4) Normalization rules
+
+### Dates
+- Accepted inputs: DB date/timestamp/string date
+- Output strictly `YYYY-MM-DD`
+- Invalid/unparseable => `""`
+
+### Birth Sex normalization
+Map source values:
+- `male` / `Male` -> `Male`
+- `female` / `Female` -> `Female`
+- anything else -> `""` (to avoid mismatched chart labels)
+
+### String cleanup
+- Trim leading/trailing spaces
+- Replace `null`, `undefined`, `NaN` with empty string
+- Preserve internal commas/newlines via CSV escaping
+
+---
+
+## 5) Insurance / subscriber logic
+
+### Competency insurance behavior (v1)
+- Clients may be admitted before insurance is active.
+- `Payer` may be `self` or blank.
+- `Member ID` may be blank.
+- This is expected behavior and should not block export.
+
+### Member ID precedence
+1. `medicaid_number` if non-empty
+2. else `medicare_number` if non-empty
+3. else parse probable member ID from `private_insurance_details` (optional parser)
+4. else blank
+
+---
+
+## 6) Validation behavior (before download)
+
+Do **not** block export. Show warning summary in UI.
+
+### Warn if missing:
+- First Name
+- Last Name
+- Date of Birth
+- Birth Sex
+- Diagnosis (optional warning; not blocking)
+- Member ID (informational warning only; not blocking)
+
+### Suggested warning UI
+- `Ritten export generated with warnings: 18/42 rows missing required import fields.`
+- Optional details:
+  - Missing DOB: N
+  - Missing Birth Sex: N
+  - Missing Diagnosis: N
+  - Missing Member ID: N (informational)
+
+---
+
+## 7) Dashboard UX spec (minimal)
+
+Add an export menu option set:
+
+- `CSV — Full Referral (Selected)`
+- `CSV — Full Referral (All)`
+- `CSV — Ritten Import (Selected)`
+- `CSV — Ritten Import (All)`
+
+No change to existing full CSV logic.
+
+---
+
+## 8) Implementation notes in current codebase
+
+In `Code/Framer/ReferralDashboard.tsx`:
+- Keep `exportSubmissionsCSV()` unchanged.
+- Add new exporter function, e.g. `exportRittenCSV(data, filename)`.
+- Add helpers:
+  - `formatDateForRitten(value)`
+  - `normalizeBirthSex(value, fallback)`
+  - `resolveMemberId(row)`
+- Wire new menu actions in `handleExportCSV`.
+
+---
+
+## 9) Future schema improvements (optional, not required for v1)
+
+To improve Ritten import quality later, add explicit fields to referral schema:
+- `client_address_street`, `client_address_city`, `client_address_state`, `client_address_postal_code`
+- `relationship_to_subscriber`
+- `insured_first_name`, `insured_last_name`
+- `insured_address_street`, `insured_address_city`, `insured_address_state`, `insured_address_postal_code`
+- `insured_dob`, `insured_sex`
+- `is_self_insured` (boolean)
+
+---
+
+## 10) Build checklist reference
+
+- See `docs/RITTEN_CSV_EXPORT_IMPLEMENTATION_CHECKLIST_V1.md` for step-by-step implementation tasks, code touchpoints in `Code/Framer/ReferralDashboard.tsx`, and QA acceptance checks.
+
+---
+
+## 11) Completion notes
+
+- Verified with live dashboard exports (selected/all) for both Full CSV and Ritten CSV.
+- Ritten profile supports uninsured admissions (blank `Member ID` allowed; non-blocking warnings).
+- Existing Full CSV export remains available and unchanged in data scope.

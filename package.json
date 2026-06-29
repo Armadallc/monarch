@@ -4,10 +4,13 @@
   "description": "Monarch referral management: Framer code components (forms, dashboard, portal), Supabase backend",
   "private": true,
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "dev:ui": "npm run dev --prefix Code/playground/dashboard-ui"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
+    "framer": "^2.4.0",
+    "framer-motion": "^10.18.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

@@ -29,7 +29,7 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
     ├── Authentication (Google OAuth, Magic Link)
     ├── Row Level Security
     ├── Storage (referral-documents bucket)
-    └── Functions/Triggers (referral code generation, auto-archive)
+    └── Functions/Triggers (referral code, admin_ref_id, auto-archive)
 
 [BuildShip]
     └── API workflow management / integrations
@@ -43,15 +43,23 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
 5. **Admissions staff** logs in → views/manages referrals via EnhancedReferralForm dashboard
 6. **Staff exports** referral data as CSV/PDF/text → prints or imports into Ritten.io
 
+## Current state / Deployment
+
+- **Live production:** [www.monarchcompetency.com](https://www.monarchcompetency.com) is currently on **Wix**.
+- **Rebuild:** The site is being rebuilt in **Framer**. All referral forms (public inquiry, secure referral, document upload, admin dashboard) are integrated into the Framer site code and are **working** there. The new Framer site is **not live yet** (still preview/staging, e.g. monarchy.framer.website).
+- **Source of truth:** Framer code components live in `Code/Framer/*.tsx`. Edits here are canonical; paste updated files into Framer after changes.
+
 ## Key Files
 | File | Location | Purpose |
 |------|----------|---------|
-| `ReferralDashboard.tsx` | `/Code/Forms/` | Admin dashboard (~2,037 lines) |
-| `ReferralForm.tsx` | `/Code/Forms/` | Secure professional referral form — 14-step (~2,560 lines) |
-| `DocumentUploadForm.tsx` | `/Code/Forms/` | Post-submission document upload page (~500 lines) |
-| `PublicInquiryForm.tsx` | `/Code/Forms/` | Public-facing inquiry form (~522 lines) |
+| `ReferralDashboard.tsx` | `/Code/Framer/` | Admin dashboard |
+| `ReferralForm.tsx` | `/Code/Framer/` | Secure professional referral form — 14-step with portal |
+| `DocumentUploadForm.tsx` | `/Code/Framer/` | Post-submission document upload page |
+| `PublicInquiryForm.tsx` | `/Code/Framer/` | Public-facing inquiry form |
+| `ReferralSourcePortal.tsx` | `/Code/Framer/` | Referral source portal |
 | `AuthGateway.tsx` | `/Code/OAuth/` | Authentication gateway component |
 | `revised-form-migration.sql` | `/Code/Database/` | Sprint 5 DB migration (~45 new columns, 3 type changes) |
+| `admin-ref-id-migration.sql` | `/Code/Database/` | Sprint 6 DB migration (admin_ref_id column, sequence, trigger, backfill) |
 | `auto-archive.sql` | `/Code/Database/` | Sprint 4 archiving SQL |
 | `PROJECT.md` | `/` | This file — project overview & changelog |
 | `DATABASE.md` | `/` | Database schema reference (~105 columns documented) |
@@ -62,6 +70,10 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
 3. Claude updates `PROJECT.md` changelog after each session
 4. Database changes documented in `DATABASE.md`
 5. SQL migrations run manually in Supabase SQL Editor before deploying updated forms
+
+**Maintenance:** Update `PROJECT.md` and `DATABASE.md` frequently after sprints or major changes so the repo stays the single source of truth for current state and roadmap.
+
+**SQL status:** As of this update, `admin-ref-id-migration.sql` (Sprint 6) has **not** been run in Supabase yet. Run it in the Supabase SQL Editor when ready before relying on `admin_ref_id` in production.
 
 ---
 
@@ -158,7 +170,7 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
 - Google OAuth with `hd: monarchcompetency.com` Workspace hint to pre-filter account picker
 - Magic Link with client-side domain pre-validation before OTP send
 - Sign Out button in dashboard header
-- Dashboard redirect URL: `https://monarchcompetency.framer.website/dashboard`
+- Dashboard redirect URL: `https://monarchy.framer.website/dashboard`
 - Data fetching now gated behind `authStatus === "authenticated"` (no anonymous queries)
 
 #### Login Screen (Norre Aesthetic)
@@ -333,6 +345,70 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
 - `DATABASE.md` — Complete rewrite documenting ~105 columns, JSONB structures, referral code system, Supabase Storage setup, categorical values, type changes, functions/triggers
 - `PROJECT.md` — This changelog entry
 
+### 2026-02-08 → 2026-02-11 — Sprint 6: Portal UX, Admin Reference IDs, File Downloads & Domain Migration
+
+**Major UX overhaul adding post-login portal, admin reference ID system, dashboard file download capability, session timeout, and domain migration.**
+
+#### Portal UX (`ReferralForm.tsx`)
+- **Post-login portal**: After Google OAuth, users see a 2-card choice — "Submit New Referral" or "Upload Documents" — before entering the form
+- `showPortal` state manages portal/form toggle
+- Upload Documents card links to `/submit-referrals/documents`
+- Back button at Step 0 returns to portal (`onClick={() => setShowPortal(true)}`)
+
+#### Session Timeout (`ReferralForm.tsx`)
+- 10-minute countdown after form submission (`sessionTimeLeft` state + `setInterval`)
+- Auto-signs out user when timer reaches 0
+- Countdown displayed on success screen: "Session expires in X:XX"
+- `handleSignOut()` function for manual sign-out from success screen
+
+#### Admin Reference ID System
+- **Database migration** (`admin-ref-id-migration.sql`):
+  - `admin_ref_id` text column on `referral_submissions`
+  - `admin_ref_id_seq` PostgreSQL sequence
+  - `generate_admin_ref_id()` PL/pgSQL function → `REF-MC-` + zero-padded sequential number
+  - `auto_set_admin_ref_id()` trigger function + `trg_auto_admin_ref_id` BEFORE INSERT trigger
+  - Backfill of 43 existing rows (oldest = REF-MC-001)
+  - Unique index `idx_admin_ref_id`
+- **Dual ID design**: `referral_code` (MON-XXXX, for referral sources) + `admin_ref_id` (REF-MC-001, for admin tracking)
+
+#### Dashboard Enhancements (`ReferralDashboard.tsx`)
+- **Docs column** (column 11): Shows attachment count badge per row
+- **Paperclip SVG badge**: Appears in modal header badge row for records with uploaded documents
+- **File download buttons**: Per-file download in modal Documents section using `createSignedUrl()` (60-second signed URLs)
+- **admin_ref_id in modal header**: Replaces truncated UUID with `REF-MC-XXX`
+- **admin_ref_id in exports**: Added to CSV columns, text export header, HTML/print export meta line
+- **admin_ref_id in search**: Searchable in dashboard search bar
+- 11-column table grid: `"40px 2.5fr 1fr 1.8fr 1.3fr 1.3fr 0.8fr 0.5fr 1fr 1.2fr 0.9fr"`
+
+#### DocumentUploadForm Updates (`DocumentUploadForm.tsx`)
+- Removed landing step — goes directly to "verify" step after auth
+- Step type simplified: `"verify" | "upload" | "success"` (was `"landing" | "verify" | "upload" | "success"`)
+- Back button: "← Back to Referral Portal" navigates to `/submit-referrals`
+- Updated header comment to reflect current flow
+
+#### Framer Build Fix (Sprint 6.3)
+- **Root cause**: Framer's esbuild bundler silently fails on `catch {}` (optional catch binding — ES2019)
+- When build fails, Framer serves the **last successfully compiled version** — no error shown
+- **Fix**: Changed all `catch {}` → `catch (_e) {}` across 3 files (5 instances total):
+  - ReferralDashboard.tsx: 1 instance
+  - ReferralForm.tsx: 3 instances
+  - DocumentUploadForm.tsx: 1 instance
+
+#### Domain Migration
+- All hardcoded URLs updated from `abundant-moments-384405.framer.app` to `monarchy.framer.website`
+- 6 URL references across 3 files:
+  - ReferralForm.tsx: `FORM_REDIRECT_URL`, portal Upload Documents href, success screen Upload Documents href
+  - DocumentUploadForm.tsx: `FORM_REDIRECT_URL`, back button href
+  - ReferralDashboard.tsx: `DASHBOARD_REDIRECT_URL`
+- Supabase Auth redirect URLs updated (Site URL + Redirect URLs)
+- Google Cloud Console OAuth credentials updated (Authorized JavaScript origins)
+
+#### Documentation Updates
+- `DATABASE.md` — Added admin_ref_id system documentation, dual ID design table, migration file reference, Sprint 6 functions/triggers
+- `PROJECT.md` — This changelog entry
+
+**File sizes after Sprint 6**: ReferralForm.tsx ~3,249 lines | DocumentUploadForm.tsx ~1,050 lines | ReferralDashboard.tsx ~2,089 lines
+
 ---
 
 ## TODO / Roadmap
@@ -378,29 +454,41 @@ Building a comprehensive referral management system for Monarch (monarchcompeten
 - [x] Update `DATABASE.md` — full schema documentation (~105 columns)
 - [x] Update `PROJECT.md` — this changelog entry
 
-### Sprint 5 — Deployment Steps (Manual)
-- [ ] Run `revised-form-migration.sql` in Supabase SQL Editor
-- [ ] Create `referral-documents` private bucket in Supabase Storage dashboard
-- [ ] Add RLS policies to storage bucket (see DATABASE.md)
-- [ ] Paste updated `ReferralForm.tsx` into Framer
-- [ ] Paste `DocumentUploadForm.tsx` into Framer (new page at `/submit-referrals/documents`)
-- [ ] Paste updated `ReferralDashboard.tsx` into Framer
-- [ ] Test family/self branch still works unchanged
-- [ ] Test professional path through all 14 steps
-- [ ] Test referral code generation on submission
-- [ ] Test document upload flow (code + email → upload)
-- [ ] Test dashboard modal with new fields
-- [ ] Test PDF/Text/CSV exports with new columns
+### Sprint 5 — Deployment Steps (Manual) ✅ COMPLETE
+- [x] Run `revised-form-migration.sql` in Supabase SQL Editor
+- [x] Create `referral-documents` private bucket in Supabase Storage dashboard
+- [x] Add RLS policies to storage bucket (see DATABASE.md)
+- [x] Paste updated `ReferralForm.tsx` into Framer
+- [x] Paste `DocumentUploadForm.tsx` into Framer (new page at `/submit-referrals/documents`)
+- [x] Paste updated `ReferralDashboard.tsx` into Framer
+- [x] Test family/self branch still works unchanged
+- [x] Test professional path through all 14 steps
+- [x] Test referral code generation on submission
+- [x] Test document upload flow (code + email → upload)
+- [x] Test dashboard modal with new fields
+- [x] Test PDF/Text/CSV exports with new columns
 - [ ] Add required field validation (currently all optional for dev/testing)
 
-### Sprint 6 — Security Hardening
-- [ ] Enable RLS on all tables + verify status updates work with auth
+### Sprint 6 — Portal UX, Admin IDs, File Downloads ✅ COMPLETE
+- [x] Post-login portal with Submit New Referral / Upload Documents cards
+- [x] Session timeout (10-minute countdown after submission, auto-sign-out)
+- [x] Admin reference ID system (REF-MC-001 sequential IDs, DB migration, trigger, backfill)
+- [x] Dashboard: Docs column, paperclip badge, file download via signed URLs
+- [x] Dashboard: admin_ref_id in modal header, exports, and search
+- [x] DocumentUploadForm: simplified flow, back button
+- [x] Back navigation buttons (form → portal, documents → portal)
+- [x] Framer build fix (`catch {}` → `catch (_e) {}`)
+- [x] Domain migration to monarchy.framer.website
+- [x] Auth redirect updates (Supabase + Google Cloud Console)
+- [x] DATABASE.md updated with Sprint 6 documentation
+
+### Sprint 7 — Security Hardening
 - [ ] Row Level Security policy hardening in Supabase
 - [ ] Audit logging for PHI access
-- [ ] Session timeout handling
 - [ ] Role-based access control (leverage existing `tenant_roles` / `role_permissions` tables)
+- [ ] Add required field validation to ReferralForm (currently all optional for dev/testing)
 
-### Sprint 7 — Notifications & User Settings
+### Sprint 8 — Notifications & User Settings
 - [ ] User settings/preferences (lightweight — notification settings/methods)
 - [ ] Email notifications on new referral submissions (Supabase Edge Functions or BuildShip)
 - [ ] Real-time subscriptions for new referral notifications in dashboard

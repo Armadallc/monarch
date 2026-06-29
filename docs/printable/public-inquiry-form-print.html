@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>General Inquiry &amp; Self-Referral Form (Print) — Monarch Competency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #2b2828;
+      --shell: #f8f6f1;
+      --coconut: #e9edf6;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --tangerine: #ffa089;
+      --border: rgba(43, 40, 40, 0.12);
+      --muted: rgba(43, 40, 40, 0.65);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.55in 0.65in 0.75in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.5in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .brand-mark img {
+      max-height: 112px;
+      max-width: min(100%, 420px);
+      width: auto;
+      height: auto;
+      display: block;
+    }
+    .title-block {
+      width: 100%;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+    }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar button:hover { opacity: 0.92; }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1.35rem 0 0.5rem;
+      font-size: 12pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.35rem;
+    }
+    h2:first-of-type { margin-top: 0.25rem; }
+    h3 {
+      margin: 1rem 0 0.4rem;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--ash);
+    }
+    p.lead {
+      margin: 0 0 0.65rem;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.5rem 0 1rem;
+      font-size: 10pt;
+    }
+    table.fields th,
+    table.fields td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.45rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.fields th {
+      background: var(--shell);
+      font-weight: 600;
+      width: 38%;
+    }
+    table.fields td.blank {
+      min-height: 1.35rem;
+      background: #fff;
+    }
+    .callout {
+      margin: 0.65rem 0;
+      padding: 0.55rem 0.75rem;
+      background: var(--coconut);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 9.5pt;
+      color: var(--stone);
+    }
+    .callout-strong {
+      background: var(--shell);
+      border-left: 3px solid var(--tangerine);
+    }
+    .small { font-size: 9pt; color: var(--muted); }
+    .req { color: var(--tangerine); font-weight: 700; }
+    .submit-box {
+      margin: 1rem 0;
+      padding: 0.75rem 0.9rem;
+      border: 2px solid var(--moon);
+      border-radius: 10px;
+      background: var(--shell);
+      font-size: 10pt;
+    }
+    .submit-box strong { color: var(--ash); }
+    .path-note {
+      font-size: 9pt;
+      color: var(--stone);
+      font-style: italic;
+      margin: 0.25rem 0 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Open in browser → Print → “Save as PDF”. Upload that file to Framer Resources.</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <img
+          src="assets/monarch-logo.png"
+          alt="Monarch Competency"
+          width="420"
+          height="auto"
+          onerror="this.onerror=null;this.src='https://esbmnympligtknhtkary.supabase.co/storage/v1/object/public/assets/monarch-logo.png'"
+        />
+      </div>
+      <div class="title-block">
+        <h1>General inquiry &amp; self-referral</h1>
+      </div>
+    </header>
+
+    <div class="submit-box">
+      <strong>How to submit this form</strong><br />
+      Email a clear photo or PDF scan to <strong>hello@monarchcompetency.com</strong><br />
+      Call admissions: <strong>(877) 835-1545</strong> (EXT 0)<br />
+      <span class="small">Admissions typically responds within 1–2 business days.</span>
+    </div>
+
+    <p class="lead">
+      <strong>Instructions:</strong> Complete legibly in ink or type digitally. Fields marked <span class="req">*</span> are required.
+      Complete only the sections that apply to your situation (see Step 1).
+    </p>
+
+    <div class="callout callout-strong">
+      <strong>Professional or court referrals?</strong> Use the separate
+      <em>Professional Referral Form (PDF)</em> on our Resources page — or contact <strong>referrals@monarchcompetency.com</strong>.
+      Do not use this form for full clinical referral packets.
+    </div>
+
+    <!-- Step 1 -->
+    <h2>Step 1 — Who is this inquiry for?</h2>
+    <p class="small">Choose one (inquiry_type)</p>
+    <table class="fields">
+      <tr>
+        <th>Type of inquiry</th>
+        <td>
+          ☐ <strong>Myself</strong> — I am reaching out for myself (self-referral)<br />
+          ☐ <strong>Someone else</strong> — I am inquiring about a family member, friend, or loved one
+        </td>
+      </tr>
+    </table>
+    <p class="path-note">If “Myself”: complete Step 2 only. If “Someone else”: complete Steps 2 and 3.</p>
+
+    <!-- Step 2 — Self -->
+    <h2>Step 2 — Tell us about yourself</h2>
+    <p class="path-note">Complete this section if you checked <strong>Myself</strong> in Step 1.</p>
+    <table class="fields">
+      <tr><th>Your full name <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Phone <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Email <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Your approximate age</th><td class="blank"><span class="small">e.g., 35, early 40s, late 20s</span></td></tr>
+      <tr><th>Tell us briefly about your situation</th><td class="blank" style="min-height:4.5rem"><span class="small">What is going on and how can we help?</span></td></tr>
+      <tr><th>How did you hear about Monarch?</th><td class="blank"><span class="small">Google, referral, social media, court, colleague, etc.</span></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <!-- Step 2b — About person (other path) -->
+    <h2>Step 2 — About the person you are referring</h2>
+    <p class="path-note">Complete this section if you checked <strong>Someone else</strong> in Step 1.</p>
+    <table class="fields">
+      <tr><th>First name <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Last initial <span class="req">*</span></th><td class="blank" style="width:20%"><span class="small">One letter only (privacy)</span></td></tr>
+      <tr><th>Approximate age</th><td class="blank"><span class="small">e.g., 35, early 40s</span></td></tr>
+      <tr><th>Current location <span class="req">*</span></th><td>
+        ☐ Community (at home) &nbsp; ☐ Jail / detention center<br />
+        ☐ Hospital &nbsp; ☐ Treatment facility &nbsp; ☐ Other: _______________
+      </td></tr>
+      <tr><th>Brief background / reason for inquiry</th><td class="blank" style="min-height:4.5rem"><span class="small">What is the situation? Why are you reaching out?</span></td></tr>
+    </table>
+
+    <!-- Step 3 — About you (other path) -->
+    <h2>Step 3 — About you</h2>
+    <p class="path-note">Complete this section if you checked <strong>Someone else</strong> in Step 1.</p>
+    <table class="fields">
+      <tr><th>Your full name <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Phone <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Email <span class="req">*</span></th><td class="blank"></td></tr>
+      <tr><th>Your relationship to this person <span class="req">*</span></th><td>
+        ☐ Family member &nbsp; ☐ Friend<br />
+        ☐ Attorney / legal representative &nbsp; ☐ Court staff<br />
+        ☐ Probation / parole officer &nbsp; ☐ Case manager / social worker<br />
+        ☐ Mental health professional &nbsp; ☐ Medical provider<br />
+        ☐ Other: _______________
+      </td></tr>
+      <tr><th>Organization <span class="small">(if professional)</span></th><td class="blank"><span class="small">e.g., Denver County Court</span></td></tr>
+      <tr><th>Title / role <span class="small">(if professional)</span></th><td class="blank"><span class="small">e.g., Public Defender</span></td></tr>
+      <tr><th>How did you hear about Monarch?</th><td class="blank"><span class="small">Google, colleague, previous referral, etc.</span></td></tr>
+    </table>
+
+    <div class="callout">
+      If you are a professional with a full clinical referral packet, do not use this form — download the
+      <strong>Professional Referral Form (PDF)</strong> from Resources or sign in to the referral portal when available.
+    </div>
+
+    <!-- Signature -->
+    <h2>Signature &amp; date</h2>
+    <table class="fields">
+      <tr><th>Signature</th><td class="blank" style="min-height:2.5rem"></td></tr>
+      <tr><th>Date</th><td class="blank"></td></tr>
+    </table>
+
+    <p class="small" style="margin-top:1rem;">
+      By submitting, you agree that Monarch Competency may contact you at the phone number or email provided regarding this inquiry.
+      This form collects limited information for initial outreach only — not a full clinical referral or admission application.
+    </p>
+  </div>
+</body>
+</html>

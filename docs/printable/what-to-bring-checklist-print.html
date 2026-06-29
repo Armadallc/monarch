@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>What to Bring — Personal Effects &amp; Packing Guide — Monarch Competency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #2b2828;
+      --shell: #f8f6f1;
+      --coconut: #e9edf6;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --tangerine: #ffa089;
+      --border: rgba(43, 40, 40, 0.12);
+      --muted: rgba(43, 40, 40, 0.65);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.55in 0.65in 0.75in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.5in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.75rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .brand-mark img {
+      max-height: 112px;
+      max-width: min(100%, 420px);
+      width: auto;
+      height: auto;
+      display: block;
+    }
+    .title-block h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+    }
+    .title-block .subtitle {
+      margin: 0.35rem 0 0;
+      font-size: 10pt;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar button:hover { opacity: 0.92; }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1.35rem 0 0.5rem;
+      font-size: 12pt;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.35rem;
+    }
+    h2:first-of-type { margin-top: 0.25rem; }
+    h3 {
+      margin: 1rem 0 0.4rem;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--ash);
+    }
+    p { margin: 0 0 0.55rem; }
+    p.lead {
+      margin: 0 0 0.65rem;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    ul.bullets {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.25rem;
+      font-size: 10pt;
+    }
+    ul.bullets li { margin-bottom: 0.35rem; }
+    ol.steps {
+      margin: 0.35rem 0 0.75rem;
+      padding-left: 1.35rem;
+      font-size: 10pt;
+    }
+    ol.steps li { margin-bottom: 0.35rem; }
+    table.checklist {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.45rem 0 0.85rem;
+      font-size: 9.75pt;
+    }
+    table.checklist th,
+    table.checklist td {
+      border: 1px solid var(--border);
+      padding: 0.32rem 0.45rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.checklist th {
+      background: var(--shell);
+      font-weight: 600;
+    }
+    table.checklist td.check { width: 2rem; text-align: center; }
+    table.checklist td.qty { width: 22%; white-space: nowrap; }
+    table.checklist td.notes { color: var(--stone); font-size: 9.25pt; }
+    .callout {
+      margin: 0.65rem 0;
+      padding: 0.55rem 0.75rem;
+      background: var(--coconut);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 9.5pt;
+      color: var(--stone);
+    }
+    .callout-strong {
+      background: var(--shell);
+      border-left: 3px solid var(--tangerine);
+    }
+    .contact-box {
+      margin: 0.85rem 0 1rem;
+      padding: 0.75rem 0.9rem;
+      border: 2px solid var(--moon);
+      border-radius: 10px;
+      background: var(--shell);
+      font-size: 10pt;
+    }
+    .contact-box strong { color: var(--ash); }
+    .small { font-size: 9pt; color: var(--muted); }
+    .emphasis { font-weight: 600; color: var(--ash); }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Open in browser → Print → “Save as PDF”. Upload to Supabase <code>assets</code> → add to ResourcePDFList.</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <img
+          src="assets/monarch-logo.png"
+          alt="Monarch Competency"
+          width="420"
+          height="auto"
+          onerror="this.onerror=null;this.src='https://esbmnympligtknhtkary.supabase.co/storage/v1/object/public/assets/monarch-logo.png'"
+        />
+      </div>
+      <div class="title-block">
+        <h1>What to Bring — Personal Effects &amp; Packing Guide</h1>
+        <p class="subtitle">For clients and families preparing for admission</p>
+      </div>
+    </header>
+
+    <div class="contact-box">
+      <strong>Questions before you arrive?</strong><br />
+      Email <strong>hello@monarchcompetency.com</strong> · Call admissions <strong>(877) 835-1545</strong> (EXT 0)
+    </div>
+
+    <h2>Guidelines &amp; safekeeping</h2>
+    <p>
+      Maintaining a safe, comfortable community at Monarch Competency requires thoughtful limits on personal items.
+    </p>
+    <p>
+      <span class="emphasis">Upon arrival</span>, our team conducts a respectful review of your belongings to support community safety.
+      Some items may be securely stored with staff for occasional use or safekeeping.
+    </p>
+    <p>
+      <span class="emphasis">We recommend</span> bringing essential, meaningful items only. Compact belongings that store easily
+      help you and your roommate share the space comfortably.
+    </p>
+    <div class="callout callout-strong">
+      <strong>Valuables:</strong> We recommend limiting valuables during your stay; Monarch cannot guarantee against loss or damage.
+    </div>
+    <p>
+      <span class="emphasis">Prohibited items</span> will be placed in a secured, locked location and returned at discharge to you
+      or your designated support person, as appropriate.
+    </p>
+    <p class="small">
+      Not sure about an item? Call admissions before you arrive — we can confirm whether it is permitted.
+    </p>
+
+    <h2>Clothing &amp; personal presentation</h2>
+    <p>
+      Personal hygiene and appropriate dress support your growth and a healthy shared living environment.
+    </p>
+    <p>
+      <span class="emphasis">Clothing is not permitted</span> if it depicts violence, gang affiliation, or drug use; shows nudity;
+      is torn or styled to be intentionally revealing; or is otherwise overtly offensive.
+    </p>
+    <p>
+      <span class="emphasis">Pack for the season</span> — include layers or warmer clothing when Colorado weather requires it.
+    </p>
+
+    <h2>What to bring — packing checklist</h2>
+    <p class="lead">
+      Aim for about <strong>one week</strong> of clean clothing. Adjust quantities to your needs and laundry routine.
+    </p>
+
+    <h3>Clothing (example quantities)</h3>
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="check">☐</th>
+          <th>Item</th>
+          <th class="qty">Suggested amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="check">☐</td><td>Shirts / tops</td><td class="qty">7</td></tr>
+        <tr><td class="check">☐</td><td>Underwear / undergarments</td><td class="qty">7</td></tr>
+        <tr><td class="check">☐</td><td>Pants / shorts</td><td class="qty">3–4</td></tr>
+        <tr><td class="check">☐</td><td>Belt</td><td class="qty">1</td></tr>
+        <tr><td class="check">☐</td><td>Headwear (hat, beanie, etc.)</td><td class="qty">1–2</td></tr>
+        <tr><td class="check">☐</td><td>Shoes (everyday)</td><td class="qty">1–2 pairs</td></tr>
+        <tr><td class="check">☐</td><td>Slippers or indoor footwear <span class="small">(shoes off indoors)</span></td><td class="qty">1 pair</td></tr>
+        <tr><td class="check">☐</td><td>Seasonal outerwear (coat, jacket, gloves)</td><td class="qty">As needed</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Personal care</h3>
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="check">☐</th>
+          <th>Item</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="check">☐</td><td>Toothbrush &amp; toothpaste</td><td class="notes"></td></tr>
+        <tr><td class="check">☐</td><td>Deodorant</td><td class="notes"></td></tr>
+        <tr><td class="check">☐</td><td>Shampoo / soap / body wash</td><td class="notes">Preferred or medical-grade products if required</td></tr>
+        <tr><td class="check">☐</td><td>Face wash</td><td class="notes"></td></tr>
+        <tr><td class="check">☐</td><td>Electric razor or approved shaving device</td><td class="notes"><strong>No straight razors</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Comfort &amp; personal items (optional)</h3>
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="check">☐</th>
+          <th>Item</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="check">☐</td><td>Favorite book</td><td class="notes"></td></tr>
+        <tr><td class="check">☐</td><td>Personal journal</td><td class="notes"></td></tr>
+        <tr><td class="check">☐</td><td>Other meaningful small items</td><td class="notes"><strong>Call ahead</strong> if unsure</td></tr>
+      </tbody>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>What Monarch supplies</h2>
+    <p>
+      You will receive a <strong>clean living space, bedding, and fresh linens</strong> when you arrive.
+      Monarch also provides, as needed:
+    </p>
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="check">☐</th>
+          <th>Supplied by Monarch</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="check">☐</td><td>Toilet paper</td></tr>
+        <tr><td class="check">☐</td><td>Shampoo &amp; conditioner <span class="small">(if/when needed)</span></td></tr>
+        <tr><td class="check">☐</td><td>Towels <span class="small">(if/when needed)</span></td></tr>
+        <tr><td class="check">☐</td><td>All bedding — pillows, sheets, comforters</td></tr>
+        <tr><td class="check">☐</td><td>Household cleaning supplies</td></tr>
+        <tr><td class="check">☐</td><td>Eating &amp; cooking utensils</td></tr>
+        <tr><td class="check">☐</td><td>Initial food support <span class="small">(if/when needed)</span></td></tr>
+        <tr><td class="check">☐</td><td>Initial clothing support <span class="small">(if/when needed)</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Your responsibilities during your stay</h2>
+    <ul class="bullets">
+      <li><strong>Living space &amp; linens:</strong> Keep your room, linens, and clothing clean and orderly.</li>
+      <li><strong>House chore:</strong> Complete your assigned weekly house chore as part of community living.</li>
+      <li><strong>Medications:</strong> See below — all medications are managed by staff.</li>
+    </ul>
+
+    <h2>Medications</h2>
+    <p>Any medication you bring will be:</p>
+    <ol class="steps">
+      <li><strong>Inventoried</strong> by Monarch staff upon arrival</li>
+      <li><strong>Stored securely</strong> in a locked location</li>
+      <li><strong>Administered</strong> during our <strong>three scheduled medication times</strong> each day</li>
+    </ol>
+    <p>
+      Prescriptions written or renewed during your stay are handled the same way.
+      <strong>Do not keep medication in your room</strong> unless staff explicitly instruct otherwise for a documented clinical reason.
+    </p>
+    <p class="small">
+      If you have questions about a specific medication or supplement, contact admissions before arrival.
+    </p>
+
+    <h2>Quick reference — before you pack</h2>
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="check">☐</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="check">☐</td><td>Pack ~1 week of appropriate, permitted clothing</td></tr>
+        <tr><td class="check">☐</td><td>Bring personal hygiene items (or note what you may need us to help supply)</td></tr>
+        <tr><td class="check">☐</td><td>Leave valuables and prohibited items at home when possible</td></tr>
+        <tr><td class="check">☐</td><td>Call if unsure about an item: <strong>(877) 835-1545</strong> or <strong>hello@monarchcompetency.com</strong></td></tr>
+        <tr><td class="check">☐</td><td>Plan for seasonal weather</td></tr>
+      </tbody>
+    </table>
+
+    <p class="small" style="margin-top:1.25rem;">
+      Monarch Competency · monarchcompetency.com · hello@monarchcompetency.com · (877) 835-1545
+    </p>
+  </div>
+</body>
+</html>

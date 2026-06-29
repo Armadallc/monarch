@@ -1,6 +1,12 @@
 # Monarch Competency — Database Reference
 
-> **Last Updated**: 2026-02-08 — Sprint 6 admin_ref_id system, portal UX, post-submit timeout
+> **Last Updated**: 2026-02-11 — Referral portal schema plan (Neew Tables) aligned in docs/SCHEMA_REFERRAL_PORTAL.md
+
+---
+
+## Planned schema (Referral Source Portal)
+
+Planned changes for the Referral Source Portal are documented in **docs/SCHEMA_REFERRAL_PORTAL.md** (source: Neew Tables.rtf). Next recommended step: add `submitted_by_user_id` to `referral_submissions` and optionally RLS so referral sources see only their own referrals. New tables (`referral_source_profiles`, `referral_status_history`, `referral_share_links`, `referral_activity_log`, `referral_messages`) are phased in 2A–2C as needed.
 
 ---
 

@@ -1,0 +1,180 @@
+This is an existing React/TypeScript referral management dashboard 
+and portal for a behavioral health organization. The dashboard and 
+portal are fully functional with working Supabase integration, 
+authentication, role-based access, and referral modal system. 
+
+DO NOT rebuild, replace, or refactor existing logic. 
+DO NOT touch authentication, Supabase client, or RLS configuration.
+DO NOT create new database tables without explicit approval.
+ASK before modifying any existing component that isn't directly 
+related to the UI changes described below.
+
+## WHAT WE ARE DOING
+We are enhancing the UI to improve UX. Specifically:
+1. Installing and configuring Shadcn/ui and @dnd-kit
+2. Replacing the current row-based referral table in both 
+   the dashboard and portal with a Kanban board layout
+3. Adding a persistent application sidebar
+4. Adding a global messages panel
+
+Start by doing the following before writing any code:
+- Review the existing component structure
+- Identify which components currently render the referral 
+  table in the dashboard and portal
+- Identify the current sidebar or navigation component if one exists
+- List what you find and confirm with me before proceeding
+
+## STEP 1 — INSTALL DEPENDENCIES
+Install the following, flag any conflicts with existing packages:
+
+@dnd-kit/core
+@dnd-kit/sortable  
+@dnd-kit/utilities
+
+For Shadcn, initialize it into the existing project:
+npx shadcn@latest init
+
+When prompted, select:
+- Style: Default
+- Base color: Neutral
+- CSS variables: Yes
+
+Then add only the components we need for now:
+npx shadcn@latest add button
+npx shadcn@latest add dialog
+npx shadcn@latest add badge
+npx shadcn@latest add avatar
+npx shadcn@latest add drawer
+npx shadcn@latest add sidebar
+npx shadcn@latest add tooltip
+npx shadcn@latest add scroll-area
+npx shadcn@latest add separator
+
+Do not add anything beyond this list without asking first.
+Flag any version conflicts before installing.
+
+## STEP 2 — KANBAN BOARD
+Replace the existing referral table with a Kanban board.
+Preserve all existing referral modal functionality exactly 
+as it is. The Kanban is only replacing the table view, 
+not anything inside the referral modal.
+
+Five columns:
+1. New Referral
+2. Under Review
+3. Waitlisted
+4. Accepted
+5. Declined
+
+Each column shows a card count in the column header.
+
+Drag and drop between columns updates referral status.
+On drop, show a confirmation dialog before committing:
+"Move [Patient ID] to [New Status]? 
+This will notify the referral source."
+Confirm = update status in Supabase + trigger notification.
+Cancel = card returns to original column, no state change.
+
+Each referral card displays:
+- Patient ID or initials (no full PHI on card face)
+- Referral source name and organization
+- Date submitted
+- Assigned staff member if assigned
+- Program tag: Competency / Mental Health / Sober Living / Launch
+- Priority badge:
+  * EXPEDITED — red
+  * TIME-BOUND — orange, show target date e.g. "By 06/15"
+  * No badge for standard referrals
+- Notification badges:
+  * Unread message — blue
+  * Unsigned document — amber
+  * New attachment — purple
+  * Urgent action — red
+
+Clicking a card opens the existing referral modal unchanged.
+
+For the referral source portal:
+- Same Kanban component, readOnly prop set to true
+- No drag and drop in portal
+- Cards show patient name/initials, date, status, 
+  unread message badge only
+- Summary bar above board:
+  "X Active | X Waitlisted | X Accepted | X Declined"
+  Clicking a count filters the board to that status
+- All data filtered to authenticated referral source 
+  only — do not re-implement RLS in frontend
+
+## STEP 3 — SIDEBAR
+Replace or wrap existing navigation with Shadcn sidebar component.
+Preserve all existing navigation behavior and active states.
+
+Sidebar items top to bottom:
+1. Monarch logo at top
+2. Dashboard (default view, Kanban board)
+3. Messages (global aggregated threads)
+4. Notifications
+5. Activity Feed
+6. Help / Support
+7. Settings (notification preferences)
+
+Bottom of sidebar:
+- User avatar + name + role label
+- Clicking opens Shadcn Drawer containing:
+  * Profile settings
+  * Dark/light mode toggle
+  * Logout button
+  * App version
+
+Role based visibility:
+- Admin sees: Dashboard (read only), Settings tab 
+  (user management only — add/remove/toggle 
+  @monarchcompetency.com emails)
+- Admissions sees: all sidebar items
+- Referral source portal: no sidebar, 
+  simplified top nav only
+
+## STEP 4 — GLOBAL MESSAGES PANEL
+Messages tab in sidebar surfaces a global aggregated 
+inbox of all referral message threads.
+Unread threads surface to top.
+Clicking a thread opens message context in a right panel.
+Messages source of truth remains inside each referral modal.
+This is a surface layer only, not a separate data store.
+Internal staff messages and referral source messages 
+appear in same thread, visually distinguished by 
+sender type.
+Use Supabase real-time subscription for live updates.
+Do not create a new messages table if one already exists.
+
+## DARK / LIGHT MODE
+Use Shadcn/Tailwind CSS variable system throughout.
+No hardcoded color values anywhere in new or modified components.
+User preference persisted to localStorage.
+Toggle in profile drawer at bottom of sidebar.
+Default to system preference on first load.
+
+## GENERAL RULES
+- Preserve all existing functionality
+- Ask before modifying anything outside direct scope
+- Flag any dependency conflicts before installing
+- Flag any schema changes needed before implementing
+- No hardcoded colors
+- No new Supabase client
+- No new auth logic
+- No router dependencies
+- Components must remain compatible with Framer 
+  code component requirements
+
+## HOW TO PROCEED
+1. First scan the existing codebase
+2. Report back what you find:
+   - Current table component names and locations
+   - Current nav/sidebar component if exists
+   - Current messages implementation
+   - Any potential conflicts with proposed changes
+3. Wait for my approval before writing any code
+
+Before writing any code, summarize your implementation plan, 
+list any schema additions you think are needed, and list any 
+dependencies beyond what is specified. Wait for my approval 
+before proceeding.

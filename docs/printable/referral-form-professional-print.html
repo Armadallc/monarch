@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Professional Referral Form (Print) — Monarch Competency Restoration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ash: #2b2828;
+      --shell: #f8f6f1;
+      --coconut: #e9edf6;
+      --moon: #7eacb5;
+      --stone: #4f666a;
+      --border: rgba(43, 40, 40, 0.14);
+      --muted: rgba(43, 40, 40, 0.68);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Montserrat", "Segoe UI", system-ui, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.42;
+      color: var(--ash);
+      background: #fff;
+    }
+    .sheet {
+      max-width: 8.5in;
+      margin: 0 auto;
+      padding: 0.5in 0.6in 0.65in;
+    }
+    @media print {
+      @page { size: letter; margin: 0.45in; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .sheet { padding: 0; max-width: none; }
+      a[href]:after { content: ""; }
+      .page-break { break-before: page; page-break-before: always; }
+    }
+    header.doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 0.85rem;
+      margin-bottom: 1rem;
+      border-bottom: 3px solid var(--moon);
+    }
+    .brand-mark img {
+      max-height: 64px;
+      width: auto;
+      display: block;
+    }
+    .title-block h1 {
+      margin: 0 0 0.3rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ash);
+    }
+    .title-block .subtitle {
+      margin: 0;
+      font-size: 10pt;
+      color: var(--stone);
+      font-weight: 500;
+    }
+    .banner-print {
+      margin-top: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      background: var(--shell);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 9.5pt;
+      color: var(--muted);
+    }
+    .toolbar.no-print {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, var(--coconut) 0%, transparent 100%);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .toolbar button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--ash);
+      background: var(--ash);
+      color: #fff;
+      cursor: pointer;
+    }
+    .toolbar span { font-size: 12px; color: var(--stone); }
+    h2 {
+      margin: 1.15rem 0 0.45rem;
+      font-size: 11pt;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--stone);
+      border-bottom: 2px solid var(--moon);
+      padding-bottom: 0.3rem;
+    }
+    h2:first-of-type { margin-top: 0.2rem; }
+    h3 {
+      margin: 0.85rem 0 0.35rem;
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: var(--ash);
+    }
+    p.lead {
+      margin: 0 0 0.65rem;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    .small { font-size: 9pt; color: var(--muted); }
+    table.fields {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.45rem 0 0.85rem;
+      font-size: 10pt;
+    }
+    table.fields th,
+    table.fields td {
+      border: 1px solid var(--border);
+      padding: 0.32rem 0.42rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.fields th {
+      background: var(--shell);
+      font-weight: 600;
+      width: 34%;
+    }
+    table.fields td.blank {
+      min-height: 1.5rem;
+      background: #fff;
+    }
+    /* Pen-friendly boxes — not interactive form controls */
+    .cb-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      margin: 0.18rem 0;
+      break-inside: avoid;
+    }
+    .cb {
+      flex-shrink: 0;
+      width: 13px;
+      height: 13px;
+      border: 1.5px solid var(--ash);
+      border-radius: 2px;
+      margin-top: 0.12rem;
+      background: #fff;
+    }
+    .cb-label { flex: 1; }
+    .cb-desc { display: block; font-size: 8.5pt; color: var(--muted); font-weight: 400; margin-top: 0.08rem; line-height: 1.3; }
+    .cb-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.12rem 1rem;
+      margin: 0.4rem 0 0.75rem;
+      align-items: start;
+    }
+    .cb-grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.12rem;
+      margin: 0.4rem 0 0.75rem;
+    }
+    .cb-grid-tight {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.08rem 0.75rem;
+      margin: 0.35rem 0 0.65rem;
+      font-size: 9.5pt;
+    }
+    .callout {
+      margin: 0.55rem 0;
+      padding: 0.5rem 0.65rem;
+      background: var(--coconut);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 9.5pt;
+      color: var(--stone);
+    }
+    footer.doc-footer {
+      margin-top: 1.5rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+    .lines {
+      border-bottom: 1px solid var(--border);
+      min-height: 1.35rem;
+      margin: 0.25rem 0;
+    }
+    .lines-tall { min-height: 3.25rem; }
+    .muted-rule { color: var(--muted); font-size: 9pt; margin: 0.4rem 0; }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Print-only worksheet · Complete with pen · Options use checkboxes (☐) — mark one unless noted.</span>
+  </div>
+
+  <div class="sheet">
+    <header class="doc-header">
+      <div class="brand-mark">
+        <img
+          src="assets/monarch-logo.png"
+          alt="Monarch Competency Restoration"
+          width="220"
+          height="auto"
+          onerror="this.onerror=null;this.src='https://esbmnympligtknhtkary.supabase.co/storage/v1/object/public/assets/monarch-logo.png'"
+        />
+      </div>
+      <div class="title-block">
+        <h1>Professional referral form</h1>
+        <p class="subtitle">Monarch Competency Restoration · Colorado</p>
+        <div class="banner-print">
+          <strong>For referring professionals only</strong><br />
+          Return to Monarch Competency by emailing us at <strong>Referrals@monarchcompetency.com</strong>.
+          Online submissions remain available on our website when secure access is possible.
+        </div>
+      </div>
+    </header>
+
+    <p class="lead">
+      <strong>Instructions:</strong> Use black or blue ink. If an item does not apply, write “N/A” or leave blank.
+      Check every box that applies; where instructions say “choose one,” mark only one box.
+    </p>
+
+    <!-- Step 0 — Professional source type only -->
+    <h2>1 · Referral source</h2>
+    <p class="small">Choose the option that best describes your role (mark one).</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Court System<span class="cb-desc">Judge, court coordinator, or court-appointed professional</span></span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Legal Representative<span class="cb-desc">Attorney, public defender, or legal advocate</span></span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Probation / Parole<span class="cb-desc">Probation or parole officer, corrections professional</span></span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Mental Health / Medical Facility<span class="cb-desc">Hospital, psychiatric facility, or treatment center staff</span></span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Case Management / Social Services<span class="cb-desc">Case manager, social worker, community services</span></span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other Professional<span class="cb-desc">Agency or role not listed (housing, advocacy, other)</span></span></div>
+    </div>
+    <table class="fields">
+      <tr><th>If “Other Professional,” describe role / agency</th><td class="blank"></td></tr>
+    </table>
+
+    <div class="page-break"></div>
+
+    <h2>2 · Your contact information</h2>
+    <table class="fields">
+      <tr><th>Full name</th><td class="blank"></td></tr>
+      <tr><th>Organization / agency</th><td class="blank"></td></tr>
+      <tr><th>Title / position</th><td class="blank"></td></tr>
+      <tr><th>Phone number</th><td class="blank"></td></tr>
+      <tr><th>Email address</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Can you provide collateral information?</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Partial / some information</span></div>
+    </div>
+    <p class="small">Has this individual been referred to Monarch previously?</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Request urgent placement</p>
+    <div class="cb-line" style="max-width: 12rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — flag as urgent placement request</span></div>
+
+    <div class="page-break"></div>
+
+    <h2>3 · Additional contacts</h2>
+    <h3>Emergency contact</h3>
+    <table class="fields">
+      <tr><th>Name</th><td class="blank"></td></tr>
+      <tr><th>Phone</th><td class="blank"></td></tr>
+      <tr><th>Relationship to client</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Emergency contact can provide collateral information</p>
+    <div class="cb-line" style="max-width: 10rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+
+    <h3>Additional professional contacts</h3>
+    <p class="muted-rule">Add other professionals involved in care or case (copy page if needed).</p>
+    <table class="fields">
+      <tr><th>Contact 1 — name</th><td class="blank"></td></tr>
+      <tr><th>Organization &amp; title</th><td class="blank"></td></tr>
+      <tr><th>Phone / email</th><td class="blank"></td></tr>
+      <tr><th>Role / affiliation</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Can provide collateral information</p>
+    <div class="cb-line" style="max-width: 10rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+    <table class="fields">
+      <tr><th>Contact 2 — name</th><td class="blank"></td></tr>
+      <tr><th>Organization &amp; title</th><td class="blank"></td></tr>
+      <tr><th>Phone / email</th><td class="blank"></td></tr>
+      <tr><th>Role / affiliation</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Can provide collateral information</p>
+    <div class="cb-line" style="max-width: 10rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+    <table class="fields">
+      <tr><th>Contact 3 — name</th><td class="blank"></td></tr>
+      <tr><th>Organization &amp; title</th><td class="blank"></td></tr>
+      <tr><th>Phone / email</th><td class="blank"></td></tr>
+      <tr><th>Role / affiliation</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Can provide collateral information</p>
+    <div class="cb-line" style="max-width: 10rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+
+    <div class="page-break"></div>
+
+    <h2>4 · Individual being referred — Demographics</h2>
+    <div class="callout">Provide what is available; intake may follow up for missing critical items.</div>
+    <table class="fields">
+      <tr><th>Legal first name</th><td class="blank"></td></tr>
+      <tr><th>Legal middle name</th><td class="blank"></td></tr>
+      <tr><th>Legal last name</th><td class="blank"></td></tr>
+      <tr><th>Aliases / nicknames / previous names</th><td class="blank"></td></tr>
+      <tr><th>Date of birth</th><td class="blank"></td></tr>
+      <tr><th>SSN (if available)</th><td class="blank"></td></tr>
+    </table>
+
+    <p class="small">Gender identity (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Male</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Female</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Non-binary</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Transgender male</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Transgender female</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other — specify:</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Prefer not to say</span></div>
+    </div>
+    <div class="lines"></div>
+
+    <p class="small">Sex assigned at birth (mark one)</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Male</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Female</span></div>
+    </div>
+
+    <p class="small">Preferred pronouns (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">He / him</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">She / her</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">They / them</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other — specify:</span></div>
+    </div>
+    <div class="lines"></div>
+
+    <table class="fields">
+      <tr><th>Primary language</th><td class="blank"></td></tr>
+    </table>
+
+    <p class="small">English proficiency (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Fluent</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Conversational</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Limited</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">None</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Interpreter needed (mark one)</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(2, 6rem);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+    </div>
+
+    <p class="small">Racial / ethnic background (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">American Indian / Alaska Native</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Asian</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Black / African American</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Hispanic / Latino</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Native Hawaiian / Pacific Islander</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">White</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Two or more races</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other — specify:</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Prefer not to say</span></div>
+    </div>
+    <div class="lines"></div>
+
+    <p class="small">Marital status (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Single</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Married</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Divorced</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Separated</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Widowed</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Domestic partnership</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+
+    <table class="fields">
+      <tr><th>Client phone</th><td class="blank"></td></tr>
+      <tr><th>Client email</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Does the client consent to this referral? (mark one)</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unable to consent / unknown</span></div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>5 · Documents &amp; identification</h2>
+    <p class="small">Documents available today or obtainable — mark all that apply.</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Valid Colorado ID</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Expired Colorado ID</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Out-of-state ID</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Social Security card</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Birth certificate</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Insurance card(s)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Court order / competency order</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Competency evaluation report</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Psychiatric records</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Medical records</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Medication list (MAR)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Signed ROI(s)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">None available</span></div>
+    </div>
+    <h3>Document notes / descriptions</h3>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>6 · Insurance &amp; benefits</h2>
+    <h3>Medicaid</h3>
+    <p class="small">Medicaid status (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Active</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Suspended</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Application pending</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not eligible</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <table class="fields">
+      <tr><th>Medicaid member ID number</th><td class="blank"></td></tr>
+    </table>
+
+    <h3>Medicare</h3>
+    <p class="small">Medicare status (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Active</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Pending</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not eligible</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <table class="fields">
+      <tr><th>Medicare beneficiary ID</th><td class="blank"></td></tr>
+    </table>
+
+    <h3>Other insurance</h3>
+    <div class="cb-line" style="max-width: 14rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Has private insurance — describe below</span></div>
+    <p class="small">Private insurance details (carrier, plan, member ID)</p>
+    <div class="lines lines-tall"></div>
+
+    <h3>Benefits</h3>
+    <p class="small">SSI / SSDI status (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Receiving SSI</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Receiving SSDI</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Receiving SSI &amp; SSDI</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Applied / pending</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not receiving</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Additional benefits information</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>7 · Legal status &amp; court information</h2>
+    <h3>Court case</h3>
+    <p class="small">County / judicial district (mark one)</p>
+    <div class="cb-grid-tight">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">1st — Jefferson &amp; Gilpin</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">2nd — Denver</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">3rd — Huerfano &amp; Las Animas</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">4th — El Paso &amp; Teller</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">5th — Clear Creek, Eagle, Lake, &amp; Summit</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">6th — Archuleta, La Plata, &amp; San Juan</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">7th — Delta, Gunnison, Hinsdale, Montrose, Ouray, &amp; San Miguel</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">8th — Jackson &amp; Larimer</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">9th — Garfield, Pitkin, &amp; Rio Blanco</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">10th — Pueblo</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">11th — Chaffee, Custer, Fremont, &amp; Park</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">12th — Alamosa, Conejos, Costilla, Mineral, Rio Grande, &amp; Saguache</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">13th — Kit Carson, Logan, Morgan, Phillips, Sedgwick, Washington, &amp; Yuma</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">14th — Grand, Moffat, &amp; Routt</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">15th — Baca, Cheyenne, Kiowa, &amp; Prowers</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">16th — Bent, Crowley, &amp; Otero</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">17th — Adams &amp; Broomfield</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">18th — Arapahoe, Douglas, Elbert, &amp; Lincoln</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">19th — Weld</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">20th — Boulder</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">21st — Mesa</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">22nd — Dolores &amp; Montezuma</span></div>
+    </div>
+    <table class="fields">
+      <tr><th>Case number</th><td class="blank"></td></tr>
+      <tr><th>Assigned judge</th><td class="blank"></td></tr>
+      <tr><th>Courtroom</th><td class="blank"></td></tr>
+      <tr><th>Next court date</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Charges (brief summary)</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <h3>Competency status</h3>
+    <p class="small">Competency status (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Evaluation ordered</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Found incompetent to proceed</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Restoration ordered</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Currently in restoration</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Restored to competency</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Found not restorable</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Pending evaluation</span></div>
+    </div>
+    <table class="fields">
+      <tr><th>Competency evaluation date</th><td class="blank"></td></tr>
+      <tr><th>Evaluating clinician / organization</th><td class="blank"></td></tr>
+    </table>
+
+    <h3>Legal representation</h3>
+    <table class="fields">
+      <tr><th>Defense attorney</th><td class="blank"></td></tr>
+      <tr><th>Attorney phone</th><td class="blank"></td></tr>
+      <tr><th>Attorney email</th><td class="blank"></td></tr>
+    </table>
+
+    <h3>Supervision &amp; bond status</h3>
+    <div class="cb-line" style="max-width: 14rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Currently on probation</span></div>
+    <p class="small">Probation officer name / contact (if yes)</p>
+    <div class="lines"></div>
+    <div class="cb-line" style="max-width: 14rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Currently on parole</span></div>
+    <p class="small">Parole officer contact (if yes)</p>
+    <div class="lines"></div>
+    <p class="small">Active warrants? (mark one)</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Bond holds? (mark one)</p>
+    <div class="cb-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Bond hold details (if yes)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">PR bond to Monarch? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Pending</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not applicable</span></div>
+    </div>
+    <p class="small">If PR bond yes — notification contacts (judge, DA, other)</p>
+    <table class="fields">
+      <tr><th>Judge contact (notifications)</th><td class="blank"></td></tr>
+      <tr><th>DA contact</th><td class="blank"></td></tr>
+    </table>
+    <p class="small">Other parties to notify</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>8 · Current location &amp; situation</h2>
+    <p class="small">Current location type (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">County jail</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">State prison / DOC</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Hospital (medical)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Psychiatric hospital</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">State hospital (CMHIP)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Treatment facility</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Residential program</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Community (supervised release)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Community (unsupervised)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Homeless / shelter</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other — specify:</span></div>
+    </div>
+    <div class="lines"></div>
+    <table class="fields">
+      <tr><th>Facility name</th><td class="blank"></td></tr>
+      <tr><th>Facility address</th><td class="blank"></td></tr>
+      <tr><th>Inmate / patient ID number</th><td class="blank"></td></tr>
+      <tr><th>Facility contact person</th><td class="blank"></td></tr>
+      <tr><th>Facility contact phone</th><td class="blank"></td></tr>
+    </table>
+    <div class="cb-line" style="max-width: 14rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Currently incarcerated</span></div>
+    <p class="small">Expected release date (if incarcerated)</p>
+    <div class="lines"></div>
+
+    <h3>Housing</h3>
+    <p class="small">Housing prior to current situation (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Own home / apartment</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Living with family / friend</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Group home / assisted living</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Shelter</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Homeless / unsheltered</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Transitional housing</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Post-program housing plan (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Return to own home</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Family / friend</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Group home / assisted living</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Transitional housing</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Needs placement assistance</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown / TBD</span></div>
+    </div>
+    <p class="small">Housing notes</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>9 · Mental health &amp; clinical information</h2>
+    <p class="small">Mental health diagnoses (known)</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Medication compliance (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Compliant / taking as prescribed</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Partially compliant</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Non-compliant / refusing</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not currently prescribed</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Current psychiatric medications (name, dose, frequency)</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+    <p class="small">Medication barriers (if partially or non-compliant)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Psychiatric history</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Previous treatment programs</p>
+    <div class="lines lines-tall"></div>
+
+    <h3>Traumatic brain injury (TBI)</h3>
+    <p class="small">History of TBI? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Suspected</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">TBI details</p>
+    <div class="lines lines-tall"></div>
+
+    <h3>Intellectual / developmental disability (IDD)</h3>
+    <p class="small">Known IDD? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — documented</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — undocumented / suspected</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">IDD details</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>10 · Substance use</h2>
+    <p class="small">Substance use pattern (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No history of substance use</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Historical use only (1+ year sober)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">In recovery (active program)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Occasional / social use</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Regular use</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Daily use</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">IV drug use</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Current use (last 90 days) — substances, frequency, route</p>
+    <div class="lines lines-tall"></div>
+    <p class="small">Past substance use history</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Needs medically supervised detox? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Possibly / under evaluation</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Detox details (if yes or possibly)</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>11 · Medical &amp; somatic information</h2>
+    <p class="small">Medical / somatic diagnoses</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Are conditions controlled by current medications? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — well controlled</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Partially controlled</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No — uncontrolled</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Not applicable</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+
+    <p class="small">Non-psychiatric medications</p>
+    <div class="lines lines-tall"></div>
+    <p class="small">Medication allergies</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Mobility / assistive device needs (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Fully independent</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Cane / walker</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Wheelchair</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Bedbound / limited mobility</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other assistive needs — specify:</span></div>
+    </div>
+    <div class="lines"></div>
+
+    <div class="cb-line" style="max-width: 22rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Requires ADL (activities of daily living) support — describe:</span></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Acute medical needs</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>12 · Safety &amp; risk assessment</h2>
+    <div class="callout">Select the timeframe that best describes each risk factor (mark one per row).</div>
+
+    <p class="small">Suicide / self-harm history (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Current (within 30 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recent (within 90 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recovering (4–12 months)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Historical (1+ year ago)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No history</span></div>
+    </div>
+    <p class="small">Suicide risk details (if any history)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Violence / aggression history (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Current (within 30 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recent (within 90 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recovering (4–12 months)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Historical (1+ year ago)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No history</span></div>
+    </div>
+    <p class="small">Violence risk details (if any history)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Elopement / AMA history (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Current (within 30 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recent (within 90 days)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Recovering (4–12 months)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Historical (1+ year ago)</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No history</span></div>
+    </div>
+    <p class="small">Elopement details (if any history)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Arson history / charges? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — current charges</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — historical</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">Arson details (if yes)</p>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Registered sex offender (RSO) status? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — currently registered</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Yes — pending charges</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">No</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Unknown</span></div>
+    </div>
+    <p class="small">RSO details (if yes)</p>
+    <div class="lines lines-tall"></div>
+
+    <div class="cb-line" style="max-width: 22rem;"><span class="cb" aria-hidden="true"></span><span class="cb-label">Requires specialized medical care</span></div>
+    <p class="small">Additional safety information</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <div class="page-break"></div>
+
+    <h2>13 · Urgency &amp; how you heard about Monarch</h2>
+    <p class="small">Referral urgency (mark one)</p>
+    <div class="cb-grid-1">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Immediate — needs placement ASAP</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Urgent — within 1–2 weeks</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Standard — normal processing timeline</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Planning ahead — future placement</span></div>
+    </div>
+    <p class="small">Reason for urgency (if immediate or urgent)</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">Additional notes or special considerations</p>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+    <div class="lines lines-tall"></div>
+
+    <p class="small">How did you hear about Monarch Competency? (mark one)</p>
+    <div class="cb-grid">
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Court referral</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Colleague / professional referral</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Website / online search</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Conference / training</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Previous experience with Monarch</span></div>
+      <div class="cb-line"><span class="cb" aria-hidden="true"></span><span class="cb-label">Other — specify:</span></div>
+    </div>
+    <div class="lines"></div>
+
+    <footer class="doc-footer">
+      <p>For fastest processing, submit through the secure portal when available. Use this paper version when a referring site needs pre-printed blanks or when portal access is impractical.</p>
+    </footer>
+  </div>
+</body>
+</html>

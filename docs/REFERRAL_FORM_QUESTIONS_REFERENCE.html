@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monarch Referral Form — All Questions Reference</title>
+    <style>
+        :root {
+            --ash: #2B2828;
+            --ash-muted: #5c5856;
+            --coconut: #E9EDF6;
+            --moonstone: #7EACB5;
+            --border: rgba(43, 40, 40, 0.15);
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 12px;
+            line-height: 1.5;
+            color: var(--ash);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 32px 48px;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0 0 8px;
+            color: var(--ash);
+        }
+        .subtitle {
+            font-size: 11px;
+            color: var(--ash-muted);
+            margin-bottom: 24px;
+        }
+        h2 {
+            font-size: 14px;
+            font-weight: 700;
+            margin: 28px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--moonstone);
+            color: var(--ash);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin: 18px 0 8px;
+            color: var(--ash-muted);
+        }
+        ul.questions {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 16px;
+        }
+        ul.questions li {
+            padding: 6px 0;
+            padding-left: 16px;
+            border-left: 2px solid var(--border);
+            margin-left: 4px;
+            margin-bottom: 4px;
+        }
+        .field-name {
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--ash-muted);
+            margin-top: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+            font-size: 11px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            font-weight: 600;
+            background: var(--coconut);
+            color: var(--ash);
+        }
+        td:first-child { width: 28px; color: var(--ash-muted); }
+        .type { font-size: 10px; color: var(--ash-muted); }
+        .optional { font-style: italic; color: var(--ash-muted); }
+        @media print {
+            body { padding: 16px 24px; }
+            h2 { break-after: avoid; }
+            tr { break-inside: avoid; }
+            ul.questions li { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Monarch Referral Form — All Questions Reference</h1>
+    <p class="subtitle">Extracted from Code/Framer/ReferralForm.tsx. Use this document to build a viewable/printable PDF or paper form. Print this page to PDF via File → Print → Save as PDF.</p>
+
+    <h2>Step 0 — Who is making this referral?</h2>
+    <ul class="questions">
+        <li>Court System</li>
+        <li>Legal Representative</li>
+        <li>Probation/Parole</li>
+        <li>Mental Health/Medical Facility</li>
+        <li>Case Management/Social Services</li>
+        <li>Other Professional</li>
+        <li>Family Member or Friend</li>
+        <li>Self-Referral</li>
+    </ul>
+
+    <h2>Step 1 — Your Contact Information</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Full Name</td><td class="field-name">referral_source_name</td><td class="type">text</td></tr>
+            <tr><td>2</td><td>Organization / Agency</td><td class="field-name">referral_source_organization</td><td class="type">text</td></tr>
+            <tr><td>3</td><td>Title / Position</td><td class="field-name">referral_source_title</td><td class="type">text</td></tr>
+            <tr><td>4</td><td>Phone Number</td><td class="field-name">referral_source_phone</td><td class="type">tel</td></tr>
+            <tr><td>5</td><td>Email Address</td><td class="field-name">referral_source_email</td><td class="type">email</td></tr>
+            <tr><td>6</td><td>Can you provide collateral information for this referral?</td><td class="field-name">can_provide_collateral</td><td class="type">select: Yes / No / Partial</td></tr>
+            <tr><td>7</td><td>Has this individual been referred to Monarch previously?</td><td class="field-name">previous_monarch_referral</td><td class="type">select: Yes / No / Unknown</td></tr>
+            <tr><td>8</td><td>Request Urgent Placement</td><td class="field-name">urgent_placement</td><td class="type">checkbox</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 2 — Additional Contacts</h2>
+    <h3>Emergency Contact</h3>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Emergency Contact Name</td><td class="field-name">emergency_contact_name</td><td class="type">text</td></tr>
+            <tr><td>2</td><td>Emergency Contact Phone</td><td class="field-name">emergency_contact_phone</td><td class="type">tel</td></tr>
+            <tr><td>3</td><td>Relationship to Client</td><td class="field-name">emergency_contact_relationship</td><td class="type">text</td></tr>
+            <tr><td>4</td><td>Emergency contact can provide collateral information</td><td class="field-name">emergency_contact_can_provide_info</td><td class="type">checkbox</td></tr>
+        </tbody>
+    </table>
+    <h3>Additional Professional Contacts (repeatable)</h3>
+    <p>Per contact: Contact Name, Organization & Title, Phone / Email, Role / Affiliation, Can provide collateral (checkbox).</p>
+
+    <h2>Step 3 — Individual Being Referred — Demographics</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Legal First Name</td><td class="field-name">client_first_name</td><td class="type">text</td></tr>
+            <tr><td>2</td><td>Legal Middle Name</td><td class="field-name">client_middle_name</td><td class="type">text</td></tr>
+            <tr><td>3</td><td>Legal Last Name</td><td class="field-name">client_last_name</td><td class="type">text</td></tr>
+            <tr><td>4</td><td>Aliases / Nicknames / Previous Names</td><td class="field-name">client_preferred_name</td><td class="type">text</td></tr>
+            <tr><td>5</td><td>Date of Birth</td><td class="field-name">client_dob</td><td class="type">date</td></tr>
+            <tr><td>6</td><td>SSN (if available)</td><td class="field-name">client_ssn</td><td class="type">text (optional)</td></tr>
+            <tr><td>7</td><td>Gender Identity</td><td class="field-name">client_gender</td><td class="type">select</td></tr>
+            <tr><td>8</td><td>Sex Assigned at Birth</td><td class="field-name">client_sex_at_birth</td><td class="type">select</td></tr>
+            <tr><td>9</td><td>Preferred Pronouns</td><td class="field-name">client_pronouns</td><td class="type">select</td></tr>
+            <tr><td>10</td><td>Primary Language</td><td class="field-name">client_primary_language</td><td class="type">text</td></tr>
+            <tr><td>11</td><td>English Proficiency</td><td class="field-name">client_english_proficiency</td><td class="type">select</td></tr>
+            <tr><td>12</td><td>Interpreter Needed</td><td class="field-name">interpreter_needed</td><td class="type">checkbox</td></tr>
+            <tr><td>13</td><td>Racial/Ethnic Background</td><td class="field-name">client_ethnicity</td><td class="type">select</td></tr>
+            <tr><td>14</td><td>Marital Status</td><td class="field-name">client_marital_status</td><td class="type">select</td></tr>
+            <tr><td>15</td><td>Client Phone</td><td class="field-name">client_phone</td><td class="type">tel</td></tr>
+            <tr><td>16</td><td>Client Email</td><td class="field-name">client_email</td><td class="type">email</td></tr>
+            <tr><td>17</td><td>Does the client consent to this referral?</td><td class="field-name">client_consents_to_referral</td><td class="type">select</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 4 — Documents & Identification</h2>
+    <p><strong>Documents Available</strong> (check all): Valid CO ID, Expired CO ID, Out-of-State ID, Social Security Card, Birth Certificate, Insurance Card(s), Court Order/Competency Order, Competency Eval Report, Psychiatric Records, Medical Records, Medication List (MAR), Signed ROI(s), None Available.</p>
+    <p><strong>Upload:</strong> PDF, JPG, PNG, DOC, DOCX — max 10MB per file; per-file document type.</p>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Document Notes / Descriptions</td><td class="field-name">documents_notes</td><td class="type">textarea</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 5 — Insurance & Benefits</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Medicaid Status</td><td class="field-name">medicaid_status</td><td class="type">select</td></tr>
+            <tr><td>2</td><td>Medicaid Number</td><td class="field-name">medicaid_number</td><td class="type">text</td></tr>
+            <tr><td>3</td><td>Medicare Status</td><td class="field-name">medicare_status</td><td class="type">select</td></tr>
+            <tr><td>4</td><td>Medicare Number</td><td class="field-name">medicare_number</td><td class="type">text</td></tr>
+            <tr><td>5</td><td>Has Private Insurance</td><td class="field-name">has_private_insurance</td><td class="type">checkbox</td></tr>
+            <tr><td>6</td><td>Private Insurance Details</td><td class="field-name">private_insurance_details</td><td class="type">textarea (if yes)</td></tr>
+            <tr><td>7</td><td>SSI/SSDI Status</td><td class="field-name">ssdi_status</td><td class="type">select</td></tr>
+            <tr><td>8</td><td>Additional Benefits Information</td><td class="field-name">benefits_notes</td><td class="type">textarea</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 6 — Legal Status & Court Information</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>County / Judicial District</td><td class="field-name">court_jurisdiction</td><td class="type">select (CO districts)</td></tr>
+            <tr><td>2</td><td>Case Number</td><td class="field-name">case_number</td><td class="type">text</td></tr>
+            <tr><td>3</td><td>Assigned Judge</td><td class="field-name">judge_name</td><td class="type">text</td></tr>
+            <tr><td>4</td><td>Courtroom</td><td class="field-name">courtroom</td><td class="type">text</td></tr>
+            <tr><td>5</td><td>Next Court Date</td><td class="field-name">next_court_date</td><td class="type">date</td></tr>
+            <tr><td>6</td><td>Charges (Brief Summary)</td><td class="field-name">charges</td><td class="type">textarea</td></tr>
+            <tr><td>7</td><td>Competency Status</td><td class="field-name">competency_status</td><td class="type">select</td></tr>
+            <tr><td>8</td><td>Competency Evaluation Date</td><td class="field-name">competency_eval_date</td><td class="type">date</td></tr>
+            <tr><td>9</td><td>Evaluating Clinician / Organization</td><td class="field-name">competency_evaluator</td><td class="type">text</td></tr>
+            <tr><td>10</td><td>Defense Attorney</td><td class="field-name">attorney_name</td><td class="type">text</td></tr>
+            <tr><td>11</td><td>Attorney Phone</td><td class="field-name">attorney_phone</td><td class="type">tel</td></tr>
+            <tr><td>12</td><td>Attorney Email</td><td class="field-name">attorney_email</td><td class="type">email</td></tr>
+            <tr><td>13</td><td>Currently on Probation</td><td class="field-name">on_probation</td><td class="type">checkbox</td></tr>
+            <tr><td>14</td><td>Probation Officer Name / Contact</td><td class="field-name">probation_officer_contact</td><td class="type">text (if on probation)</td></tr>
+            <tr><td>15</td><td>Currently on Parole</td><td class="field-name">on_parole</td><td class="type">checkbox</td></tr>
+            <tr><td>16</td><td>Parole Officer Contact</td><td class="field-name">parole_officer_contact</td><td class="type">text (if on parole)</td></tr>
+            <tr><td>17</td><td>Active Warrants?</td><td class="field-name">active_warrants</td><td class="type">select</td></tr>
+            <tr><td>18</td><td>Bond Holds?</td><td class="field-name">has_bond_holds</td><td class="type">select</td></tr>
+            <tr><td>19</td><td>Bond Hold Details</td><td class="field-name">bond_holds_details</td><td class="type">textarea (if yes)</td></tr>
+            <tr><td>20</td><td>PR Bond to Monarch?</td><td class="field-name">pr_bond_to_monarch</td><td class="type">select</td></tr>
+            <tr><td>21</td><td>Judge Contact (PR bond)</td><td class="field-name">pr_bond_judge_contact</td><td class="type">text (if PR yes)</td></tr>
+            <tr><td>22</td><td>DA Contact</td><td class="field-name">pr_bond_da_contact</td><td class="type">text (if PR yes)</td></tr>
+            <tr><td>23</td><td>Other Parties to Notify</td><td class="field-name">pr_bond_other_contacts</td><td class="type">textarea (if PR yes)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 7 — Current Location & Situation</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Current Location Type</td><td class="field-name">current_location_type</td><td class="type">select</td></tr>
+            <tr><td>2</td><td>Facility Name</td><td class="field-name">facility_name</td><td class="type">text</td></tr>
+            <tr><td>3</td><td>Facility Address</td><td class="field-name">facility_address</td><td class="type">text</td></tr>
+            <tr><td>4</td><td>Inmate / Patient ID Number</td><td class="field-name">inmate_id</td><td class="type">text</td></tr>
+            <tr><td>5</td><td>Facility Contact Person</td><td class="field-name">facility_contact_person</td><td class="type">text</td></tr>
+            <tr><td>6</td><td>Facility Contact Phone</td><td class="field-name">facility_contact_phone</td><td class="type">tel</td></tr>
+            <tr><td>7</td><td>Currently Incarcerated</td><td class="field-name">currently_incarcerated</td><td class="type">checkbox</td></tr>
+            <tr><td>8</td><td>Expected Release Date</td><td class="field-name">expected_release_date</td><td class="type">date (if incarcerated)</td></tr>
+            <tr><td>9</td><td>Housing Prior to Current Situation</td><td class="field-name">housing_prior</td><td class="type">select</td></tr>
+            <tr><td>10</td><td>Post-Program Housing Plan</td><td class="field-name">housing_post_program</td><td class="type">select</td></tr>
+            <tr><td>11</td><td>Housing Notes</td><td class="field-name">housing_notes</td><td class="type">textarea</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 8 — Mental Health & Clinical Information</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Mental Health Diagnoses</td><td class="field-name">current_diagnoses</td><td class="type">textarea</td></tr>
+            <tr><td>2</td><td>Medication Compliance</td><td class="field-name">medication_compliance</td><td class="type">select</td></tr>
+            <tr><td>3</td><td>Current Psychiatric Medications</td><td class="field-name">current_medications</td><td class="type">textarea</td></tr>
+            <tr><td>4</td><td>Medication Barriers</td><td class="field-name">medication_barriers</td><td class="type">textarea (if partial/non-compliant)</td></tr>
+            <tr><td>5</td><td>Psychiatric History</td><td class="field-name">psychiatric_history</td><td class="type">textarea</td></tr>
+            <tr><td>6</td><td>Previous Treatment Programs</td><td class="field-name">previous_treatment_programs</td><td class="type">textarea</td></tr>
+            <tr><td>7</td><td>History of TBI?</td><td class="field-name">tbi_history</td><td class="type">select</td></tr>
+            <tr><td>8</td><td>TBI Details</td><td class="field-name">tbi_details</td><td class="type">textarea (if yes/suspected)</td></tr>
+            <tr><td>9</td><td>Known IDD?</td><td class="field-name">idd_status</td><td class="type">select</td></tr>
+            <tr><td>10</td><td>IDD Details</td><td class="field-name">idd_details</td><td class="type">textarea (if yes)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 9 — Substance Use History</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Substance Use Pattern</td><td class="field-name">substance_use_pattern</td><td class="type">select</td></tr>
+            <tr><td>2</td><td>Current Use (Last 90 Days)</td><td class="field-name">substance_use_current</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>3</td><td>Past Substance Use History</td><td class="field-name">substance_use_history</td><td class="type">textarea</td></tr>
+            <tr><td>4</td><td>Needs Medically Supervised Detox?</td><td class="field-name">detox_required</td><td class="type">select</td></tr>
+            <tr><td>5</td><td>Detox Details</td><td class="field-name">detox_details</td><td class="type">textarea (if yes/possibly)</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 10 — Medical & Somatic Information</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Medical / Somatic Diagnoses</td><td class="field-name">medical_conditions</td><td class="type">textarea</td></tr>
+            <tr><td>2</td><td>Are conditions controlled by current medications?</td><td class="field-name">medical_conditions_controlled</td><td class="type">select</td></tr>
+            <tr><td>3</td><td>Non-Psychiatric Medications</td><td class="field-name">medications_non_psychiatric</td><td class="type">textarea</td></tr>
+            <tr><td>4</td><td>Medication Allergies</td><td class="field-name">medication_allergies</td><td class="type">textarea</td></tr>
+            <tr><td>5</td><td>Mobility / Assistive Device Needs</td><td class="field-name">mobility_needs</td><td class="type">select</td></tr>
+            <tr><td>6</td><td>Requires ADL Support</td><td class="field-name">adl_support_needed</td><td class="type">checkbox</td></tr>
+            <tr><td>7</td><td>ADL Support Details</td><td class="field-name">adl_support_details</td><td class="type">textarea (if yes)</td></tr>
+            <tr><td>8</td><td>Acute Medical Needs</td><td class="field-name">acute_medical_needs</td><td class="type">textarea</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 11 — Safety & Risk Assessment</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Suicide / Self-Harm History</td><td class="field-name">suicide_risk</td><td class="type">select (timeframe)</td></tr>
+            <tr><td>2</td><td>Suicide Risk Details</td><td class="field-name">suicide_risk_details</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>3</td><td>Violence / Aggression History</td><td class="field-name">violence_risk</td><td class="type">select</td></tr>
+            <tr><td>4</td><td>Violence Risk Details</td><td class="field-name">violence_risk_details</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>5</td><td>Elopement / AMA History</td><td class="field-name">elopement_risk</td><td class="type">select</td></tr>
+            <tr><td>6</td><td>Elopement Details</td><td class="field-name">elopement_risk_details</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>7</td><td>Arson History / Charges?</td><td class="field-name">arson_history</td><td class="type">select</td></tr>
+            <tr><td>8</td><td>Arson Details</td><td class="field-name">arson_details</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>9</td><td>Registered Sex Offender (RSO) Status?</td><td class="field-name">rso_status</td><td class="type">select</td></tr>
+            <tr><td>10</td><td>RSO Details</td><td class="field-name">rso_details</td><td class="type">textarea (conditional)</td></tr>
+            <tr><td>11</td><td>Requires Specialized Medical Care</td><td class="field-name">medical_needs</td><td class="type">checkbox</td></tr>
+            <tr><td>12</td><td>Additional Safety Information</td><td class="field-name">safety_notes</td><td class="type">textarea</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 12 — Additional Notes & Urgency</h2>
+    <table>
+        <thead><tr><th>#</th><th>Question</th><th>Field</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td>1</td><td>Referral Urgency</td><td class="field-name">urgency_level</td><td class="type">select</td></tr>
+            <tr><td>2</td><td>Reason for Urgency</td><td class="field-name">urgency_reason</td><td class="type">textarea (if immediate/urgent)</td></tr>
+            <tr><td>3</td><td>Additional Notes or Special Considerations</td><td class="field-name">additional_notes</td><td class="type">textarea</td></tr>
+            <tr><td>4</td><td>How did you hear about Monarch Competency?</td><td class="field-name">referral_source_channel</td><td class="type">select</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Step 13 — Review & Submit</h2>
+    <p>Review-only step: all sections with edit links. Submit button.</p>
+
+    <p class="subtitle" style="margin-top: 32px;">End of reference. Source: Code/Framer/ReferralForm.tsx</p>
+</body>
+</html>

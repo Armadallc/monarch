@@ -1,6 +1,6 @@
 # Referral Source Portal — Technical Specification
 
-> Source: REFERRAL SOURCE PORTAL.txt (Monarch Competency). Full spec for the portal **not yet built**.
+> Source: REFERRAL SOURCE PORTAL.txt (Monarch Competency). **Phase 2A core** (My Referrals list + read-only detail) is implemented in `Code/Framer/ReferralSourcePortal.tsx`; add this component to the `/portal` page in Framer.
 
 ## Overview
 
@@ -50,14 +50,16 @@
 
 ## Database schema changes (from spec)
 
-| Change | Purpose |
-|--------|---------|
-| **referral_source_profiles** | Profile + notification preferences per user |
-| **referral_submissions.submitted_by_user_id** | Link referral to auth user; RLS so sources see only their referrals |
-| **referral_status_history** | One row per status change; trigger on `referral_submissions.status` update. Backbone for **timeline** in portal and dashboard |
-| **referral_share_links** | Shareable links (ROI, document upload) with token |
-| **referral_activity_log** | Audit trail / activity types (submitted, status_changed, document_uploaded, etc.) |
-| **referral_messages** | Messaging between referral source and staff |
+See **docs/SCHEMA_REFERRAL_PORTAL.md** for the full schema (from Neew Tables.rtf), phased implementation plan, and what to add now vs later. Summary:
+
+| Change | Purpose | Phase |
+|--------|---------|--------|
+| **referral_submissions.submitted_by_user_id** | Link referral to auth user; RLS so sources see only their referrals | 2A (recommended next) |
+| **referral_source_profiles** | Profile + notification preferences per user | 2A (profile) / 2C (notifications) |
+| **referral_status_history** | One row per status change; backbone for **timeline** in portal and dashboard | 2A/2C |
+| **referral_share_links** | Shareable links (ROI, document upload) with token | 2B |
+| **referral_activity_log** | Audit trail / activity types | 2C |
+| **referral_messages** | Messaging between referral source and staff | 2C |
 
 ---
 
