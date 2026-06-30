@@ -1,0 +1,80 @@
+:root {
+  color-scheme: light;
+  --ink: #0d0d0d;
+  --paper: #fafafa;
+  --muted: rgba(13, 13, 13, 0.62);
+  --border: rgba(13, 13, 13, 0.12);
+  --blue: #4338ca;
+  --blue-light: #eff6ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Montserrat", system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+a {
+  color: var(--blue);
+}
+
+.shell {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: var(--blue-light);
+  color: var(--blue);
+}
+
+.card {
+  margin-top: 1.25rem;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.card h1 {
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.card p {
+  margin: 0.5rem 0;
+  color: var(--muted);
+}
+
+.nav-list {
+  margin: 1rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.nav-list li {
+  margin: 0.35rem 0;
+}
+
+.env-ok {
+  color: #166534;
+  font-weight: 600;
+}
+
+.env-missing {
+  color: #b45309;
+  font-weight: 600;
+}

@@ -60,9 +60,18 @@ Complete or schedule before production PHI:
 
 Today’s UI lives in `Code/Framer/*.tsx` (paste components) and `Code/playground/dashboard-ui` (Vite prototype).
 
-### 2.1 Choose app structure
+### 2.1 App package
 
-**Recommended path:** Extend `Code/playground/dashboard-ui` (or `apps/referral-app`) as a **Vite SPA** with client-side routes.
+**Deploy target:** `apps/referral-app/` (Vite + React Router route shell).
+
+**UI reference / port source:** `Code/Framer/*.tsx` and `Code/playground/dashboard-ui`.
+
+```bash
+cd apps/referral-app
+npm install
+cp .env.example .env.local
+npm run dev
+```
 
 ### 2.2 Port routes from Framer
 
@@ -99,7 +108,7 @@ npm run dev
 ### 2.5 Vercel project config
 
 - **Framework:** Vite
-- **Root directory:** `Code/playground/dashboard-ui` (or app subfolder)
+- **Root directory:** `apps/referral-app`
 - **Build:** `npm run build`
 - **Output:** `dist`
 - **SPA fallback:** `vercel.json` rewrites all routes to `index.html`
