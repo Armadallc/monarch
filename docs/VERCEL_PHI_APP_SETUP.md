@@ -127,6 +127,33 @@ Example `vercel.json` at app root:
 
 **Goal:** Full app on Vercel **without** production PHI or public `app.*` DNS yet.
 
+### 3.0 IN PROGRESS — import checkpoint (Jun 2026)
+
+**Status:** Import started on team **Monarch** (`monarchapps`); **Deploy not clicked yet.**
+
+**Resume URL:** Vercel → New Project → import `Armadallc/monarch`
+
+There is **no “Production Branch” field** on the import screen. The branch is the **`main` link** next to the repo name at the top — click it and choose **`sync/jun-2026`** (app code is not on `main` yet).
+
+| Setting | Value |
+|---------|--------|
+| Vercel Team | Monarch (Pro) |
+| Project Name | `monarch` |
+| Branch | **`sync/jun-2026`** (click `main` at top) |
+| Application Preset | **Vite** (or Other — build settings below matter more) |
+| Root Directory | **`apps/referral-app`** (not `./`) |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Install Command | `npm install` |
+| Env: `VITE_SUPABASE_URL` | Production **and** Preview |
+| Env: `VITE_SUPABASE_ANON_KEY` | Production **and** Preview (mark sensitive) |
+| HIPAA BAA | **Off** for staging |
+| Custom domain | **Later** (`app.monarchcompetency.com`) |
+
+**After first deploy:** Project → **Settings → Git → Production Branch** → set `sync/jun-2026` until `sync/jun-2026` is merged to `main`.
+
+**Next after green deploy:** add Vercel preview URL to Supabase Auth redirect allowlist; smoke-test `/`, `/login`, `/portal`.
+
 ### 3.1 Create staging project
 
 1. Vercel → **New Project** → import GitHub repo
