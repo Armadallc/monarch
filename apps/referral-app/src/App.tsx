@@ -1,6 +1,7 @@
-import { Link, Route, Routes, useSearchParams } from "react-router-dom"
+import { Link, Route, Routes } from "react-router-dom"
 import AuthGateway from "./components/AuthGateway"
 import DocumentUploadFormPage from "./pages/DocumentUploadFormPage"
+import ReferralSharePageRoute from "./pages/ReferralSharePageRoute"
 import ReferralFormPage from "./pages/ReferralFormPage"
 import ReferralDashboardPage from "./pages/ReferralDashboardPage"
 import ReferralSourcePortalPage from "./pages/ReferralSourcePortalPage"
@@ -42,24 +43,6 @@ function HomePage() {
     )
 }
 
-function RoiPage() {
-    const [params] = useSearchParams()
-    const token = params.get("token")
-
-    return (
-        <RouteShell
-            route="/r?token=…"
-            title="ROI share page"
-            description="DocuSeal embed + token validation. Query token required in production."
-            source="Code/Framer/ReferralSharePage.tsx"
-        >
-            <p>
-                <strong>Token:</strong> {token ? `${token.slice(0, 8)}…` : "(none — add ?token= for smoke test)"}
-            </p>
-        </RouteShell>
-    )
-}
-
 export default function App() {
     return (
         <Routes>
@@ -70,7 +53,7 @@ export default function App() {
             <Route path="/dashboard" element={<ReferralDashboardPage />} />
             <Route path="/submit-referrals" element={<ReferralFormPage />} />
             <Route path="/submit-referrals/documents" element={<DocumentUploadFormPage />} />
-            <Route path="/r" element={<RoiPage />} />
+            <Route path="/r" element={<ReferralSharePageRoute />} />
             <Route
                 path="*"
                 element={

@@ -2,6 +2,12 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 import type { AuthBucket } from "../config/program"
 import { supabaseEnvConfigured } from "../env"
 
+/** Anonymous client for token-based flows (ROI share links) — no auth session. */
+export function createAnonSupabaseClient(): SupabaseClient | null {
+    if (!supabaseEnvConfigured()) return null
+    return createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY)
+}
+
 function supabaseProjectRef(): string {
     const url = import.meta.env.VITE_SUPABASE_URL ?? ""
     const match = url.match(/https:\/\/([^.]+)\.supabase\.co/)
