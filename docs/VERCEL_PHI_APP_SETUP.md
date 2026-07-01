@@ -133,15 +133,17 @@ Example `vercel.json` at app root:
 
 **Resume URL:** Vercel → New Project → import `Armadallc/monarch`
 
-There is **no “Production Branch” field** on the import screen. The branch is the **`main` link** next to the repo name at the top — click it and choose **`sync/jun-2026`** (app code is not on `main` yet).
+There is **no “Production Branch” field** on the import screen. The branch is the **`main` link** in the gray **“Importing from GitHub”** box — click it and choose **`sync/jun-2026`** **before** picking Root Directory (app code is not on `main` yet).
+
+**Root Directory has no text input.** Click **Edit** → folder tree picker. That tree reflects the **selected branch**. On `main` you only see `monarch (root)`, `Code`, `docs` — **no `apps` folder**. After switching to `sync/jun-2026`: Edit → expand **`apps`** → select **`referral-app`** → **Continue**.
 
 | Setting | Value |
 |---------|--------|
 | Vercel Team | Monarch (Pro) |
 | Project Name | `monarch` |
-| Branch | **`sync/jun-2026`** (click `main` at top) |
+| Branch | **`sync/jun-2026`** (click `main` in import box — **do this first**) |
 | Application Preset | **Vite** (or Other — build settings below matter more) |
-| Root Directory | **`apps/referral-app`** (not `./`) |
+| Root Directory | **`apps/referral-app`** (via Edit tree picker — not `./`) |
 | Build Command | `npm run build` |
 | Output Directory | `dist` |
 | Install Command | `npm install` |
