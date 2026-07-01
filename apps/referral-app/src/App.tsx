@@ -1,4 +1,5 @@
 import { Link, Route, Routes, useSearchParams } from "react-router-dom"
+import AuthGateway from "./components/AuthGateway"
 import { RouteShell } from "./components/RouteShell"
 
 function HomePage() {
@@ -59,28 +60,8 @@ export default function App() {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route
-                path="/login"
-                element={
-                    <RouteShell
-                        route="/login?bucket=source"
-                        title="Referral partner login"
-                        description="Google / Apple / email magic link for referral sources."
-                        source="Code/Framer/AuthGateway.tsx"
-                    />
-                }
-            />
-            <Route
-                path="/admin"
-                element={
-                    <RouteShell
-                        route="/admin?bucket=staff"
-                        title="Staff login"
-                        description="Admissions staff OAuth — not linked from public marketing nav."
-                        source="Code/Framer/AuthGateway.tsx"
-                    />
-                }
-            />
+            <Route path="/login" element={<AuthGateway />} />
+            <Route path="/admin" element={<AuthGateway />} />
             <Route
                 path="/portal"
                 element={
