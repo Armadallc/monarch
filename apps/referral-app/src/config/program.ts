@@ -51,6 +51,10 @@ export function submitReferralsDocumentsPath(code?: string): string {
     return code ? `${base}?code=${encodeURIComponent(code)}` : base
 }
 
+export function submitReferralsDocumentsRedirectUrl(): string {
+    return `${appOrigin()}${submitReferralsDocumentsPath()}`
+}
+
 export function publicReferralsPageUrl(): string {
     return `${MARKETING_SITE_URL}/referrals`
 }
