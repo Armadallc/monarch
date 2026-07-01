@@ -24,6 +24,18 @@ export function loginUrlForBucket(bucket: AuthBucket): string {
     return bucket === "source" ? referralPartnerLoginUrl() : staffLoginUrl()
 }
 
+export function staffLoginSwitchUrl(): string {
+    return `${staffLoginUrl()}&switch=1`
+}
+
+export function dashboardRedirectUrl(): string {
+    return `${appOrigin()}/dashboard`
+}
+
+export function shareLinkBase(): string {
+    return `${appOrigin()}/r`
+}
+
 export function isStaffEmail(email: string | null | undefined): boolean {
     if (!email) return false
     const lower = email.toLowerCase()

@@ -1,5 +1,6 @@
 import { Link, Route, Routes, useSearchParams } from "react-router-dom"
 import AuthGateway from "./components/AuthGateway"
+import ReferralDashboardPage from "./pages/ReferralDashboardPage"
 import ReferralSourcePortalPage from "./pages/ReferralSourcePortalPage"
 import { RouteShell } from "./components/RouteShell"
 
@@ -64,17 +65,7 @@ export default function App() {
             <Route path="/login" element={<AuthGateway />} />
             <Route path="/admin" element={<AuthGateway />} />
             <Route path="/portal" element={<ReferralSourcePortalPage />} />
-            <Route
-                path="/dashboard"
-                element={
-                    <RouteShell
-                        route="/dashboard"
-                        title="Admissions dashboard"
-                        description="Kanban, inquiries, staff tools. Playground UI reference: Code/playground/dashboard-ui."
-                        source="Code/Framer/ReferralDashboard.tsx"
-                    />
-                }
-            />
+            <Route path="/dashboard" element={<ReferralDashboardPage />} />
             <Route
                 path="/submit-referrals"
                 element={
