@@ -1,5 +1,6 @@
 import { Link, Route, Routes, useSearchParams } from "react-router-dom"
 import AuthGateway from "./components/AuthGateway"
+import ReferralFormPage from "./pages/ReferralFormPage"
 import ReferralDashboardPage from "./pages/ReferralDashboardPage"
 import ReferralSourcePortalPage from "./pages/ReferralSourcePortalPage"
 import { RouteShell } from "./components/RouteShell"
@@ -66,17 +67,7 @@ export default function App() {
             <Route path="/admin" element={<AuthGateway />} />
             <Route path="/portal" element={<ReferralSourcePortalPage />} />
             <Route path="/dashboard" element={<ReferralDashboardPage />} />
-            <Route
-                path="/submit-referrals"
-                element={
-                    <RouteShell
-                        route="/submit-referrals"
-                        title="Secure referral form"
-                        description="Full clinical referral submission."
-                        source="Code/Framer/ReferralForm.tsx"
-                    />
-                }
-            />
+            <Route path="/submit-referrals" element={<ReferralFormPage />} />
             <Route
                 path="/submit-referrals/documents"
                 element={

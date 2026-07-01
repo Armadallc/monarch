@@ -36,6 +36,25 @@ export function shareLinkBase(): string {
     return `${appOrigin()}/r`
 }
 
+export const MARKETING_SITE_URL = "https://www.monarchcompetency.com"
+
+export function portalPath(): string {
+    return "/portal"
+}
+
+export function submitReferralsPath(): string {
+    return "/submit-referrals"
+}
+
+export function submitReferralsDocumentsPath(code?: string): string {
+    const base = "/submit-referrals/documents"
+    return code ? `${base}?code=${encodeURIComponent(code)}` : base
+}
+
+export function publicReferralsPageUrl(): string {
+    return `${MARKETING_SITE_URL}/referrals`
+}
+
 export function isStaffEmail(email: string | null | undefined): boolean {
     if (!email) return false
     const lower = email.toLowerCase()
