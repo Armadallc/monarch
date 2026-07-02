@@ -13,7 +13,7 @@ cp .env.example .env.local   # fill VITE_SUPABASE_*
 npm run dev
 ```
 
-Open http://localhost:5174
+Open http://localhost:5173
 
 ## Vercel — first import
 

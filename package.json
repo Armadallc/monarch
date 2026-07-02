@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "dev": "npm run dev --prefix apps/referral-app",
     "dev:ui": "npm run dev --prefix Code/playground/dashboard-ui"
   },
   "dependencies": {
