@@ -485,6 +485,21 @@ const SHADOWS = {
 }
 const TRANSITION = "all 0.2s ease"
 // @monarch-theme:inline:end
+const TABLE_COLUMN_HEADER_STYLE: React.CSSProperties = {
+    fontFamily: FONT_HEADING,
+    fontSize: 13,
+    fontWeight: 600,
+    color: "var(--foreground)",
+    textTransform: "uppercase",
+    letterSpacing: "0.004em",
+}
+const ADMIN_TABLE_BODY_CELL_STYLE: React.CSSProperties = {
+    padding: "12px 8px",
+    fontFamily: FONT,
+    fontSize: "13px",
+    color: COLORS.ash,
+    verticalAlign: "middle",
+}
 const FROSTED_GLASS: React.CSSProperties = {
     background: COLORS.coconut25,
     backdropFilter: "blur(14px)",
