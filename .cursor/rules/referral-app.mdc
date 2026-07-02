@@ -1,0 +1,46 @@
+---
+description: apps/referral-app — Vite SPA, components, local dev
+globs: apps/referral-app/**
+alwaysApply: false
+---
+
+# Referral app (`apps/referral-app`)
+
+## Source of truth for PHI UI
+
+Production target is this Vite app, not Framer canvas, for `/portal`, `/dashboard`, `/login`, `/admin`, forms, and `/r`.
+
+Framer copies live in `Code/Framer/` and are ported here; after porting, **edit this app first**, then sync back to Framer if needed per `docs/SYNC_TO_FRAMER.md`.
+
+## Key files
+
+| Area | Path |
+|------|------|
+| Routes | `src/App.tsx` |
+| Staff dashboard | `src/components/ReferralDashboard.tsx` |
+| Partner portal | `src/components/ReferralSourcePortal.tsx` |
+| Auth | `src/components/AuthGateway.tsx`, `src/lib/supabaseAuth.ts` |
+| Program config | `src/config/program.ts` |
+| Env check | `src/env.ts` |
+
+## Viewport breakpoints (match Framer)
+
+- Desktop: ≥1200px
+- Tablet: 810–1199px
+- Phone: ≤809px
+- Wide table (dashboard): ≥1440px
+
+Reference: `Code/Framer/reference/useMonarchViewport.tsx` (inlined in large dashboard/portal files for Framer publish).
+
+## Theme / styles
+
+Dashboard and portal inline design tokens between `@monarch-theme:inline:start` / `end` markers. If table styles are missing after theme sync, check for constants like `TABLE_COLUMN_HEADER_STYLE` still referenced but undefined.
+
+## Local verify
+
+```bash
+cd apps/referral-app && npm install && npm run dev
+# → http://localhost:5173/
+```
+
+If the browser shows an unrelated app on 5173, the server may be correct — clear **localhost site data** / try incognito (stale cache).

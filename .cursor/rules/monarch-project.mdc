@@ -1,0 +1,48 @@
+---
+description: Monarch repo map — PHI app, Framer marketing, env, staging
+alwaysApply: true
+---
+
+# Monarch project map
+
+## Two products in one repo
+
+| Area | Path | Hosting |
+|------|------|---------|
+| **PHI referral app** (local dev + Vercel) | `apps/referral-app/` | Staging: `https://monarch-two-theta.vercel.app` |
+| **Framer code components** (export/sync source) | `Code/Framer/*.tsx` | Marketing: `https://www.monarchcompetency.com` |
+| **Supabase** | `supabase/migrations/` | Shared backend |
+
+**Local PHI dev:** `npm run dev` from repo root → `apps/referral-app` on **port 5173**.  
+Do **not** use `npm run dev:ui` for the real app (playground also wants 5173).
+
+## PHI app routes (`apps/referral-app/src/App.tsx`)
+
+| Path | Purpose |
+|------|---------|
+| `/` | Dev route shell (not production marketing home) |
+| `/login`, `/admin` | `AuthGateway` (partner vs staff) |
+| `/portal` | `ReferralSourcePortal` |
+| `/dashboard` | `ReferralDashboard` |
+| `/submit-referrals`, `/submit-referrals/documents` | Forms |
+| `/r?token=` | ROI share link |
+
+Marketing `/referrals` on Framer is **not** the same as local `localhost:5173/`.
+
+## Auth buckets (technical vs UI copy)
+
+- **Bucket IDs:** `"source"` (partners) and `"staff"` — storage keys `sb-{ref}-auth-source` / `sb-{ref}-auth-staff`.
+- **UI copy** may say "referral partner" — that is correct. **Never bulk-rename `partner` → `source`** across the codebase.
+
+Staff and partner sessions on one origin: use **separate browsers** if sessions conflict locally.
+
+## Env
+
+- Client vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` in repo `.env` and/or `apps/referral-app/.env.local` (app wins).
+- **Never commit** `.env`, `.env.local`, or secrets.
+
+## Docs worth reading first
+
+- `docs/PLATFORM_CONTINUITY.md` — access model
+- `docs/WIX_TO_FRAMER_GO_LIVE_TODAY.md` — published marketing pages
+- `docs/VERCEL_PHI_APP_SETUP.md` — PHI deploy

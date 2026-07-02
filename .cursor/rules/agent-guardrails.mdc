@@ -1,0 +1,29 @@
+---
+description: Agent behavior — scope, clarifications, no drive-by refactors
+alwaysApply: true
+---
+
+# Agent guardrails
+
+## Before editing
+
+1. **Confirm scope** — If the user is explaining context or correcting terminology, treat it as **read-only** unless they explicitly ask for code changes.
+2. **Minimal diffs** — Fix only what was requested. No repo-wide renames, refactors, or "while I'm here" cleanups.
+3. **Ask** when unsure whether Framer editor vs `apps/referral-app` vs `Code/Framer` is the edit target.
+
+## Clarifications are not commands
+
+Bad interpretation: user says "the bucket is `source` not `partner`" → agent renames every `partner` in the repo.
+
+Correct: update **bucket literals** (`?bucket=source`, `AuthBucket`, storage keys) only where technically wrong; leave user-facing "referral partner" copy alone.
+
+## Multi-machine / stale chats
+
+- Assume `main` on GitHub is ahead of any single machine until `git pull`.
+- Do not "catch up" an old chat by inferring large missing work — read `git log` and the files in question.
+- Prefer a **fresh Agent chat** with project rules over steering a far-behind session.
+
+## Commits and deploys
+
+- Commit only when the user asks.
+- PHI staging deploys from `apps/referral-app` on Vercel; Framer publishes separately.

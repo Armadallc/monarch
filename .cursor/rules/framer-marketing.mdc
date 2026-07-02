@@ -1,0 +1,41 @@
+---
+description: Framer marketing site — breakpoints, components, responsive pass
+globs: Code/Framer/**
+alwaysApply: false
+---
+
+# Framer marketing (`Code/Framer`)
+
+## Published marketing pages (www.monarchcompetency.com)
+
+`/`, `/about`, `/program`, `/resources`, `/contact`, `/referrals`, plus legal pages.
+
+PHI routes (`/portal`, `/dashboard`, `/login`, `/admin`, `/submit-referrals`, `/r`) should stay **draft** on Framer; they run on Vercel `apps/referral-app`.
+
+## Breakpoints
+
+- Phone: ≤809px — **full width**; hide Desktop/Tablet layer variants (visibility eye icon).
+- Tablet: 810–1199px
+- Desktop: ≥1200px
+
+Common phone bug: content at ~25–35% width with empty space — usually **desktop per-letter text** or **multiple breakpoint layers visible at once**.
+
+## Typography on phone
+
+- Decorative letter-per-line headlines: **replace** with normal sentence-case on Phone, don't only hide.
+- Footer/menu letter-spacing (`H o m e`): normalize on Phone.
+
+## Code components (workshop / marketing)
+
+| Component | Phone note |
+|-----------|------------|
+| 3D flip cards | Tablet/Mobile may lack back face — use static front or accordion on Phone |
+| `MotionCardsAccordion`, `ScrollStepsCards` | Prefer vertical stack on narrow viewports |
+| `TeamReveal` / `TeamRevealGrid` | Grid → 1 column on mobile |
+| `GridReveal` | 3-col → 1 col |
+| `ResourcePDFList` | Stack View/Download/Share actions |
+| `NavBurger` / `AuthGateway` | Nav + auth chrome |
+
+## Sync
+
+Theme tokens: `Code/theme/sync-framer-theme.ts`. Framer MCP can inspect/patch the live Framer project; repo `Code/Framer/*.tsx` is the git-tracked export.
