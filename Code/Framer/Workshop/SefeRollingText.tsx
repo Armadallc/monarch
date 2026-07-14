@@ -112,6 +112,7 @@ interface SefeRollingTextProps {
     text: string
     font: React.CSSProperties
     color: string
+    hoverMotion: boolean
     transitionDuration: number
     transitionEase: keyof typeof EASE_MAP
     stagger: number
@@ -143,6 +144,7 @@ export default function SefeRollingText(props: SefeRollingTextProps) {
         text,
         font,
         color,
+        hoverMotion = true,
         transitionDuration,
         transitionEase,
         stagger,
@@ -158,7 +160,8 @@ export default function SefeRollingText(props: SefeRollingTextProps) {
 
     const isStatic = useIsStaticRenderer()
     const [hovered, setHovered] = useState(false)
-    const isHovered = !isStatic && hovered
+    const motionEnabled = hoverMotion !== false
+    const isHovered = motionEnabled && !isStatic && hovered
 
     const resolvedColor = resolveColor(color, "#1A1A1A")
     const ease = EASE_MAP[transitionEase] ?? EASE_MAP.easeInOut
@@ -169,7 +172,7 @@ export default function SefeRollingText(props: SefeRollingTextProps) {
 
     const { letterSpacing: _fontLetterSpacing, ...fontRest } = font || {}
 
-    const textRow = (
+    const textRow = motionEnabled ? (
         <>
             {chars.map((char, index) => (
                 <RollingChar
@@ -187,6 +190,23 @@ export default function SefeRollingText(props: SefeRollingTextProps) {
                 />
             ))}
         </>
+    ) : (
+        <>
+            {chars.map((char, index) => {
+                const display = char === " " ? "\u00A0" : char
+                return (
+                    <span
+                        key={`${index}-${char}`}
+                        style={{
+                            display: "inline-block",
+                            marginRight: letterSpacing ? `${letterSpacing}em` : undefined,
+                        }}
+                    >
+                        {display}
+                    </span>
+                )
+            })}
+        </>
     )
 
     const textRowStyle: React.CSSProperties = {
@@ -203,10 +223,12 @@ export default function SefeRollingText(props: SefeRollingTextProps) {
         userSelect: "none",
     }
 
-    const pointerHandlers = {
-        onPointerEnter: () => setHovered(true),
-        onPointerLeave: () => setHovered(false),
-    }
+    const pointerHandlers = motionEnabled
+        ? {
+              onPointerEnter: () => setHovered(true),
+              onPointerLeave: () => setHovered(false),
+          }
+        : {}
 
     // Fill mode: stretch to parent bounds for hover hit area. Parent must have
     // explicit size (Fill or fixed) — not fit-content, or 100% has nothing to fill.
@@ -261,6 +283,7 @@ SefeRollingText.defaultProps = {
         letterSpacing: "0.04em",
     },
     color: "#1A1A1A",
+    hoverMotion: true,
     transitionDuration: 0.4,
     transitionEase: "smooth",
     stagger: 35,
@@ -299,6 +322,16 @@ addPropertyControls(SefeRollingText, {
         type: ControlType.Color,
         title: "Color",
         defaultValue: "#1A1A1A",
+    },
+
+    hoverMotion: {
+        type: ControlType.Boolean,
+        title: "Hover Motion",
+        defaultValue: true,
+        enabledTitle: "On",
+        disabledTitle: "Off",
+        description:
+            "Disable per-character hover roll for better performance (e.g. phone nav instances). Text appearance stays the same.",
     },
 
     transitionDuration: {
