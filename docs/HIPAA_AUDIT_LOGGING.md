@@ -31,6 +31,9 @@ Each audit row in `referral_activity_log` captures:
 | **section_status_changed** | ROI / Insurance / Safety section status updated |
 | **share_link_created** | Share link created for referral |
 | **share_link_revoked** | Share link deleted/revoked |
+| **transfer_requested** | Cross-program transfer requested |
+| **transfer_accepted** | Cross-program transfer accepted |
+| **transfer_declined** | Cross-program transfer declined |
 
 Optional future: **document_uploaded** when a file is attached to a referral (log after successful upload in ReferralForm or dashboard).
 

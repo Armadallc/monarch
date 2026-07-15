@@ -1262,6 +1262,8 @@ interface AdmissionsStaffProfile {
     contact_email: string | null
     title: string | null
     notification_preferences: Record<string, unknown> | null
+    /** When staff last marked the sidebar Briefing panel as caught up. */
+    briefing_last_seen_at?: string | null
     created_at?: string
     updated_at?: string
 }
@@ -1643,6 +1645,12 @@ function activityLogEntryLabel(entry: ActivityLogEntry): string {
             }
             return "Source upload matched document request"
         }
+        case "transfer_requested":
+            return "Transfer requested"
+        case "transfer_accepted":
+            return "Transfer accepted"
+        case "transfer_declined":
+            return "Transfer declined"
         default:
             return entry.activity_type.replace(/_/g, " ")
     }
@@ -1664,11 +1672,15 @@ function activityTypeBadgeLabel(activityType: string): string {
         document_request_sent: "Documents",
         document_request_item_updated: "Documents",
         document_request_items_uploaded: "Documents",
+        transfer_requested: "Transfer",
+        transfer_accepted: "Transfer",
+        transfer_declined: "Transfer",
     }
     if (labels[activityType]) return labels[activityType]
     if (activityType.startsWith("document_")) return "Documents"
     if (activityType.startsWith("roi_")) return "ROI"
     if (activityType.startsWith("share_link_")) return "Share"
+    if (activityType.startsWith("transfer_")) return "Transfer"
     return activityType.replace(/_/g, " ")
 }
 
@@ -1679,6 +1691,7 @@ function activityTypeBadgeColors(activityType: string): { text: string; bg: stri
         return { text: COLORS.moonstone, bg: COLORS.moonstoneLight }
     }
     if (activityType === "assignment_changed") return { text: "var(--foreground)", bg: COLORS.moonstoneLight }
+    if (activityType.startsWith("transfer_")) return { text: COLORS.tangerine, bg: COLORS.tangerineLight }
     return { text: COLORS.ashMuted, bg: COLORS.coconut25 }
 }
 
@@ -1690,6 +1703,7 @@ type ActivityFeedTypeFilter =
     | "section_note"
     | "referral_submitted"
     | "documents"
+    | "transfers"
 
 function matchesActivityFeedTypeFilter(activityType: string, filter: ActivityFeedTypeFilter): boolean {
     if (filter === "all") return true
@@ -1700,10 +1714,80 @@ function matchesActivityFeedTypeFilter(activityType: string, filter: ActivityFee
             activityType.startsWith("share_link_")
         )
     }
+    if (filter === "transfers") {
+        return activityType.startsWith("transfer_")
+    }
     if (filter === "status_change") {
         return activityType === "status_change" || activityType === "section_status_changed"
     }
     return activityType === filter
+}
+
+/** High-signal types for the sidebar Briefing panel (not a full Activity Feed clone). */
+const BRIEFING_HIGH_SIGNAL_TYPES = [
+    "referral_submitted",
+    "status_change",
+    "assignment_changed",
+    "transfer_requested",
+    "transfer_accepted",
+    "transfer_declined",
+] as const
+
+const BRIEFING_FALLBACK_SINCE_MS = 24 * 60 * 60 * 1000
+const BRIEFING_MAX_ROWS = 12
+
+function briefingSinceIso(lastSeenAt: string | null | undefined): string {
+    if (lastSeenAt) {
+        const t = Date.parse(lastSeenAt)
+        if (!Number.isNaN(t)) return new Date(t).toISOString()
+    }
+    return new Date(Date.now() - BRIEFING_FALLBACK_SINCE_MS).toISOString()
+}
+
+function briefingEntrySummary(
+    entry: { activity_type: string; details: Record<string, unknown> },
+    submission: ReferralSubmission,
+    programNamesById: Record<string, string>
+): string {
+    const programLabel = (id: unknown): string => {
+        if (typeof id !== "string" || !id) return "—"
+        return programNamesById[id] || formatLabel(id)
+    }
+    switch (entry.activity_type) {
+        case "referral_submitted": {
+            const source =
+                (submission.referral_source_organization || "").trim() ||
+                (submission.referral_source_name || "").trim() ||
+                "unknown source"
+            return `New referral from ${source}`
+        }
+        case "status_change": {
+            const to = entry.details?.status as string | undefined
+            const from = entry.details?.previous_status as string | undefined
+            if (to === "accepted") return `Review escalated to ${formatLabel(to)}`
+            if (to) {
+                return from
+                    ? `Status: ${formatLabel(from)} → ${formatLabel(to)}`
+                    : `Status → ${formatLabel(to)}`
+            }
+            return activityLogEntryLabel(entry)
+        }
+        case "assignment_changed": {
+            const toName = entry.details?.assigned_to_name as string | undefined
+            const toEmail = entry.details?.assigned_to_email as string | undefined
+            if (toName || toEmail) return `Assigned to ${toName || toEmail}`
+            if (entry.details?.assigned_to_user_id == null && entry.details?.cleared) return "Unassigned"
+            return "Assignment changed"
+        }
+        case "transfer_requested":
+            return `Transfer requested: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        case "transfer_accepted":
+            return `Transferred: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        case "transfer_declined":
+            return `Transfer declined: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        default:
+            return activityLogEntryLabel(entry)
+    }
 }
 
 function activityDayKey(iso: string): string {
@@ -3504,6 +3588,7 @@ const ACTIVITY_FEED_TYPE_FILTER_OPTIONS: { value: ActivityFeedTypeFilter; label:
     { value: "status_change", label: "Status" },
     { value: "message", label: "Messages" },
     { value: "assignment_changed", label: "Assignment" },
+    { value: "transfers", label: "Transfers" },
     { value: "section_note", label: "Notes" },
     { value: "documents", label: "Documents & ROI" },
 ]
@@ -6078,6 +6163,280 @@ const DashboardProfileDrawer = ({
     )
 }
 
+interface BriefingLogRow {
+    id: string
+    referral_id: string
+    activity_type: string
+    actor_email: string | null
+    details: Record<string, unknown>
+    created_at: string
+}
+
+const StaffBriefingPanel = ({
+    collapsed,
+    submissions,
+    programNamesById,
+    lastSeenAt,
+    onMarkCaughtUp,
+    onOpenReferral,
+    onViewAll,
+    onExpandSidebar,
+}: {
+    collapsed: boolean
+    submissions: ReferralSubmission[]
+    programNamesById: Record<string, string>
+    lastSeenAt: string | null
+    onMarkCaughtUp: () => void
+    onOpenReferral: (submission: ReferralSubmission) => void
+    onViewAll: () => void
+    onExpandSidebar: () => void
+}) => {
+    const [rows, setRows] = useState<BriefingLogRow[]>([])
+    const [loading, setLoading] = useState(true)
+    const submissionsById = useMemo(() => new Map(submissions.map((s) => [s.id, s])), [submissions])
+    const sinceIso = useMemo(() => briefingSinceIso(lastSeenAt), [lastSeenAt])
+
+    useEffect(() => {
+        let cancelled = false
+        setLoading(true)
+        supabase
+            .from("referral_activity_log")
+            .select("id, referral_id, activity_type, actor_email, details, created_at")
+            .in("activity_type", [...BRIEFING_HIGH_SIGNAL_TYPES])
+            .gte("created_at", sinceIso)
+            .order("created_at", { ascending: false })
+            .limit(80)
+            .then(({ data, error }) => {
+                if (cancelled) return
+                if (error) {
+                    console.warn("[Dashboard] briefing load:", error)
+                    setRows([])
+                } else {
+                    setRows((data as BriefingLogRow[]) || [])
+                }
+                setLoading(false)
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [sinceIso, submissions.length])
+
+    const visibleRows = useMemo(() => {
+        const out: BriefingLogRow[] = []
+        for (const entry of rows) {
+            if (!submissionsById.has(entry.referral_id)) continue
+            out.push(entry)
+            if (out.length >= BRIEFING_MAX_ROWS) break
+        }
+        return out
+    }, [rows, submissionsById])
+
+    const count = visibleRows.length
+
+    if (collapsed) {
+        return (
+            <div style={{ flexShrink: 0, padding: "4px 6px 8px", display: "flex", justifyContent: "center" }}>
+                <button
+                    type="button"
+                    title={count > 0 ? `${count} briefing update${count === 1 ? "" : "s"}` : "Briefing — catch up"}
+                    aria-label={count > 0 ? `${count} briefing updates. Expand sidebar to review.` : "Open briefing"}
+                    onClick={onExpandSidebar}
+                    style={{
+                        position: "relative",
+                        width: 36,
+                        height: 36,
+                        border: "none",
+                        borderRadius: RADIUS.small,
+                        background: COLORS.sidebarAccent,
+                        color: COLORS.onChrome,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <ActivityNavIcon />
+                    {count > 0 ? (
+                        <span
+                            style={{
+                                position: "absolute",
+                                top: 4,
+                                right: 4,
+                                minWidth: 14,
+                                height: 14,
+                                padding: "0 3px",
+                                borderRadius: RADIUS.pill,
+                                background: COLORS.moonstone,
+                                color: COLORS.primaryForeground,
+                                fontSize: 9,
+                                fontWeight: 700,
+                                lineHeight: "14px",
+                                textAlign: "center",
+                                fontFamily: FONT,
+                            }}
+                        >
+                            {count > 9 ? "9+" : count}
+                        </span>
+                    ) : null}
+                </button>
+            </div>
+        )
+    }
+
+    return (
+        <div
+            style={{
+                flexShrink: 0,
+                margin: "0 10px 8px",
+                borderTop: `1px solid ${COLORS.sidebarBorder}`,
+                paddingTop: 10,
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+                maxHeight: 200,
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 6,
+                    flexShrink: 0,
+                }}
+            >
+                <div style={{ minWidth: 0 }}>
+                    <div
+                        style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            color: COLORS.onChrome,
+                            opacity: 0.85,
+                            fontFamily: FONT_HEADING,
+                        }}
+                    >
+                        Briefing
+                    </div>
+                    <div style={{ fontSize: 11, color: COLORS.onChrome, opacity: 0.55, fontFamily: FONT, marginTop: 2 }}>
+                        {lastSeenAt ? "Since you left" : "Last 24 hours"}
+                    </div>
+                </div>
+                {count > 0 ? (
+                    <button
+                        type="button"
+                        onClick={onMarkCaughtUp}
+                        style={{
+                            border: "none",
+                            background: "transparent",
+                            color: COLORS.onChrome,
+                            opacity: 0.7,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            fontFamily: FONT,
+                            padding: "2px 4px",
+                            flexShrink: 0,
+                        }}
+                    >
+                        Mark caught up
+                    </button>
+                ) : null}
+            </div>
+
+            <div
+                style={{
+                    flex: "1 1 auto",
+                    minHeight: 0,
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                }}
+            >
+                {loading ? (
+                    <p style={{ margin: 0, fontSize: 12, color: COLORS.onChrome, opacity: 0.55, fontFamily: FONT, padding: "8px 2px" }}>
+                        Loading…
+                    </p>
+                ) : count === 0 ? (
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: 12,
+                            color: COLORS.onChrome,
+                            opacity: 0.55,
+                            fontFamily: FONT,
+                            padding: "8px 2px",
+                            lineHeight: 1.4,
+                        }}
+                    >
+                        You&apos;re caught up. No high-signal updates.
+                    </p>
+                ) : (
+                    visibleRows.map((entry) => {
+                        const submission = submissionsById.get(entry.referral_id)!
+                        const clientName =
+                            `${submission.client_first_name || ""} ${submission.client_last_name || ""}`.trim() ||
+                            "Unknown client"
+                        return (
+                            <button
+                                key={entry.id}
+                                type="button"
+                                onClick={() => onOpenReferral(submission)}
+                                style={{
+                                    width: "100%",
+                                    textAlign: "left",
+                                    border: "none",
+                                    borderRadius: RADIUS.small,
+                                    background: COLORS.sidebarAccent,
+                                    color: COLORS.onChrome,
+                                    cursor: "pointer",
+                                    padding: "8px 10px",
+                                    fontFamily: FONT,
+                                    boxSizing: "border-box",
+                                }}
+                            >
+                                <span style={{ display: "block", fontSize: 12, fontWeight: 600, lineHeight: 1.3 }}>
+                                    {clientName}
+                                </span>
+                                <span style={{ display: "block", fontSize: 11, opacity: 0.75, marginTop: 2, lineHeight: 1.35 }}>
+                                    {briefingEntrySummary(entry, submission, programNamesById)}
+                                </span>
+                                <span style={{ display: "block", fontSize: 10, opacity: 0.5, marginTop: 3 }}>
+                                    {formatActivityTime(entry.created_at)}
+                                </span>
+                            </button>
+                        )
+                    })
+                )}
+            </div>
+
+            <button
+                type="button"
+                onClick={onViewAll}
+                style={{
+                    flexShrink: 0,
+                    marginTop: 6,
+                    border: "none",
+                    background: "transparent",
+                    color: COLORS.onChrome,
+                    opacity: 0.75,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    fontFamily: FONT,
+                    textAlign: "left",
+                    padding: "4px 2px",
+                }}
+            >
+                View all → Activity Feed
+            </button>
+        </div>
+    )
+}
+
 const DashboardAppSidebar = ({
     active,
     onNavigate,
@@ -6090,6 +6449,12 @@ const DashboardAppSidebar = ({
     onProfile,
     onHelp,
     onSignOut,
+    submissions,
+    programNamesById,
+    briefingLastSeenAt,
+    onMarkBriefingCaughtUp,
+    onOpenBriefingReferral,
+    onExpandSidebar,
 }: {
     active: SidebarView
     onNavigate: (view: SidebarView) => void
@@ -6102,6 +6467,12 @@ const DashboardAppSidebar = ({
     onProfile: () => void
     onHelp: () => void
     onSignOut: () => void
+    submissions: ReferralSubmission[]
+    programNamesById: Record<string, string>
+    briefingLastSeenAt: string | null
+    onMarkBriefingCaughtUp: () => void
+    onOpenBriefingReferral: (submission: ReferralSubmission) => void
+    onExpandSidebar: () => void
 }) => {
     const width = collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED
     const [profileDrawerOpen, setProfileDrawerOpen] = useState(false)
@@ -6188,6 +6559,17 @@ const DashboardAppSidebar = ({
                         )
                     })}
                 </nav>
+
+                <StaffBriefingPanel
+                    collapsed={collapsed}
+                    submissions={submissions}
+                    programNamesById={programNamesById}
+                    lastSeenAt={briefingLastSeenAt}
+                    onMarkCaughtUp={onMarkBriefingCaughtUp}
+                    onOpenReferral={onOpenBriefingReferral}
+                    onViewAll={() => onNavigate("activity")}
+                    onExpandSidebar={onExpandSidebar}
+                />
 
                 <div
                     style={{
@@ -10883,9 +11265,61 @@ export default function ReferralDashboard() {
     useForwardWheelToScrollTarget(tableHeaderScrollRef, tableBodyScrollRef, true)
     const [staffAssigneeByUserId, setStaffAssigneeByUserId] = useState<Record<string, AdmissionsStaffProfile | undefined>>({})
     const [programNamesById, setProgramNamesById] = useState<Record<string, string>>({})
+    const [briefingLastSeenAt, setBriefingLastSeenAt] = useState<string | null>(null)
     const mergeStaffProfile = useCallback((p: AdmissionsStaffProfile) => {
         setStaffAssigneeByUserId((prev) => ({ ...prev, [p.user_id]: p }))
+        if (p.briefing_last_seen_at !== undefined) {
+            setBriefingLastSeenAt(p.briefing_last_seen_at ?? null)
+        }
     }, [])
+
+    useEffect(() => {
+        if (!currentUserId) {
+            setBriefingLastSeenAt(null)
+            return
+        }
+        let cancelled = false
+        ;(async () => {
+            const { data, error } = await supabase
+                .from("admissions_staff_profiles")
+                .select("briefing_last_seen_at")
+                .eq("user_id", currentUserId)
+                .maybeSingle()
+            if (cancelled) return
+            if (error) {
+                console.warn("[Dashboard] briefing_last_seen_at load:", error)
+                return
+            }
+            setBriefingLastSeenAt((data as { briefing_last_seen_at?: string | null } | null)?.briefing_last_seen_at ?? null)
+        })()
+        return () => {
+            cancelled = true
+        }
+    }, [currentUserId])
+
+    const persistBriefingLastSeen = useCallback(async (iso: string) => {
+        if (!currentUserId) return
+        setBriefingLastSeenAt(iso)
+        const { data: updated, error: updateErr } = await supabase
+            .from("admissions_staff_profiles")
+            .update({ briefing_last_seen_at: iso })
+            .eq("user_id", currentUserId)
+            .select("user_id")
+        if (updateErr) {
+            console.warn("[Dashboard] briefing_last_seen_at update:", updateErr)
+            return
+        }
+        if (updated && updated.length > 0) return
+        const { error: insertErr } = await supabase.from("admissions_staff_profiles").insert({
+            user_id: currentUserId,
+            briefing_last_seen_at: iso,
+        })
+        if (insertErr) console.warn("[Dashboard] briefing_last_seen_at insert:", insertErr)
+    }, [currentUserId])
+
+    const handleMarkBriefingCaughtUp = useCallback(() => {
+        void persistBriefingLastSeen(new Date().toISOString())
+    }, [persistBriefingLastSeen])
 
     useEffect(() => {
         if (!document.getElementById("montserrat-font")) {
@@ -11607,6 +12041,16 @@ export default function ReferralDashboard() {
                 prev && prev.id === referral.id ? { ...prev, transfer_status: "pending_acceptance" } : prev
             )
             setTransferDialogReferral(null)
+            await supabase.rpc("log_referral_activity", {
+                p_referral_id: referral.id,
+                p_activity_type: "transfer_requested",
+                p_details: {
+                    transfer_id: row.id,
+                    from_program_id: fromProgramId,
+                    to_program_id: input.toProgramId,
+                    to_assigned_user_id: input.toAssigneeId,
+                },
+            })
         } catch (err: any) {
             console.error("[Dashboard] transfer request failed:", err)
             setError(
@@ -11662,6 +12106,16 @@ export default function ReferralDashboard() {
                         : s
                 )
             )
+            await supabase.rpc("log_referral_activity", {
+                p_referral_id: transfer.referral_id,
+                p_activity_type: "transfer_accepted",
+                p_details: {
+                    transfer_id: transfer.id,
+                    from_program_id: transfer.from_program_id,
+                    to_program_id: transfer.to_program_id,
+                    to_assigned_user_id: transfer.to_assigned_user_id,
+                },
+            })
         } catch (err: any) {
             console.error("[Dashboard] accept transfer failed:", err)
             setError(`Accept transfer failed: ${err.message || "Unknown error"}`)
@@ -11701,6 +12155,15 @@ export default function ReferralDashboard() {
             setSubmissions((prev) =>
                 prev.map((s) => (s.id === transfer.referral_id ? { ...s, transfer_status: "declined" } : s))
             )
+            await supabase.rpc("log_referral_activity", {
+                p_referral_id: transfer.referral_id,
+                p_activity_type: "transfer_declined",
+                p_details: {
+                    transfer_id: transfer.id,
+                    from_program_id: transfer.from_program_id,
+                    to_program_id: transfer.to_program_id,
+                },
+            })
         } catch (err: any) {
             console.error("[Dashboard] decline transfer failed:", err)
             setError(`Decline transfer failed: ${err.message || "Unknown error"}`)
@@ -11776,6 +12239,9 @@ export default function ReferralDashboard() {
         setShowExportMenu(false)
         setSelectedSubs(new Set())
         setSelectedInqs(new Set())
+        if (view === "activity") {
+            void persistBriefingLastSeen(new Date().toISOString())
+        }
     }
 
     const handleCasesTabChange = (tab: CasesTabId) => {
@@ -12324,6 +12790,12 @@ export default function ReferralDashboard() {
                 onSignOut={() => {
                     void handleSignOut()
                 }}
+                submissions={submissions}
+                programNamesById={programNamesById}
+                briefingLastSeenAt={briefingLastSeenAt}
+                onMarkBriefingCaughtUp={handleMarkBriefingCaughtUp}
+                onOpenBriefingReferral={openSubmissionDetail}
+                onExpandSidebar={() => setSidebarCollapsed(false)}
             />
 
             <div style={dashboardWorkspaceRowStyle}>
