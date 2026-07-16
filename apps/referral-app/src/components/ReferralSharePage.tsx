@@ -107,21 +107,25 @@ declare global {
     }
 }
 
-/** Compact sticky step tracker; field editor stays minimized until a field is clicked. */
+/** Monarch chrome: minimized field editor; step bar quiet until hover/focus. */
 const DOCUSEAL_EMBED_CSS = `
-.form-container { padding-bottom: 64px !important; }
+.form-container { padding-bottom: 36px !important; }
+
+/* Low-profile sticky rail — moonstone tip, shell wash */
 .steps-progress {
   position: sticky !important;
   bottom: 0 !important;
   z-index: 40 !important;
-  background: #FFFFFF !important;
-  border-top: 1px solid rgba(43, 40, 40, 0.12) !important;
-  padding: 6px 10px 8px !important;
   margin: 0 !important;
-  max-height: 52px !important;
+  background: rgba(248, 246, 241, 0.94) !important;
+  border-top: 2px solid #7EACB5 !important;
+  padding: 6px 10px 8px !important;
+  max-height: 44px !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  box-shadow: 0 -4px 14px rgba(43, 40, 40, 0.08) !important;
+  box-shadow: none !important;
+  opacity: 0.72 !important;
+  transition: max-height 0.2s ease, padding 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
 }
 .steps-progress button {
   min-width: 22px !important;
@@ -129,13 +133,64 @@ const DOCUSEAL_EMBED_CSS = `
   padding: 0 6px !important;
   font-size: 11px !important;
   line-height: 22px !important;
+  border-radius: 6px !important;
+  background: #E9EDF6 !important;
+  color: #2B2828 !important;
+  border: none !important;
 }
-.steps-progress-current { background: #2B2828 !important; color: #FFFFFF !important; }
-.minimize-form-button { opacity: 0.85 !important; }
+.steps-progress-current {
+  background: #2B2828 !important;
+  color: #FFFFFF !important;
+}
+
+/* Pointer devices: collapse to a quiet strip until hover/focus */
+@media (hover: hover) and (pointer: fine) {
+  .steps-progress {
+    max-height: 10px !important;
+    padding: 0 10px !important;
+    opacity: 0.45 !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+  }
+  .steps-progress button { opacity: 0 !important; }
+  .steps-progress:hover,
+  .steps-progress:focus-within {
+    max-height: 48px !important;
+    padding: 8px 10px 10px !important;
+    opacity: 1 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    background: #FFFFFF !important;
+    border-top-color: rgba(43, 40, 40, 0.12) !important;
+    border-top-width: 1px !important;
+    box-shadow: 0 -4px 14px rgba(43, 40, 40, 0.08) !important;
+  }
+  .steps-progress:hover button,
+  .steps-progress:focus-within button { opacity: 1 !important; }
+}
+
+.minimize-form-button {
+  opacity: 0.55 !important;
+  color: #7EACB5 !important;
+}
+.minimize-form-button:hover { opacity: 1 !important; }
+
 .steps-form {
   max-width: min(420px, 92vw) !important;
-  box-shadow: 0 12px 32px rgba(43, 40, 40, 0.18) !important;
+  background: #FFFFFF !important;
+  border: 1px solid rgba(43, 40, 40, 0.12) !important;
   border-radius: 12px !important;
+  box-shadow: 0 12px 32px rgba(43, 40, 40, 0.16) !important;
+}
+.submit-form-button {
+  background: #2B2828 !important;
+  color: #E9EDF6 !important;
+  border-radius: 12px !important;
+  border: none !important;
+}
+.field-area-active-label {
+  background: #7EACB5 !important;
+  color: #FFFFFF !important;
 }
 `
 
@@ -451,9 +506,9 @@ export default function ReferralSharePage() {
                         }}
                     >
                         <strong>Tip:</strong> Click a highlighted field on the document to
-                        fill it — the editor opens only when you need it. Use the slim
-                        step bar at the bottom to jump between fields, then submit when
-                        everything required is done.
+                        fill it. The step bar at the bottom stays quiet until you hover or
+                        tap it — use it to jump between fields, then submit when everything
+                        required is done.
                     </div>
                     <div
                         style={{

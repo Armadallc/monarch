@@ -72,8 +72,8 @@ See **`docs/DOCUSEAL_TEMPLATE_3756335_AUDIT.md`** — naming, conditionals, spel
 
 **Monarch fix (in `ReferralSharePage`):**
 1. `data-minimize="true"` — field editor stays collapsed until the signer clicks a field (popover-style fill).
-2. `data-custom-css` — slim sticky `.steps-progress` bar at the bottom for jump navigation; constrain `.steps-form` width when expanded.
-3. Tip copy above the embed explains click-to-fill.
+2. `data-custom-css` — Monarch-colored chrome; on pointer devices `.steps-progress` collapses to a quiet moonstone strip until hover/focus; touch keeps a slim always-usable rail; constrain `.steps-form` when expanded.
+3. Tip copy above the embed explains click-to-fill + optional step bar.
 
 **DocuSeal template (optional):** Confirm step-by-step signing is enabled (not fill-on-page-only). Field order follows page layout when `data-order-as-on-page="true"`.
 
