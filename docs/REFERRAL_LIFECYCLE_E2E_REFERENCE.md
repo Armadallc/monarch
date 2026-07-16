@@ -247,7 +247,7 @@ flowchart TB
 | “New” badge for unread staff messages/notes | **Working** |
 | Detail modal **X** close button (Framer embed quirk) | **In progress** — backdrop close works |
 | Full table **mirror** of admissions filters/actions | **Planned** (P2 checklist) |
-| Edit own submission after submit | **Planned** (policy + RLS + audit) |
+| Edit own submission after submit | **Not planned** — sources remain read-only; admissions apply identity corrections via [`REFERRAL_FIELD_CORRECTIONS.md`](REFERRAL_FIELD_CORRECTIONS.md) |
 
 ### 6.4 Post-submit document upload
 
@@ -474,12 +474,13 @@ Grouped by theme; see checklists for P0–P2 ordering.
 - [ ] Public **upload-only** share pages (`document_upload` link type)  
 - [ ] Portal **create** share links + collateral invites  
 - [ ] Portal **dashboard home** (stats, recent activity)  
-- [ ] **Edit own referral** post-submit (typos, missing fields) with audit  
+- [ ] Portal visibility after admit / EMR handoff — legal + [`REFERRAL_LIFECYCLE_AND_ADMISSIONS_CLOSURE_NOTES.md`](REFERRAL_LIFECYCLE_AND_ADMISSIONS_CLOSURE_NOTES.md)  
 - [ ] **In-portal “ask a question”** without opening a referral  
 - [ ] Wire **notification emails** to profile toggles  
 
 ### Product — admissions
 
+- [x] **Field corrections** — schema + RPC + acceptance snapshot; staff UI pending — [`REFERRAL_FIELD_CORRECTIONS.md`](REFERRAL_FIELD_CORRECTIONS.md)
 - [ ] **Case manager** staff role (assigned-only, read-mostly + message)  
 - [ ] **Admin `/admin` shell** — role assignment + CMS for help/FAQ/banners ([`ADMIN_CMS_AND_HELP_FAQ_REFERENCE.md`](ADMIN_CMS_AND_HELP_FAQ_REFERENCE.md))  
 - [ ] **Lifecycle closure** column or phase distinct from `status`  

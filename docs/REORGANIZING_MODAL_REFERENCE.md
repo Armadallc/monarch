@@ -214,17 +214,13 @@ ROI and Insurance workflows are similarly **process trackers**, not duplicates o
 
 ---
 
-## Deferred — source edit & locking (do not implement in layout phase)
+## Deferred — source edit & locking (superseded)
 
-Referring sources may eventually **edit incomplete referrals** and update location/contacts/urgency; they must **not** edit status, staff notes, third-party PHI, MAR, or post-review risk answers.
+**Superseded (2026-07):** Sources do **not** edit post-submit. Admissions apply narrow identity corrections with an append-only field log and freeze a snapshot at `accepted` for EMR handoff. See [`REFERRAL_FIELD_CORRECTIONS.md`](REFERRAL_FIELD_CORRECTIONS.md).
 
-**Locking (critical, later):**
+~~Referring sources may eventually **edit incomplete referrals**…~~ (retired)
 
-- Auto-lock at `under_review` and/or per-section locks after submit
-- Staff override to lock entire referral
-- Sources retain: messages, non-internal notes, status visibility, document upload
-
-Requires schema/RLS/product rules — **explicitly out of scope** for modal layout work. Document only; implement after layout + workflow UX is stable.
+**Previously noted locking ideas** (auto-lock at under_review, staff override) are unnecessary for source write paths if sources never gain PATCH access. Keep messaging / upload / status visibility for sources as today.
 
 ---
 
@@ -278,8 +274,8 @@ Phases **D1–D6** are **layout/UX** (distinct from completed theme Phases A–C
 
 | Epic | Scope |
 |------|--------|
-| **Source editable sections** | PATCH API, field-level allowlist, validation |
-| **Referral locking** | Status triggers, section locks, staff lock toggle |
+| **Field corrections (admissions)** | Schema + RPC shipped — staff UI for allowlisted identity fields; see `REFERRAL_FIELD_CORRECTIONS.md` |
+| **Referral locking** | Superseded for source writes; optional soft-lock UI after accept already enforced in RPC |
 | **Review workflow** | Set `reviewed_by` / `review_at` from modal |
 | **Audit metadata** | Admin-only surface or remove |
 
