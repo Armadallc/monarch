@@ -107,20 +107,36 @@ declare global {
     }
 }
 
-/** Sticky step tracker inside DocuSeal embed (see DocuSeal embed custom CSS docs). */
+/** Compact sticky step tracker; field editor stays minimized until a field is clicked. */
 const DOCUSEAL_EMBED_CSS = `
-.form-container { padding-bottom: 88px !important; }
+.form-container { padding-bottom: 64px !important; }
 .steps-progress {
   position: sticky !important;
   bottom: 0 !important;
   z-index: 40 !important;
-  background: #E9EDF6 !important;
+  background: #FFFFFF !important;
   border-top: 1px solid rgba(43, 40, 40, 0.12) !important;
-  padding: 10px 12px 12px !important;
+  padding: 6px 10px 8px !important;
   margin: 0 !important;
-  box-shadow: 0 -8px 20px rgba(43, 40, 40, 0.1) !important;
+  max-height: 52px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  box-shadow: 0 -4px 14px rgba(43, 40, 40, 0.08) !important;
 }
-.steps-progress-current { background: #2B2828 !important; }
+.steps-progress button {
+  min-width: 22px !important;
+  height: 22px !important;
+  padding: 0 6px !important;
+  font-size: 11px !important;
+  line-height: 22px !important;
+}
+.steps-progress-current { background: #2B2828 !important; color: #FFFFFF !important; }
+.minimize-form-button { opacity: 0.85 !important; }
+.steps-form {
+  max-width: min(420px, 92vw) !important;
+  box-shadow: 0 12px 32px rgba(43, 40, 40, 0.18) !important;
+  border-radius: 12px !important;
+}
 `
 
 export default function ReferralSharePage() {
@@ -434,9 +450,10 @@ export default function ReferralSharePage() {
                             lineHeight: 1.5,
                         }}
                     >
-                        <strong>Tip:</strong> Use the step tracker bar (pinned at the
-                        bottom of the form) to jump between fields. Complete all required
-                        areas, then submit.
+                        <strong>Tip:</strong> Click a highlighted field on the document to
+                        fill it — the editor opens only when you need it. Use the slim
+                        step bar at the bottom to jump between fields, then submit when
+                        everything required is done.
                     </div>
                     <div
                         style={{
@@ -453,7 +470,7 @@ export default function ReferralSharePage() {
                             data-src={embedSrc}
                             data-email={signerEmail || undefined}
                             data-name={signerName || undefined}
-                            data-minimize="false"
+                            data-minimize="true"
                             data-order-as-on-page="true"
                             data-go-to-last="true"
                             data-autoscroll-fields="true"

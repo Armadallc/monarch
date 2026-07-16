@@ -68,11 +68,16 @@ See **`docs/DOCUSEAL_TEMPLATE_3756335_AUDIT.md`** — naming, conditionals, spel
 
 ## Stepper / walkthrough visibility
 
-**Cause:** DocuSeal renders `.steps-progress` at the bottom of a tall signing form. Inside a scrolled Framer stack, users only see it after scrolling to the end.
+**Problem:** DocuSeal’s expanded field editor (`.steps-form`) defaults open and can consume a large share of the signing viewport.
 
-**Monarch fix (in `ReferralSharePage`):** `data-custom-css` on `<docuseal-form>` makes `.steps-progress` `position: sticky; bottom: 0` inside the embed. Also add padding on `.form-container` so content is not hidden behind the bar.
+**Monarch fix (in `ReferralSharePage`):**
+1. `data-minimize="true"` — field editor stays collapsed until the signer clicks a field (popover-style fill).
+2. `data-custom-css` — slim sticky `.steps-progress` bar at the bottom for jump navigation; constrain `.steps-form` width when expanded.
+3. Tip copy above the embed explains click-to-fill.
 
-**DocuSeal template (optional):** In the template builder, confirm step-by-step signing is enabled (not fill-on-page-only). Field order follows page layout when `data-order-as-on-page="true"`.
+**DocuSeal template (optional):** Confirm step-by-step signing is enabled (not fill-on-page-only). Field order follows page layout when `data-order-as-on-page="true"`.
+
+After changing the Framer paste of `ReferralSharePage`, republish the `/r` page.
 
 ---
 
