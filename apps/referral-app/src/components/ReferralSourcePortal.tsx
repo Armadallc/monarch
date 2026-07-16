@@ -3611,6 +3611,8 @@ interface ReferralSourceProfile {
     portal_access_preferred?: boolean | null
     portal_terms_acknowledged_at?: string | null
     profile_deactivated_at?: string | null
+    /** When the source last marked the sidebar Briefing as caught up. */
+    briefing_last_seen_at?: string | null
     created_at?: string
     updated_at?: string
 }
@@ -4400,6 +4402,341 @@ function PortalArchiveNavIcon() {
     )
 }
 
+function PortalBriefingNavIcon() {
+    return (
+        <PortalSidebarNavIcon>
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </PortalSidebarNavIcon>
+    )
+}
+
+/** High-signal activity for the source portal Briefing (catch-up stand-in for a dedicated activity page). */
+const PORTAL_BRIEFING_HIGH_SIGNAL_TYPES = [
+    "status_change",
+    "assignment_changed",
+    "transfer_requested",
+    "transfer_accepted",
+    "transfer_declined",
+    "document_request_sent",
+    "message",
+    "roi_signed",
+] as const
+
+const PORTAL_BRIEFING_FALLBACK_SINCE_MS = 24 * 60 * 60 * 1000
+const PORTAL_BRIEFING_MAX_ROWS = 12
+
+interface PortalBriefingLogRow {
+    id: string
+    referral_id: string
+    activity_type: string
+    actor_user_id?: string | null
+    actor_email?: string | null
+    details: Record<string, unknown>
+    created_at: string
+}
+
+function portalBriefingSinceIso(lastSeenAt: string | null | undefined): string {
+    if (lastSeenAt) {
+        const t = Date.parse(lastSeenAt)
+        if (!Number.isNaN(t)) return new Date(t).toISOString()
+    }
+    return new Date(Date.now() - PORTAL_BRIEFING_FALLBACK_SINCE_MS).toISOString()
+}
+
+function portalBriefingFormatTime(iso: string): string {
+    return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+}
+
+function portalBriefingEntrySummary(
+    entry: { activity_type: string; details: Record<string, unknown> },
+    _referral: PortalReferral,
+    programNamesById: Record<string, string>
+): string {
+    const programLabel = (id: unknown): string => {
+        if (typeof id !== "string" || !id) return "—"
+        return programNamesById[id] || formatLabel(id)
+    }
+    switch (entry.activity_type) {
+        case "status_change": {
+            const to = entry.details?.status as string | undefined
+            const from = entry.details?.previous_status as string | undefined
+            if (to) {
+                return from
+                    ? `Status: ${formatLabel(from)} → ${formatLabel(to)}`
+                    : `Status → ${formatLabel(to)}`
+            }
+            return "Status updated"
+        }
+        case "assignment_changed": {
+            const toName = entry.details?.assigned_to_name as string | undefined
+            const toEmail = entry.details?.assigned_to_email as string | undefined
+            if (toName || toEmail) return `Assigned to ${toName || toEmail}`
+            if (entry.details?.assigned_to_user_id == null && entry.details?.cleared) return "Unassigned"
+            return "Assignment changed"
+        }
+        case "transfer_requested":
+            return `Transfer requested: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        case "transfer_accepted":
+            return `Transferred: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        case "transfer_declined":
+            return `Transfer declined: ${programLabel(entry.details?.from_program_id)} → ${programLabel(entry.details?.to_program_id)}`
+        case "document_request_sent":
+            return "Admissions requested documents"
+        case "message":
+            return "New message from admissions"
+        case "roi_signed":
+            return "ROI signed"
+        default:
+            return entry.activity_type.replace(/_/g, " ")
+    }
+}
+
+function PortalBriefingPanel({
+    collapsed,
+    referrals,
+    programNamesById,
+    currentUserId,
+    lastSeenAt,
+    onMarkCaughtUp,
+    onOpenReferral,
+    onExpandSidebar,
+}: {
+    collapsed: boolean
+    referrals: PortalReferral[]
+    programNamesById: Record<string, string>
+    currentUserId?: string | null
+    lastSeenAt: string | null
+    onMarkCaughtUp: () => void
+    onOpenReferral: (referral: PortalReferral) => void
+    onExpandSidebar: () => void
+}) {
+    const [rows, setRows] = useState<PortalBriefingLogRow[]>([])
+    const [loading, setLoading] = useState(true)
+    const referralsById = useMemo(() => new Map(referrals.map((r) => [r.id, r])), [referrals])
+    const sinceIso = useMemo(() => portalBriefingSinceIso(lastSeenAt), [lastSeenAt])
+
+    useEffect(() => {
+        let cancelled = false
+        setLoading(true)
+        supabase
+            .from("referral_activity_log")
+            .select("id, referral_id, activity_type, actor_user_id, actor_email, details, created_at")
+            .in("activity_type", [...PORTAL_BRIEFING_HIGH_SIGNAL_TYPES])
+            .gte("created_at", sinceIso)
+            .order("created_at", { ascending: false })
+            .limit(80)
+            .then(({ data, error }) => {
+                if (cancelled) return
+                if (error) {
+                    console.warn("[Portal] briefing load:", error)
+                    setRows([])
+                } else {
+                    setRows((data as PortalBriefingLogRow[]) || [])
+                }
+                setLoading(false)
+            })
+        return () => {
+            cancelled = true
+        }
+    }, [sinceIso, referrals.length])
+
+    const visibleRows = useMemo(() => {
+        const out: PortalBriefingLogRow[] = []
+        for (const entry of rows) {
+            if (!referralsById.has(entry.referral_id)) continue
+            // Skip the source's own outbound messages so the log stays "while you were away"
+            if (entry.activity_type === "message" && currentUserId && entry.actor_user_id === currentUserId) continue
+            out.push(entry)
+            if (out.length >= PORTAL_BRIEFING_MAX_ROWS) break
+        }
+        return out
+    }, [rows, referralsById, currentUserId])
+
+    const count = visibleRows.length
+
+    if (collapsed) {
+        return (
+            <div style={{ flexShrink: 0, padding: "4px 6px 8px", display: "flex", justifyContent: "center" }}>
+                <button
+                    type="button"
+                    title={count > 0 ? `${count} briefing update${count === 1 ? "" : "s"}` : "Briefing — catch up"}
+                    aria-label={count > 0 ? `${count} briefing updates. Expand sidebar to review.` : "Open briefing"}
+                    onClick={onExpandSidebar}
+                    style={{
+                        position: "relative",
+                        width: 36,
+                        height: 36,
+                        border: "none",
+                        borderRadius: RADIUS.small,
+                        background: COLORS.sidebarAccent,
+                        color: COLORS.onChrome,
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <PortalBriefingNavIcon />
+                    {count > 0 ? (
+                        <span
+                            style={{
+                                position: "absolute",
+                                top: 4,
+                                right: 4,
+                                minWidth: 14,
+                                height: 14,
+                                padding: "0 3px",
+                                borderRadius: RADIUS.pill,
+                                background: COLORS.moonstone,
+                                color: COLORS.primaryForeground,
+                                fontSize: 9,
+                                fontWeight: 700,
+                                lineHeight: "14px",
+                                textAlign: "center",
+                                fontFamily: FONT,
+                            }}
+                        >
+                            {count > 9 ? "9+" : count}
+                        </span>
+                    ) : null}
+                </button>
+            </div>
+        )
+    }
+
+    return (
+        <div
+            style={{
+                flexShrink: 0,
+                margin: "0 10px 8px",
+                borderTop: `1px solid ${COLORS.sidebarBorder}`,
+                paddingTop: 10,
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+                maxHeight: 240,
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 8,
+                    marginBottom: 6,
+                    flexShrink: 0,
+                }}
+            >
+                <div style={{ minWidth: 0 }}>
+                    <div
+                        style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            letterSpacing: "0.06em",
+                            textTransform: "uppercase",
+                            color: COLORS.onChrome,
+                            opacity: 0.85,
+                            fontFamily: FONT_HEADING,
+                        }}
+                    >
+                        Briefing
+                    </div>
+                    <div style={{ fontSize: 11, color: COLORS.onChrome, opacity: 0.55, fontFamily: FONT, marginTop: 2 }}>
+                        {lastSeenAt ? "Since you left" : "Last 24 hours"}
+                    </div>
+                </div>
+                {count > 0 ? (
+                    <button
+                        type="button"
+                        onClick={onMarkCaughtUp}
+                        style={{
+                            border: "none",
+                            background: "transparent",
+                            color: COLORS.onChrome,
+                            opacity: 0.7,
+                            fontSize: 11,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                            fontFamily: FONT,
+                            padding: "2px 4px",
+                            flexShrink: 0,
+                        }}
+                    >
+                        Mark caught up
+                    </button>
+                ) : null}
+            </div>
+
+            <div
+                style={{
+                    flex: "1 1 auto",
+                    minHeight: 0,
+                    overflowY: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                }}
+            >
+                {loading ? (
+                    <p style={{ margin: 0, fontSize: 12, color: COLORS.onChrome, opacity: 0.55, fontFamily: FONT, padding: "8px 2px" }}>
+                        Loading…
+                    </p>
+                ) : count === 0 ? (
+                    <p
+                        style={{
+                            margin: 0,
+                            fontSize: 12,
+                            color: COLORS.onChrome,
+                            opacity: 0.55,
+                            fontFamily: FONT,
+                            padding: "8px 2px",
+                            lineHeight: 1.4,
+                        }}
+                    >
+                        You&apos;re caught up. No recent updates on your referrals.
+                    </p>
+                ) : (
+                    visibleRows.map((entry) => {
+                        const referral = referralsById.get(entry.referral_id)!
+                        const clientName =
+                            `${referral.client_first_name || ""} ${referral.client_last_name || ""}`.trim() ||
+                            "Unknown client"
+                        return (
+                            <button
+                                key={entry.id}
+                                type="button"
+                                onClick={() => onOpenReferral(referral)}
+                                style={{
+                                    width: "100%",
+                                    textAlign: "left",
+                                    border: "none",
+                                    borderRadius: RADIUS.small,
+                                    background: COLORS.sidebarAccent,
+                                    color: COLORS.onChrome,
+                                    cursor: "pointer",
+                                    padding: "8px 10px",
+                                    fontFamily: FONT,
+                                    boxSizing: "border-box",
+                                }}
+                            >
+                                <span style={{ display: "block", fontSize: 12, fontWeight: 600, lineHeight: 1.3 }}>
+                                    {clientName}
+                                </span>
+                                <span style={{ display: "block", fontSize: 11, opacity: 0.75, marginTop: 2, lineHeight: 1.35 }}>
+                                    {portalBriefingEntrySummary(entry, referral, programNamesById)}
+                                </span>
+                                <span style={{ display: "block", fontSize: 10, opacity: 0.5, marginTop: 3 }}>
+                                    {portalBriefingFormatTime(entry.created_at)}
+                                </span>
+                            </button>
+                        )
+                    })
+                )}
+            </div>
+        </div>
+    )
+}
+
 function PortalSidebarCollapseIcon({ collapsed }: { collapsed: boolean }) {
     return (
         <svg width={18} height={18} viewBox="0 0 24 24" fill="currentColor" aria-hidden style={{ transform: "scaleX(-1)" }}>
@@ -4756,6 +5093,13 @@ const PortalAppSidebar = ({
     onHelp,
     onSignOut,
     onSwitchAccount,
+    referrals,
+    programNamesById,
+    currentUserId,
+    briefingLastSeenAt,
+    onMarkBriefingCaughtUp,
+    onOpenBriefingReferral,
+    onExpandSidebar,
 }: {
     active: PortalSidebarView
     onNavigate: (view: PortalSidebarView) => void
@@ -4769,6 +5113,13 @@ const PortalAppSidebar = ({
     onHelp: () => void
     onSignOut: () => void
     onSwitchAccount: () => void
+    referrals: PortalReferral[]
+    programNamesById: Record<string, string>
+    currentUserId?: string | null
+    briefingLastSeenAt: string | null
+    onMarkBriefingCaughtUp: () => void
+    onOpenBriefingReferral: (referral: PortalReferral) => void
+    onExpandSidebar: () => void
 }) => {
     const width = collapsed ? PORTAL_SIDEBAR_WIDTH_COLLAPSED : PORTAL_SIDEBAR_WIDTH_EXPANDED
     const [profileDrawerOpen, setProfileDrawerOpen] = useState(false)
@@ -4849,6 +5200,17 @@ const PortalAppSidebar = ({
                         )
                     })}
                 </nav>
+
+                <PortalBriefingPanel
+                    collapsed={collapsed}
+                    referrals={referrals}
+                    programNamesById={programNamesById}
+                    currentUserId={currentUserId}
+                    lastSeenAt={briefingLastSeenAt}
+                    onMarkCaughtUp={onMarkBriefingCaughtUp}
+                    onOpenReferral={onOpenBriefingReferral}
+                    onExpandSidebar={onExpandSidebar}
+                />
 
                 <div style={{ flexShrink: 0, width: "100%", boxSizing: "border-box", padding: collapsed ? "0 6px" : "0 10px" }}>
                     <PortalSidebarFooterToggleRow collapsed={collapsed} onToggleCollapse={onToggleCollapse} />
@@ -6033,6 +6395,7 @@ function PortalArchiveWorkspace({
                         setSearchQuery("")
                         setFilters({ ...DEFAULT_PORTAL_LIST_FILTERS })
                     }}
+                    showSourceTypeFilter={false}
                 />
             )}
 
@@ -6257,6 +6620,7 @@ export default function ReferralSourcePortal() {
     const [deactivateBusy, setDeactivateBusy] = useState(false)
     const [portalSidebarView, setPortalSidebarView] = useState<PortalSidebarView>("referrals")
     const [portalSidebarCollapsed, setPortalSidebarCollapsed] = useState(false)
+    const [briefingLastSeenAt, setBriefingLastSeenAt] = useState<string | null>(null)
     const portalTableHeaderScrollRef = useRef<HTMLDivElement>(null)
     const portalTableBodyScrollRef = useRef<HTMLDivElement>(null)
     const syncPortalTableHorizontalScroll = useCallback((source: "header" | "body") => {
@@ -6512,9 +6876,12 @@ export default function ReferralSourcePortal() {
                 if (error) {
                     setProfile(null)
                 } else if (data) {
-                    setProfile(data as ReferralSourceProfile)
+                    const row = data as ReferralSourceProfile
+                    setProfile(row)
+                    setBriefingLastSeenAt(row.briefing_last_seen_at ?? null)
                 } else {
                     setProfile({ user_id: uid, display_name: null, organization: null, title: null, phone: null, fax: null, preferred_contact_method: null, notification_preferences: {} })
+                    setBriefingLastSeenAt(null)
                 }
                 setProfileLoading(false)
             })
@@ -6677,6 +7044,25 @@ export default function ReferralSourcePortal() {
             setReferrals((prev) => prev.map((ref) => ref.id === r.id ? { ...ref, has_unread_messages: false, has_unread_section_notes: false, unread_section_notes_count: 0 } : ref))
         }
     }
+
+    const handleMarkBriefingCaughtUp = useCallback(async () => {
+        const uid = session?.user?.id
+        if (!uid) return
+        const iso = new Date().toISOString()
+        setBriefingLastSeenAt(iso)
+        setProfile((prev) => (prev ? { ...prev, briefing_last_seen_at: iso } : prev))
+        const { error: updateErr } = await supabase
+            .from("referral_source_profiles")
+            .update({ briefing_last_seen_at: iso, updated_at: iso })
+            .eq("user_id", uid)
+        if (!updateErr) return
+        console.warn("[Portal] briefing_last_seen_at update:", updateErr)
+        const { error: insertErr } = await supabase.from("referral_source_profiles").upsert(
+            { user_id: uid, briefing_last_seen_at: iso, updated_at: iso },
+            { onConflict: "user_id" }
+        )
+        if (insertErr) console.warn("[Portal] briefing_last_seen_at insert:", insertErr)
+    }, [session?.user?.id])
 
     const handleArchivePortalReferral = (r: PortalReferral) => {
         const label = `${r.client_first_name} ${r.client_last_name}`.trim() || portalReferralDisplayId(r)
@@ -6997,6 +7383,16 @@ export default function ReferralSourcePortal() {
                 userName={portalDisplayName}
                 userRole="Referral Source"
                 hasUnreadMessages={portalHasUnreadMessages}
+                referrals={referrals}
+                programNamesById={programNamesById}
+                currentUserId={session?.user?.id}
+                briefingLastSeenAt={briefingLastSeenAt}
+                onMarkBriefingCaughtUp={() => void handleMarkBriefingCaughtUp()}
+                onOpenBriefingReferral={(r) => {
+                    setPortalSidebarView("referrals")
+                    openReferralDetail(r)
+                }}
+                onExpandSidebar={() => setPortalSidebarCollapsed(false)}
                 onProfile={() => {
                     setShowHelpModal(false)
                     setProfileModalTab("profile")
@@ -7107,6 +7503,7 @@ export default function ReferralSourcePortal() {
                                 onFiltersChange={setPortalFilters}
                                 onViewModeChange={setPortalViewMode}
                                 onClear={clearPortalFilters}
+                                showSourceTypeFilter={false}
                             />
                             {portalSelectedIds.size > 0 ? (
                                 <div
