@@ -7459,7 +7459,7 @@ export default function ReferralSourcePortal() {
                             My referrals
                         </h1>
                         <p style={{ margin: "6px 0 0", fontSize: 13, color: COLORS.ashMuted, fontFamily: FONT, lineHeight: 1.5, maxWidth: 560 }}>
-                            Track status, edit submissions, or archive from your view — admissions still sees archived referrals.
+                            Track status, request updates via messages, or archive from your view — admissions still sees archived referrals.
                         </p>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>

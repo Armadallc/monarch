@@ -1073,6 +1073,7 @@ interface ReferralSubmission {
     client_sex_at_birth: string
     client_pronouns: string
     client_preferred_name: string
+    client_drivers_license?: string | null
     client_primary_language: string
     client_english_proficiency: string
     interpreter_needed: boolean
@@ -1103,6 +1104,7 @@ interface ReferralSubmission {
     private_insurance_details: string
     ssdi_status: string
     benefits_notes: string
+    acceptance_snapshot_at?: string | null
     // Legal
     case_number: string
     court_jurisdiction: string
@@ -1651,6 +1653,8 @@ function activityLogEntryLabel(entry: ActivityLogEntry): string {
             return "Transfer accepted"
         case "transfer_declined":
             return "Transfer declined"
+        case "field_corrected":
+            return "Identity field corrected"
         default:
             return entry.activity_type.replace(/_/g, " ")
     }
@@ -1675,6 +1679,7 @@ function activityTypeBadgeLabel(activityType: string): string {
         transfer_requested: "Transfer",
         transfer_accepted: "Transfer",
         transfer_declined: "Transfer",
+        field_corrected: "Correction",
     }
     if (labels[activityType]) return labels[activityType]
     if (activityType.startsWith("document_")) return "Documents"
@@ -1691,6 +1696,7 @@ function activityTypeBadgeColors(activityType: string): { text: string; bg: stri
         return { text: COLORS.moonstone, bg: COLORS.moonstoneLight }
     }
     if (activityType === "assignment_changed") return { text: "var(--foreground)", bg: COLORS.moonstoneLight }
+    if (activityType === "field_corrected") return { text: COLORS.moonstone, bg: COLORS.moonstoneLight }
     if (activityType.startsWith("transfer_")) return { text: COLORS.tangerine, bg: COLORS.tangerineLight }
     return { text: COLORS.ashMuted, bg: COLORS.coconut25 }
 }
@@ -9582,11 +9588,58 @@ const SECTION_STATUS_OPTIONS = [
     { value: "not_applicable", label: "Not applicable" },
 ]
 
-const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStatus, onArchive, onAssignmentChange, assigneeByUserId, scrollSection }: {
+const IDENTITY_CORRECTION_FIELDS = [
+    { key: "client_first_name", label: "Legal first name", input: "text" as const },
+    { key: "client_middle_name", label: "Legal middle name", input: "text" as const },
+    { key: "client_last_name", label: "Legal last name", input: "text" as const },
+    { key: "client_preferred_name", label: "Preferred name / alias", input: "text" as const },
+    { key: "client_dob", label: "Date of birth", input: "date" as const },
+    { key: "client_drivers_license", label: "Driver license / ID #", input: "text" as const },
+    { key: "medicaid_number", label: "Medicaid number", input: "text" as const },
+    { key: "medicaid_id", label: "Medicaid member ID", input: "text" as const },
+] as const
+
+type IdentityCorrectionFieldKey = (typeof IDENTITY_CORRECTION_FIELDS)[number]["key"]
+
+type IdentityCorrectionDrafts = Record<IdentityCorrectionFieldKey, string>
+
+interface FieldCorrectionLogRow {
+    id: string
+    correction_session_id: string
+    field_key: string
+    previous_value: string | null
+    new_value: string | null
+    reason: string
+    requested_by: string | null
+    source_document: string | null
+    corrected_by_email: string | null
+    created_at: string
+}
+
+function seedIdentityCorrectionDrafts(referral: ReferralSubmission): IdentityCorrectionDrafts {
+    const dob = referral.client_dob ? String(referral.client_dob).slice(0, 10) : ""
+    return {
+        client_first_name: referral.client_first_name || "",
+        client_middle_name: referral.client_middle_name || "",
+        client_last_name: referral.client_last_name || "",
+        client_preferred_name: referral.client_preferred_name || "",
+        client_dob: dob,
+        client_drivers_license: referral.client_drivers_license || "",
+        medicaid_number: referral.medicaid_number || "",
+        medicaid_id: referral.medicaid_id || "",
+    }
+}
+
+function identityCorrectionFieldLabel(fieldKey: string): string {
+    return IDENTITY_CORRECTION_FIELDS.find((f) => f.key === fieldKey)?.label || fieldKey.replace(/_/g, " ")
+}
+
+const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStatus, onArchive, onAssignmentChange, onIdentityFieldsUpdated, assigneeByUserId, scrollSection }: {
     referral: ReferralSubmission; onClose: () => void
     onStatusUpdate: (id: string, status: ReferralStatus, table: string) => void; updatingStatus: string | null
     onArchive?: (ids: string[], table: string, action: "archive" | "unarchive") => void
     onAssignmentChange?: (referralId: string, assignedToUserId: string | null) => void
+    onIdentityFieldsUpdated?: (referralId: string, patch: Partial<ReferralSubmission>) => void
     assigneeByUserId: Record<string, AdmissionsStaffProfile | undefined>
     scrollSection?: "documents" | "share-links" | null
 }) => {
@@ -9639,6 +9692,18 @@ const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStat
         action: "waived" | "insufficient" | "requested"
     } | null>(null)
     const [docItemNoteText, setDocItemNoteText] = useState("")
+    const [correctionPanelOpen, setCorrectionPanelOpen] = useState(false)
+    const [identityDrafts, setIdentityDrafts] = useState<IdentityCorrectionDrafts>(() => seedIdentityCorrectionDrafts(referral))
+    const [correctionReason, setCorrectionReason] = useState("")
+    const [correctionRequestedBy, setCorrectionRequestedBy] = useState("")
+    const [correctionSourceDocument, setCorrectionSourceDocument] = useState("")
+    const [correctionSaving, setCorrectionSaving] = useState(false)
+    const [correctionError, setCorrectionError] = useState("")
+    const [correctionSuccess, setCorrectionSuccess] = useState("")
+    const [fieldCorrections, setFieldCorrections] = useState<FieldCorrectionLogRow[]>([])
+    const [fieldCorrectionsLoading, setFieldCorrectionsLoading] = useState(false)
+
+    const identityCorrectionsLocked = referral.status === "accepted" || !!referral.acceptance_snapshot_at
 
     const assigneeProfile = referral.assigned_to_user_id ? assigneeByUserId[referral.assigned_to_user_id] : undefined
     const documentsInventoryMap = useMemo(
@@ -10031,6 +10096,110 @@ const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStat
             .then(({ data, error }) => { if (!error && data) setActivityLog((data as ActivityLogRow[]) || []); setActivityLogLoading(false) })
     }
 
+    const fetchFieldCorrections = () => {
+        if (!referral?.id) return
+        setFieldCorrectionsLoading(true)
+        supabase
+            .from("referral_field_corrections")
+            .select(
+                "id, correction_session_id, field_key, previous_value, new_value, reason, requested_by, source_document, corrected_by_email, created_at"
+            )
+            .eq("referral_id", referral.id)
+            .order("created_at", { ascending: false })
+            .limit(40)
+            .then(({ data, error }) => {
+                if (error) console.warn("[Dashboard] field corrections load:", error)
+                else setFieldCorrections((data as FieldCorrectionLogRow[]) || [])
+                setFieldCorrectionsLoading(false)
+            })
+    }
+
+    useEffect(() => {
+        if (!referral?.id) return
+        setIdentityDrafts(seedIdentityCorrectionDrafts(referral))
+        setCorrectionPanelOpen(false)
+        setCorrectionReason("")
+        setCorrectionRequestedBy("")
+        setCorrectionSourceDocument("")
+        setCorrectionError("")
+        setCorrectionSuccess("")
+        fetchFieldCorrections()
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- reset panel when switching referrals
+    }, [referral.id])
+
+    const openCorrectionPanel = () => {
+        setIdentityDrafts(seedIdentityCorrectionDrafts(referral))
+        setCorrectionError("")
+        setCorrectionSuccess("")
+        setCorrectionPanelOpen(true)
+    }
+
+    const handleApplyIdentityCorrections = async () => {
+        if (!referral?.id || identityCorrectionsLocked) return
+        const reason = correctionReason.trim()
+        if (!reason) {
+            setCorrectionError("Reason is required for every correction.")
+            return
+        }
+        const seeded = seedIdentityCorrectionDrafts(referral)
+        const corrections = IDENTITY_CORRECTION_FIELDS.map(({ key }) => {
+            const next = (identityDrafts[key] || "").trim()
+            const prev = (seeded[key] || "").trim()
+            return { field_key: key, new_value: next, _changed: next !== prev }
+        }).filter((c) => c._changed)
+            .map(({ field_key, new_value }) => ({ field_key, new_value }))
+
+        if (corrections.length === 0) {
+            setCorrectionError("Change at least one identity field before saving.")
+            return
+        }
+
+        setCorrectionSaving(true)
+        setCorrectionError("")
+        setCorrectionSuccess("")
+        const { data: sessionId, error } = await supabase.rpc("apply_referral_field_corrections", {
+            p_referral_id: referral.id,
+            p_corrections: corrections,
+            p_reason: reason,
+            p_requested_by: correctionRequestedBy.trim() || null,
+            p_source_document: correctionSourceDocument.trim() || null,
+        })
+        setCorrectionSaving(false)
+        if (error) {
+            setCorrectionError(error.message || "Could not apply corrections.")
+            return
+        }
+
+        const patch: Partial<ReferralSubmission> = {}
+        for (const c of corrections) {
+            const key = c.field_key as IdentityCorrectionFieldKey
+            const value = c.new_value || null
+            if (key === "client_dob") {
+                patch.client_dob = value
+            } else if (key === "client_drivers_license") {
+                patch.client_drivers_license = value
+            } else {
+                ;(patch as Record<string, string | null>)[key] = value
+            }
+        }
+        onIdentityFieldsUpdated?.(referral.id, patch)
+        setIdentityDrafts((prev) => {
+            const next = { ...prev }
+            for (const c of corrections) {
+                next[c.field_key as IdentityCorrectionFieldKey] = c.new_value
+            }
+            return next
+        })
+        setCorrectionSuccess(
+            `Saved ${corrections.length} correction${corrections.length === 1 ? "" : "s"}${sessionId ? ` (session ${String(sessionId).slice(0, 8)}…)` : ""}.`
+        )
+        setCorrectionReason("")
+        setCorrectionRequestedBy("")
+        setCorrectionSourceDocument("")
+        fetchFieldCorrections()
+        fetchActivityLog()
+    }
+
     useEffect(() => {
         if (!referral?.id) return
         setSectionStatusesLoading(true)
@@ -10306,6 +10475,25 @@ const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStat
                                     </div>
                                 )}
                             </div>
+                            <button
+                                type="button"
+                                onClick={() => (correctionPanelOpen ? setCorrectionPanelOpen(false) : openCorrectionPanel())}
+                                disabled={identityCorrectionsLocked}
+                                title={
+                                    identityCorrectionsLocked
+                                        ? "Identity corrections are locked after acceptance — update the EMR instead."
+                                        : "Correct allowlisted identity fields with a required reason"
+                                }
+                                style={{
+                                    ...MODAL_SOFT_BTN_STYLE,
+                                    padding: "8px 16px",
+                                    fontSize: "12px",
+                                    opacity: identityCorrectionsLocked ? 0.55 : 1,
+                                    cursor: identityCorrectionsLocked ? "not-allowed" : "pointer",
+                                }}
+                            >
+                                {correctionPanelOpen ? "Hide corrections" : "Correct identity"}
+                            </button>
                             {onArchive && (
                                 <button
                                     type="button"
@@ -10848,11 +11036,142 @@ const SubmissionDetailModal = ({ referral, onClose, onStatusUpdate, updatingStat
 
                     <hr style={MODAL_RECORD_DIVIDER_STYLE} aria-hidden="true" />
 
+                    {identityCorrectionsLocked ? (
+                        <p style={{ margin: "0 0 16px", fontSize: 12, fontFamily: FONT, color: COLORS.ashMuted, lineHeight: 1.45 }}>
+                            Identity fields are locked for this referral{referral.acceptance_snapshot_at ? ` (accepted ${formatDate(referral.acceptance_snapshot_at)})` : " (accepted)"}. Further identity corrections belong in the EMR.
+                        </p>
+                    ) : null}
+
+                    {correctionPanelOpen && !identityCorrectionsLocked ? (
+                        <ModalSection title="Correct identity fields">
+                            <p style={{ margin: "0 0 14px", fontSize: 13, fontFamily: FONT, color: COLORS.ashMuted, lineHeight: 1.5 }}>
+                                Admissions-only. Each save requires a reason and writes an append-only correction log (who asked, evidence, staff attestation). Referring sources cannot edit these fields after submit.
+                            </p>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "12px 16px", marginBottom: 16 }}>
+                                {IDENTITY_CORRECTION_FIELDS.map(({ key, label, input }) => (
+                                    <label key={key} style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12, fontWeight: 600, color: COLORS.ashMuted, fontFamily: FONT }}>
+                                        {label}
+                                        <input
+                                            type={input}
+                                            value={identityDrafts[key]}
+                                            onChange={(e) => setIdentityDrafts((prev) => ({ ...prev, [key]: e.target.value }))}
+                                            style={{ ...MODAL_INLINE_INPUT_STYLE, fontWeight: 500, color: "var(--foreground)" }}
+                                            aria-label={label}
+                                        />
+                                    </label>
+                                ))}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 14 }}>
+                                <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12, fontWeight: 600, color: COLORS.ashMuted, fontFamily: FONT }}>
+                                    Reason (required)
+                                    <textarea
+                                        value={correctionReason}
+                                        onChange={(e) => setCorrectionReason(e.target.value)}
+                                        rows={2}
+                                        placeholder="e.g. Corrected legal name against state-issued driver license"
+                                        style={MODAL_TEXTAREA_STYLE}
+                                        aria-label="Correction reason"
+                                    />
+                                </label>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                                    <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12, fontWeight: 600, color: COLORS.ashMuted, fontFamily: FONT }}>
+                                        Requested by (optional)
+                                        <input
+                                            type="text"
+                                            value={correctionRequestedBy}
+                                            onChange={(e) => setCorrectionRequestedBy(e.target.value)}
+                                            placeholder="Referring source name / org"
+                                            style={MODAL_INLINE_INPUT_STYLE}
+                                            aria-label="Requested by"
+                                        />
+                                    </label>
+                                    <label style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 12, fontWeight: 600, color: COLORS.ashMuted, fontFamily: FONT }}>
+                                        Source document (optional)
+                                        <input
+                                            type="text"
+                                            value={correctionSourceDocument}
+                                            onChange={(e) => setCorrectionSourceDocument(e.target.value)}
+                                            placeholder="DL scan, Medicaid letter, message…"
+                                            style={MODAL_INLINE_INPUT_STYLE}
+                                            aria-label="Source document"
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+                            {correctionError ? (
+                                <p style={{ margin: "0 0 10px", fontSize: 13, fontFamily: FONT, color: COLORS.redText }}>{correctionError}</p>
+                            ) : null}
+                            {correctionSuccess ? (
+                                <p style={{ margin: "0 0 10px", fontSize: 13, fontFamily: FONT, color: COLORS.greenText }}>{correctionSuccess}</p>
+                            ) : null}
+                            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                                <button
+                                    type="button"
+                                    onClick={() => void handleApplyIdentityCorrections()}
+                                    disabled={correctionSaving}
+                                    style={{ ...MODAL_PRIMARY_BTN_STYLE, padding: "8px 16px", fontSize: 13, opacity: correctionSaving ? 0.7 : 1 }}
+                                >
+                                    {correctionSaving ? "Saving…" : "Save corrections"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setCorrectionPanelOpen(false)
+                                        setCorrectionError("")
+                                        setCorrectionSuccess("")
+                                    }}
+                                    style={{ ...MODAL_SOFT_BTN_STYLE, padding: "8px 16px", fontSize: 13 }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </ModalSection>
+                    ) : null}
+
+                    {(fieldCorrectionsLoading || fieldCorrections.length > 0) && (
+                        <ModalSection title="Identity correction history">
+                            {fieldCorrectionsLoading ? (
+                                <p style={{ margin: 0, fontSize: 13, fontFamily: FONT, color: COLORS.ashMuted }}>Loading…</p>
+                            ) : (
+                                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                                    {fieldCorrections.map((row) => (
+                                        <div
+                                            key={row.id}
+                                            style={{
+                                                padding: "10px 12px",
+                                                borderRadius: RADIUS.small,
+                                                background: COLORS.coconut,
+                                                border: `1px solid ${COLORS.ashSubtle}`,
+                                            }}
+                                        >
+                                            <div style={{ fontSize: 13, fontWeight: 600, fontFamily: FONT, color: "var(--foreground)" }}>
+                                                {identityCorrectionFieldLabel(row.field_key)}:{" "}
+                                                <span style={{ fontWeight: 500, opacity: 0.75 }}>{row.previous_value || "—"}</span>
+                                                {" → "}
+                                                <span>{row.new_value || "—"}</span>
+                                            </div>
+                                            <div style={{ fontSize: 12, fontFamily: FONT, color: COLORS.ashMuted, marginTop: 4, lineHeight: 1.4 }}>
+                                                {row.reason}
+                                                {row.requested_by ? ` · Requested by ${row.requested_by}` : ""}
+                                                {row.source_document ? ` · ${row.source_document}` : ""}
+                                            </div>
+                                            <div style={{ fontSize: 11, fontFamily: FONT, color: COLORS.ashMuted, marginTop: 4 }}>
+                                                {formatDate(row.created_at)}
+                                                {row.corrected_by_email ? ` · ${row.corrected_by_email}` : ""}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </ModalSection>
+                    )}
+
                     <ModalSection title="Client Demographics" footerNotes={sectionNotesFooter("client")}>
                         <DetailGrid>
                             <DetailField label="Full Name" value={`${referral.client_first_name} ${referral.client_middle_name || ""} ${referral.client_last_name}`} />
                             <DetailField label="Aliases" value={referral.client_preferred_name} />
                             <DetailField label="Date of Birth" value={formatDate(referral.client_dob)} />
+                            <DetailField label="Driver license / ID #" value={referral.client_drivers_license} />
                             <DetailField label="Gender" value={formatLabel(referral.client_gender, GENDER_LABELS)} />
                             <DetailField label="Sex at Birth" value={formatLabel(referral.client_sex_at_birth)} />
                             <DetailField label="Pronouns" value={formatLabel(referral.client_pronouns)} />
@@ -11924,6 +12243,12 @@ export default function ReferralDashboard() {
         setSubmissions((p) => p.map((s) => s.id === referralId ? { ...s, assigned_to_user_id: assignedToUserId, assigned_at } : s))
         setSelectedSubmission((prev) => (prev && prev.id === referralId ? { ...prev, assigned_to_user_id: assignedToUserId, assigned_at } : prev))
         setPanelSubmission((prev) => (prev && prev.id === referralId ? { ...prev, assigned_to_user_id: assignedToUserId, assigned_at } : prev))
+    }
+
+    const handleIdentityFieldsUpdated = (referralId: string, patch: Partial<ReferralSubmission>) => {
+        setSubmissions((p) => p.map((s) => (s.id === referralId ? { ...s, ...patch } : s)))
+        setSelectedSubmission((prev) => (prev && prev.id === referralId ? { ...prev, ...patch } : prev))
+        setPanelSubmission((prev) => (prev && prev.id === referralId ? { ...prev, ...patch } : prev))
     }
 
     const transferableProgramsForReferral = useCallback(
@@ -13338,6 +13663,7 @@ export default function ReferralDashboard() {
                     updatingStatus={updatingStatus}
                     onArchive={requestArchive}
                     onAssignmentChange={handleAssignmentChange}
+                    onIdentityFieldsUpdated={handleIdentityFieldsUpdated}
                     assigneeByUserId={staffAssigneeByUserId}
                     scrollSection={modalScrollSection}
                 />
