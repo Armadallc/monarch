@@ -11,44 +11,40 @@ import {
 
 // ----- Inlined design system (Framer cannot resolve ../DesignSystem; keep in sync with Code/DesignSystem.ts) -----
 const C = {
-    ash: "#2B2828",
-    ashDark: "#181818",
-    ashMuted: "rgba(43, 40, 40, 0.6)",
-    ashSubtle: "rgba(43, 40, 40, 0.15)",
-    ash50: "rgba(43, 40, 40, 0.5)",
-    coconut: "#E9EDF6",
-    coconut50: "rgba(233, 237, 246, 0.5)",
-    coconut25: "rgba(233, 237, 246, 0.25)",
-    shell: "#F8F6F1",
+    ash: "#171717",
+    ashDark: "#171717",
+    ashMuted: "rgba(23, 23, 23, 0.62)",
+    ashSubtle: "rgba(23, 23, 23, 0.14)",
+    ash50: "rgba(23, 23, 23, 0.52)",
+    coconut: "#FAFAFA",
+    coconut50: "rgba(250, 250, 250, 0.76)",
+    coconut25: "rgba(250, 250, 250, 0.55)",
+    shell: "#FAFAFA",
     white: "#FFFFFF",
-    stoneCloud: "#4F666A",
-    gunmetal: "#45434c",
-    moonstone: "#7EACB5",
-    moonstoneLight: "rgba(126, 172, 181, 0.2)",
-    tangerine: "#FFA089",
-    tangerineLight: "rgba(255, 160, 137, 0.3)",
-    champagne: "#F5E4C8",
-    champagneLight: "rgba(245, 228, 200, 0.3)",
-    success: "#059669",
-    successBg: "#d1fae5",
-    successText: "#059669",
-    error: "#991B1B",
-    errorBg: "#fee2e2",
-    errorText: "#c0392b",
-    warning: "#9A3412",
-    warningBg: "#FFF7ED",
-    warningBorder: "#FED7AA",
-    warningText: "#9A3412",
-    infoBg: "#EFF6FF",
-    infoBorder: "#BFDBFE",
-    infoText: "#1E40AF",
-    border: "rgba(43, 40, 40, 0.12)",
-    borderLight: "#E2E8F0",
-    textMuted: "rgba(43, 40, 40, 0.6)",
+    stoneCloud: "#3A3A3A",
+    gunmetal: "#2D2A28",
+    moonstone: "#3A3A3A",
+    moonstoneLight: "rgba(58, 58, 58, 0.08)",
+    success: "#2D2A28",
+    successBg: "#FAFAFA",
+    successText: "#2D2A28",
+    error: "#8A2F2F",
+    errorBg: "#FAFAFA",
+    errorText: "#8A2F2F",
+    warning: "#6F4B24",
+    warningBg: "#FAFAFA",
+    warningBorder: "#A8A29E",
+    warningText: "#6F4B24",
+    infoBg: "#FAFAFA",
+    infoBorder: "#D6D3D1",
+    infoText: "#3A3A3A",
+    border: "rgba(23, 23, 23, 0.12)",
+    borderLight: "#D6D3D1",
+    textMuted: "rgba(23, 23, 23, 0.62)",
     overlay: "rgba(27, 36, 42, 0.5)",
-    green: "#d1fae5",
-    greenText: "#059669",
-    redText: "#c0392b",
+    green: "#FAFAFA",
+    greenText: "#2D2A28",
+    redText: "#8A2F2F",
 } as const
 
 const RADIUS = {
@@ -64,18 +60,16 @@ const RADIUS = {
 const FONT = `"Montserrat", sans-serif`
 
 const SHADOWS = {
-    card: "0 2px 12px rgba(43, 40, 40, 0.06)",
-    cardHover: "0 4px 20px rgba(43, 40, 40, 0.08)",
-    modal: "0 24px 48px -12px rgba(43, 40, 40, 0.15)",
+    card: "0 1px 2px rgba(23, 23, 23, 0.04), 0 8px 24px rgba(23, 23, 23, 0.04)",
+    cardHover: "0 2px 4px rgba(23, 23, 23, 0.06), 0 16px 36px rgba(23, 23, 23, 0.08)",
+    modal: "0 24px 48px -12px rgba(23, 23, 23, 0.16)",
 } as const
 
 const TRANSITION = "all 0.2s ease"
 
 const FROSTED_GLASS: CSSProperties = {
-    background: C.coconut25,
-    backdropFilter: "blur(14px)",
-    WebkitBackdropFilter: "blur(14px)",
-    border: `1px solid ${C.ashSubtle}`,
+    background: C.white,
+    border: `1px solid ${C.borderLight}`,
     borderRadius: RADIUS.card,
     boxSizing: "border-box",
 }
@@ -85,10 +79,10 @@ const BUTTON_PRIMARY: CSSProperties = {
     fontSize: "15px",
     fontWeight: 600,
     fontFamily: FONT,
-    color: C.shell,
+    color: C.white,
     backgroundColor: C.ash,
     border: "none",
-    borderRadius: RADIUS.input,
+    borderRadius: RADIUS.small,
     cursor: "pointer",
     letterSpacing: "-0.01em",
     transition: TRANSITION,
@@ -101,8 +95,8 @@ const BUTTON_SECONDARY: CSSProperties = {
     fontFamily: FONT,
     color: C.ash,
     backgroundColor: "transparent",
-    border: `2px solid ${C.ashSubtle}`,
-    borderRadius: RADIUS.input,
+    border: `1px solid ${C.ashSubtle}`,
+    borderRadius: RADIUS.small,
     cursor: "pointer",
     letterSpacing: "-0.01em",
     transition: TRANSITION,
@@ -115,11 +109,11 @@ const INPUT_BASE: CSSProperties = {
     fontFamily: FONT,
     color: C.ash,
     border: `1px solid ${C.ashSubtle}`,
-    borderRadius: RADIUS.input,
+    borderRadius: RADIUS.small,
     backgroundColor: C.white,
     outline: "none",
     boxSizing: "border-box",
-    transition: "border-color 0.2s ease",
+    transition: "border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease",
 }
 // ----- End inlined design system -----
 
@@ -444,7 +438,40 @@ const REFERRAL_FORM_STEP = {
     review: 12,
 } as const
 
-/** Pre-validation: green = steps before current; hollow = current + future (row highlight shows current). Red dots: add when step validation ships after staff workflow testing. */
+function PortalActionIcon({ type }: { type: "referral" | "upload" }) {
+    return (
+        <span
+            aria-hidden
+            style={{
+                width: "42px",
+                height: "42px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                border: `1px solid ${C.borderLight}`,
+                borderRadius: "10px",
+                background: C.shell,
+                color: C.ash,
+            }}
+        >
+            {type === "referral" ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M8 4.75h8M8 8.75h8M8 12.75h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    <path d="M6.5 2.75h11a2 2 0 0 1 2 2v14.5a2 2 0 0 1-2 2h-11a2 2 0 0 1-2-2V4.75a2 2 0 0 1 2-2Z" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M15.5 17.25h4M17.5 15.25v4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+            ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 15.5V4.75m0 0L8.5 8.25M12 4.75l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M5 14.5v3.75a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+            )}
+        </span>
+    )
+}
+
+/** Pre-validation: filled = visited; ring = current; muted hollow = upcoming. */
 function ReferralFormStepRailDot({ stepIndex, currentStep }: { stepIndex: number; currentStep: number }) {
     const base: React.CSSProperties = {
         width: "14px",
@@ -457,9 +484,24 @@ function ReferralFormStepRailDot({ stepIndex, currentStep }: { stepIndex: number
     }
 
     if (stepIndex < currentStep) {
-        return <span aria-hidden style={{ ...base, border: `2px solid ${C.success}`, backgroundColor: C.success }} />
+        return <span aria-hidden style={{ ...base, border: `2px solid ${C.ash}`, backgroundColor: C.ash }} />
     }
-    return <span aria-hidden style={{ ...base, border: `2px solid ${C.ashSubtle}`, backgroundColor: C.white }} />
+    if (stepIndex === currentStep) {
+        return (
+            <span
+                aria-hidden
+                style={{
+                    ...base,
+                    border: `2px solid ${C.ash}`,
+                    backgroundColor: C.white,
+                    boxShadow: `inset 0 0 0 3px ${C.white}`,
+                    outline: `2px solid ${C.ash}`,
+                    outlineOffset: "-4px",
+                }}
+            />
+        )
+    }
+    return <span aria-hidden style={{ ...base, border: "1px solid #A8A29E", backgroundColor: C.white }} />
 }
 
 function ReferralFormStepRail({
@@ -492,6 +534,7 @@ function ReferralFormStepRail({
                             <button
                                 key={i}
                                 type="button"
+                                className="referral-step-button"
                                 onClick={() => onSelectStep(i)}
                                 style={{
                                     display: "inline-flex",
@@ -499,7 +542,7 @@ function ReferralFormStepRail({
                                     gap: "8px",
                                     padding: "8px 12px",
                                     borderRadius: RADIUS.input,
-                                    border: active ? `2px solid ${C.moonstone}` : `1px solid ${C.borderLight}`,
+                                    border: active ? `1px solid ${C.ash}` : `1px solid ${C.borderLight}`,
                                     background: active ? C.moonstoneLight : C.white,
                                     cursor: "pointer",
                                     fontFamily: "inherit",
@@ -548,6 +591,7 @@ function ReferralFormStepRail({
                         <li key={i} style={{ marginBottom: "4px" }}>
                             <button
                                 type="button"
+                                className="referral-step-button"
                                 onClick={() => onSelectStep(i)}
                                 style={{
                                     display: "flex",
@@ -673,41 +717,42 @@ const S = {
         marginTop: "32px",
         marginBottom: "16px",
         paddingBottom: "8px",
-        borderBottom: `2px solid ${C.moonstone}`,
+        borderBottom: `1px solid ${C.borderLight}`,
         letterSpacing: "0.04em",
         textTransform: "uppercase" as const,
-        borderRadius: RADIUS.section,
     } as React.CSSProperties,
     stepTitle: {
         fontSize: "22px",
         fontWeight: "700",
         marginBottom: "8px",
         color: C.ash,
+        letterSpacing: "-0.02em",
     } as React.CSSProperties,
     stepDesc: {
         fontSize: "14px",
         color: C.textMuted,
         marginBottom: "24px",
+        lineHeight: 1.55,
     } as React.CSSProperties,
     callout: {
-        padding: "16px",
-        backgroundColor: C.infoBg,
-        border: `1px solid ${C.infoBorder}`,
-        borderRadius: RADIUS.card,
+        padding: "14px 16px",
+        backgroundColor: C.white,
+        border: `1px solid ${C.borderLight}`,
+        borderRadius: RADIUS.small,
         marginBottom: "24px",
         fontSize: "14px",
-        color: C.infoText,
-        lineHeight: "1.5",
+        color: C.textMuted,
+        lineHeight: "1.55",
     } as React.CSSProperties,
     warningCallout: {
-        padding: "16px",
-        backgroundColor: C.warningBg,
+        padding: "14px 16px",
+        backgroundColor: C.white,
         border: `1px solid ${C.warningBorder}`,
-        borderRadius: RADIUS.card,
+        borderRadius: RADIUS.small,
         marginBottom: "24px",
         fontSize: "14px",
-        color: C.warning,
-        lineHeight: "1.5",
+        color: C.warningText,
+        lineHeight: "1.55",
     } as React.CSSProperties,
     btnPrimary: { ...BUTTON_PRIMARY } as React.CSSProperties,
     btnSecondary: { ...BUTTON_SECONDARY } as React.CSSProperties,
@@ -722,7 +767,7 @@ const S = {
         marginTop: "32px",
     } as React.CSSProperties,
     reviewBlock: {
-        backgroundColor: C.shell,
+        backgroundColor: C.white,
         padding: "20px",
         borderRadius: RADIUS.card,
         marginBottom: "16px",
@@ -749,9 +794,99 @@ const S = {
         marginRight: "10px",
         width: "18px",
         height: "18px",
-        accentColor: C.stoneCloud,
+        accentColor: C.ash,
     } as React.CSSProperties,
 }
+
+const REFERRAL_FORM_CSS = `
+.referral-shell {
+  min-height: 100vh;
+  background: #FAFAFA;
+  color: #171717;
+}
+.referral-shell button,
+.referral-shell input,
+.referral-shell select,
+.referral-shell textarea {
+  font-family: ${FONT};
+}
+.referral-shell button:focus-visible,
+.referral-shell input:focus-visible,
+.referral-shell select:focus-visible,
+.referral-shell textarea:focus-visible,
+.referral-shell [role="button"]:focus-visible {
+  outline: 3px solid #C7D9F0 !important;
+  outline-offset: 2px;
+}
+.referral-shell input:focus,
+.referral-shell select:focus,
+.referral-shell textarea:focus {
+  border-color: #3A3A3A !important;
+  box-shadow: 0 0 0 3px rgba(199, 217, 240, 0.5);
+}
+.referral-action-card {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  color: #171717;
+}
+.referral-action-card:hover {
+  border-color: #A8A29E !important;
+  transform: translateY(-2px);
+  box-shadow: ${SHADOWS.cardHover} !important;
+}
+.referral-action-card:hover .referral-action-arrow {
+  transform: translateX(3px);
+}
+.referral-action-card:active {
+  transform: translateY(0);
+  box-shadow: ${SHADOWS.card} !important;
+}
+.referral-action-arrow {
+  transition: transform 0.16s ease;
+}
+.referral-primary-button:hover:not(:disabled) {
+  background: #2D2A28 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(23, 23, 23, 0.16);
+}
+.referral-secondary-button:hover:not(:disabled) {
+  background: #F4FAF9 !important;
+  border-color: #A8A29E !important;
+}
+.referral-link-button:hover:not(:disabled) {
+  color: #171717 !important;
+  text-decoration-color: #171717 !important;
+}
+.referral-primary-button:active:not(:disabled),
+.referral-secondary-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+.referral-primary-button:disabled,
+.referral-secondary-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.48 !important;
+  box-shadow: none !important;
+}
+.referral-step-button:hover {
+  background: rgba(23, 23, 23, 0.05) !important;
+}
+.referral-success-card {
+  background: #FFFFFF;
+  border: 1px solid #D6D3D1;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(23, 23, 23, 0.04), 0 18px 48px rgba(23, 23, 23, 0.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  .referral-shell *,
+  .referral-shell *::before,
+  .referral-shell *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+`
 
 // ============================================================================
 // FORMAT HELPERS
@@ -1547,14 +1682,14 @@ export default function ReferralForm() {
     const renderNav = (back: number | null, next: number | null, nextLabel?: string) => (
         <div style={S.navRow}>
             {back !== null ? (
-                <button onClick={() => setCurrentStep(back)} style={S.btnSecondary}>
+                <button className="referral-secondary-button" onClick={() => setCurrentStep(back)} style={S.btnSecondary}>
                     ← Previous
                 </button>
             ) : (
                 <div />
             )}
             {next !== null && (
-                <button onClick={() => setCurrentStep(next)} style={S.btnPrimary}>
+                <button className="referral-primary-button" onClick={() => setCurrentStep(next)} style={S.btnPrimary}>
                     {nextLabel || "Next →"}
                 </button>
             )}
@@ -1579,20 +1714,23 @@ export default function ReferralForm() {
 
     const renderEditButton = (stepNum: number) => (
         <button
+            type="button"
+            className="referral-link-button"
             onClick={() => setCurrentStep(stepNum)}
             style={{
                 fontSize: "12px",
-                color: C.moonstone,
+                color: C.textMuted,
                 background: "none",
                 border: "none",
                 cursor: "pointer",
                 fontWeight: "600",
                 float: "right" as const,
-                letterSpacing: "0.04em",
+                letterSpacing: "0.06em",
                 textTransform: "uppercase" as const,
+                padding: 0,
             }}
         >
-            EDIT
+            Edit
         </button>
     )
 
@@ -1604,11 +1742,11 @@ export default function ReferralForm() {
     // ========================================================================
     if (authStatus === "checking") {
         return (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", width: "100%", maxWidth: "100%", boxSizing: "border-box", background: C.shell, fontFamily: FONT }}>
                 <div style={{ textAlign: "center" }}>
                     <div style={{
-                        width: "40px", height: "40px", border: `3px solid ${C.coconut}`,
-                        borderTopColor: C.moonstone, borderRadius: "50%",
+                        width: "40px", height: "40px", border: `3px solid ${C.borderLight}`,
+                        borderTopColor: C.ash, borderRadius: "50%",
                         animation: "spin 0.8s linear infinite", margin: "0 auto 16px",
                     }} />
                     <p style={{ color: C.textMuted, fontSize: "14px" }}>Verifying session...</p>
@@ -1620,11 +1758,11 @@ export default function ReferralForm() {
 
     if (authStatus === "unauthenticated") {
         return (
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px", width: "100%", maxWidth: "100%", boxSizing: "border-box", background: C.shell, fontFamily: FONT }}>
                 <div style={{ textAlign: "center", color: C.textMuted, fontSize: "14px" }}>
                     <div style={{
-                        width: "40px", height: "40px", border: `3px solid ${C.coconut}`,
-                        borderTopColor: C.moonstone, borderRadius: "50%",
+                        width: "40px", height: "40px", border: `3px solid ${C.borderLight}`,
+                        borderTopColor: C.ash, borderRadius: "50%",
                         animation: "spin 0.8s linear infinite", margin: "0 auto 16px",
                     }} />
                     Redirecting to sign in…
@@ -1640,15 +1778,19 @@ export default function ReferralForm() {
     const showFormStepRail = !showPortal && submitStatus !== "success"
 
     return (
-        <div style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", overflow: "auto" }}>
+        <div
+            className="referral-shell"
+            style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box", overflow: "auto", fontFamily: FONT }}
+        >
+        <style>{REFERRAL_FORM_CSS}</style>
         <div
             style={{
-                padding: isMobile ? "20px" : "40px",
+                padding: isMobile ? "24px 16px 48px" : "56px 40px 80px",
                 maxWidth: showFormStepRail && !isMobile ? "min(1120px, 100%)" : "800px",
                 margin: "0 auto",
             }}
         >
-            <div
+            {submitStatus !== "success" && <div
                 style={{
                     display: "flex",
                     flexDirection: "row",
@@ -1661,20 +1803,21 @@ export default function ReferralForm() {
             >
                 <h1
                     style={{
-                        color: C.stoneCloud,
+                        color: C.ash,
                         margin: 0,
                         fontSize: isMobile ? "22px" : "28px",
                         fontWeight: "700",
-                        letterSpacing: "0.02em",
+                        letterSpacing: "-0.025em",
                         flex: "1 1 auto",
                         minWidth: 0,
                     }}
                 >
-                    {showPortal && submitStatus !== "success" ? "Referral Portal" : "Monarch Competency Referral"}
+                    {showPortal ? "Referral portal" : "Monarch Competency referral"}
                 </h1>
                 {showFormStepRail && (
                     <button
                         type="button"
+                        className="referral-link-button"
                         onClick={() => {
                             try {
                                 window.location.href = REFERRAL_SOURCE_PORTAL_URL
@@ -1686,27 +1829,21 @@ export default function ReferralForm() {
                             flex: "0 0 auto",
                             background: "none",
                             border: "none",
-                            color: C.moonstone,
+                            color: C.textMuted,
                             fontSize: "14px",
                             fontWeight: "600",
                             cursor: "pointer",
                             padding: "4px 0",
                             fontFamily: "inherit",
-                            textDecoration: "underline",
+                            textDecoration: "none",
                             textUnderlineOffset: "3px",
                             whiteSpace: "nowrap",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.color = C.ash
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.color = C.moonstone
                         }}
                     >
                         Return to Dashboard
                     </button>
                 )}
-            </div>
+            </div>}
 
             {/* ============================================================ */}
             {/* PORTAL — Two-option landing after login                    */}
@@ -1738,6 +1875,7 @@ export default function ReferralForm() {
                     </label>
                     <button
                         type="button"
+                        className="referral-primary-button"
                         onClick={() => void handlePortalTermsContinue()}
                         disabled={!portalTermsChecked || portalOnboardingSaving}
                         style={{
@@ -1752,9 +1890,10 @@ export default function ReferralForm() {
             )}
 
             {showPortal && submitStatus !== "success" && portalOnboardingReady && !needsPortalOnboarding && (
-                <div>
+                <div style={{ paddingTop: "12px" }}>
                     <button
                         type="button"
+                        className="referral-link-button"
                         onClick={() => { try { window.location.href = portalPath() } catch (_e) {} }}
                         style={{
                             background: "none",
@@ -1764,44 +1903,74 @@ export default function ReferralForm() {
                             fontWeight: "500",
                             cursor: "pointer",
                             padding: "0",
-                            marginBottom: "24px",
+                            marginBottom: "28px",
                             display: "flex",
                             alignItems: "center",
                             gap: "4px",
                             fontFamily: "inherit",
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = C.ash }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = C.textMuted }}
                     >
-                        {"\u2190"} Back to Dashboard
+                        <span aria-hidden>←</span> Back to dashboard
                     </button>
-                    <p style={{ color: C.textMuted, fontSize: "15px", marginBottom: "32px", lineHeight: "1.5" }}>
-                        What would you like to do?
-                    </p>
+                    <div style={{ marginBottom: "28px" }}>
+                        <p
+                            style={{
+                                margin: "0 0 7px",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                letterSpacing: "0.12em",
+                                textTransform: "uppercase",
+                                color: C.textMuted,
+                            }}
+                        >
+                            Referral workspace
+                        </p>
+                        <h2
+                            style={{
+                                margin: "0 0 8px",
+                                color: C.ash,
+                                fontSize: isMobile ? "20px" : "24px",
+                                fontWeight: 650,
+                                letterSpacing: "-0.025em",
+                            }}
+                        >
+                            What would you like to do?
+                        </h2>
+                        <p style={{ margin: 0, color: C.textMuted, fontSize: "14px", lineHeight: 1.6 }}>
+                            Start a referral or add records to an existing submission.
+                        </p>
+                    </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                        <div
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: "14px" }}>
+                        <button
+                            type="button"
+                            className="referral-action-card"
                             onClick={() => setShowPortal(false)}
                             style={{
-                                padding: "24px",
+                                padding: isMobile ? "20px" : "24px",
                                 ...FROSTED_GLASS,
                                 cursor: "pointer",
                                 transition: TRANSITION,
                                 boxShadow: SHADOWS.card,
+                                minHeight: isMobile ? undefined : "190px",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "stretch",
                             }}
-                            onMouseEnter={(e) => { const t = e.currentTarget as HTMLDivElement; t.style.boxShadow = SHADOWS.cardHover; t.style.borderColor = C.ash }}
-                            onMouseLeave={(e) => { const t = e.currentTarget as HTMLDivElement; t.style.boxShadow = SHADOWS.card; t.style.borderColor = C.ashSubtle }}
                         >
-                            <p style={{ fontSize: "20px", marginBottom: "10px" }}>&#x1F4CB;</p>
-                            <h3 style={{ fontSize: "18px", fontWeight: "700", color: C.ash, marginBottom: "8px" }}>
-                                Submit New Referral
-                            </h3>
-                            <p style={{ fontSize: "14px", color: C.textMuted, lineHeight: "1.5", margin: 0 }}>
-                                Start a new professional referral for competency restoration services.
-                            </p>
-                        </div>
+                            <PortalActionIcon type="referral" />
+                            <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginTop: "24px" }}>
+                                <span style={{ fontSize: "17px", fontWeight: 700, letterSpacing: "-0.015em" }}>Submit new referral</span>
+                                <span className="referral-action-arrow" aria-hidden style={{ fontSize: "19px", color: C.textMuted }}>→</span>
+                            </span>
+                            <span style={{ fontSize: "13px", color: C.textMuted, lineHeight: 1.6, marginTop: "7px" }}>
+                                Begin a professional referral for competency restoration services.
+                            </span>
+                        </button>
 
-                        <div
+                        <button
+                            type="button"
+                            className="referral-action-card"
                             onClick={() => {
                                 try {
                                     window.location.href = submitReferralsDocumentsPath()
@@ -1810,23 +1979,26 @@ export default function ReferralForm() {
                                 }
                             }}
                             style={{
-                                padding: "24px",
+                                padding: isMobile ? "20px" : "24px",
                                 ...FROSTED_GLASS,
                                 cursor: "pointer",
                                 transition: TRANSITION,
                                 boxShadow: SHADOWS.card,
+                                minHeight: isMobile ? undefined : "190px",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "stretch",
                             }}
-                            onMouseEnter={(e) => { const t = e.currentTarget as HTMLDivElement; t.style.boxShadow = SHADOWS.cardHover; t.style.borderColor = C.ash }}
-                            onMouseLeave={(e) => { const t = e.currentTarget as HTMLDivElement; t.style.boxShadow = SHADOWS.card; t.style.borderColor = C.ashSubtle }}
                         >
-                            <p style={{ fontSize: "20px", marginBottom: "10px" }}>&#x1F4CE;</p>
-                            <h3 style={{ fontSize: "18px", fontWeight: "700", color: C.ash, marginBottom: "8px" }}>
-                                Upload Documents
-                            </h3>
-                            <p style={{ fontSize: "14px", color: C.textMuted, lineHeight: "1.5", margin: 0 }}>
-                                Attach documents to an existing referral using your referral code.
-                            </p>
-                        </div>
+                            <PortalActionIcon type="upload" />
+                            <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "16px", marginTop: "24px" }}>
+                                <span style={{ fontSize: "17px", fontWeight: 700, letterSpacing: "-0.015em" }}>Upload documents</span>
+                                <span className="referral-action-arrow" aria-hidden style={{ fontSize: "19px", color: C.textMuted }}>→</span>
+                            </span>
+                            <span style={{ fontSize: "13px", color: C.textMuted, lineHeight: 1.6, marginTop: "7px" }}>
+                                Add supporting records to an existing referral using its code.
+                            </span>
+                        </button>
                     </div>
                 </div>
             )}
@@ -1873,9 +2045,9 @@ export default function ReferralForm() {
                             <div
                                 style={{
                                     width: "100%",
-                                    height: "6px",
-                                    backgroundColor: C.coconut,
-                                    borderRadius: "0px",
+                                    height: "4px",
+                                    backgroundColor: C.borderLight,
+                                    borderRadius: RADIUS.pill,
                                     marginBottom: "32px",
                                     overflow: "hidden",
                                 }}
@@ -1884,7 +2056,8 @@ export default function ReferralForm() {
                                     style={{
                                         width: `${Math.min(100, (currentStep / REFERRAL_FORM_LAST_STEP) * 100)}%`,
                                         height: "100%",
-                                        backgroundColor: C.moonstone,
+                                        backgroundColor: C.ash,
+                                        borderRadius: RADIUS.pill,
                                         transition: "width 0.3s ease",
                                     }}
                                 />
@@ -1901,6 +2074,7 @@ export default function ReferralForm() {
                     <div>
                         <button
                             type="button"
+                            className="referral-link-button"
                             onClick={() => setShowPortal(true)}
                             style={{
                                 background: "none",
@@ -1915,12 +2089,6 @@ export default function ReferralForm() {
                                 alignItems: "center",
                                 gap: "4px",
                                 fontFamily: "inherit",
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.color = C.ash
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.color = C.textMuted
                             }}
                         >
                             {"\u2190"} Back
@@ -1967,6 +2135,7 @@ export default function ReferralForm() {
                                 </label>
                                 <button
                                     type="button"
+                                    className="referral-secondary-button"
                                     onClick={clearContactFieldsForProfileEdit}
                                     style={{
                                         ...S.btnSecondary,
@@ -1996,6 +2165,7 @@ export default function ReferralForm() {
                                 <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
                                     <button
                                         type="button"
+                                        className="referral-primary-button"
                                         disabled={contactProfileSaveBusy}
                                         onClick={() => void saveContactProfileFromStep()}
                                         style={{
@@ -2021,7 +2191,8 @@ export default function ReferralForm() {
                                 marginBottom: "20px",
                                 padding: "14px 16px",
                                 backgroundColor: C.shell,
-                                borderRadius: "0px",
+                                border: `1px solid ${C.borderLight}`,
+                                borderRadius: RADIUS.small,
                                 fontSize: "13px",
                                 color: C.textMuted,
                                 lineHeight: 1.5,
@@ -2031,7 +2202,7 @@ export default function ReferralForm() {
                             individuals should use our{" "}
                             <a
                                 href={PUBLIC_REFERRALS_PAGE_URL}
-                                style={{ color: C.moonstone, fontWeight: 600, textDecoration: "underline" }}
+                                style={{ color: C.ash, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: "3px" }}
                             >
                                 public referrals page
                             </a>{" "}
@@ -2119,7 +2290,7 @@ export default function ReferralForm() {
                                     padding: "16px",
                                     marginBottom: "16px",
                                     backgroundColor: C.shell,
-                                    borderRadius: "0px",
+                                    borderRadius: RADIUS.small,
                                 }}
                             >
                                 <div
@@ -2202,20 +2373,22 @@ export default function ReferralForm() {
                         ))}
 
                         <button
+                            type="button"
+                            className="referral-secondary-button"
                             onClick={addContact}
                             style={{
                                 padding: "10px 20px",
                                 fontSize: "14px",
                                 fontWeight: "600",
-                                color: C.stoneCloud,
+                                color: C.ash,
                                 backgroundColor: "transparent",
-                                border: `1px dashed ${C.moonstone}`,
-                                borderRadius: "0px",
+                                border: `1px dashed #A8A29E`,
+                                borderRadius: RADIUS.small,
                                 cursor: "pointer",
                                 width: "100%",
                             }}
                         >
-                            + Add Another Contact
+                            + Add another contact
                         </button>
 
                         {renderNav(REFERRAL_FORM_STEP.contact, REFERRAL_FORM_STEP.clientDemographics)}
@@ -2370,9 +2543,9 @@ export default function ReferralForm() {
                                         key={doc.value}
                                         style={{
                                             padding: "14px 16px",
-                                            backgroundColor: C.coconut,
-                                            border: `1px solid ${C.ashSubtle}`,
-                                            borderRadius: RADIUS.input,
+                                            backgroundColor: C.white,
+                                            border: `1px solid ${C.borderLight}`,
+                                            borderRadius: RADIUS.small,
                                         }}
                                     >
                                         <div
@@ -2404,7 +2577,7 @@ export default function ReferralForm() {
                                                         name={`doc-inventory-${doc.value}`}
                                                         checked={selected === opt.value}
                                                         onChange={() => setDocumentInventoryStatus(doc.value, opt.value)}
-                                                        style={{ marginTop: "3px", accentColor: C.moonstone }}
+                                                        style={{ marginTop: "3px", accentColor: C.ash }}
                                                     />
                                                     <span>{opt.label}</span>
                                                 </label>
@@ -3312,8 +3485,8 @@ export default function ReferralForm() {
                         <div
                             style={{
                                 ...S.reviewBlock,
-                                backgroundColor: C.warningBg,
-                                border: `2px solid ${C.warningBorder}`,
+                                backgroundColor: C.white,
+                                border: `1px solid ${C.warningBorder}`,
                             }}
                         >
                             <h3 style={{ ...S.reviewTitle, color: C.warningText }}>
@@ -3368,7 +3541,10 @@ export default function ReferralForm() {
                                     padding: "16px",
                                     backgroundColor: C.errorBg,
                                     color: C.error,
-                                    borderRadius: "0px",
+                                    border: `1px solid ${C.error}`,
+                                    borderRadius: RADIUS.small,
+                                    fontSize: "14px",
+                                    lineHeight: 1.5,
                                 }}
                             >
                                 {submitError ||
@@ -3378,10 +3554,11 @@ export default function ReferralForm() {
 
                         {/* Submit Navigation */}
                         <div style={S.navRow}>
-                            <button onClick={() => setCurrentStep(REFERRAL_FORM_STEP.urgency)} style={S.btnSecondary}>
+                            <button className="referral-secondary-button" onClick={() => setCurrentStep(REFERRAL_FORM_STEP.urgency)} style={S.btnSecondary}>
                                 ← Previous
                             </button>
                             <button
+                                className="referral-primary-button"
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
                                 style={{
@@ -3403,46 +3580,193 @@ export default function ReferralForm() {
                 {/* ============================================================ */}
                 {submitStatus === "success" && (
                     <div
+                        className="referral-success-card"
                         style={{
-                            textAlign: "center",
-                            padding: "40px 20px",
+                            maxWidth: "680px",
+                            margin: "0 auto",
+                            padding: isMobile ? "28px 20px 24px" : "44px 48px 36px",
                         }}
                     >
                         <div
                             style={{
-                                width: "64px",
-                                height: "64px",
-                                backgroundColor: C.successBg,
+                                width: "48px",
+                                height: "48px",
+                                backgroundColor: C.ash,
+                                color: C.white,
                                 borderRadius: "50%",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                margin: "0 auto 24px auto",
-                                fontSize: "28px",
+                                marginBottom: "22px",
                             }}
                         >
-                            ✓
+                            <svg aria-hidden width="22" height="22" viewBox="0 0 24 24" fill="none">
+                                <path d="m6.75 12.25 3.25 3.25 7.5-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
                         </div>
 
                         <h2
                             style={{
-                                fontSize: "24px",
+                                fontSize: isMobile ? "24px" : "30px",
                                 fontWeight: "700",
-                                color: C.success,
-                                marginBottom: "12px",
+                                color: C.ash,
+                                letterSpacing: "-0.035em",
+                                lineHeight: 1.15,
+                                margin: "0 0 10px",
                             }}
                         >
-                            Referral Submitted Successfully
+                            Referral submitted
                         </h2>
 
-                        <p style={{ fontSize: "16px", color: C.textMuted, marginBottom: "24px" }}>
-                            Thank you for your referral. Our admissions team will review it
-                            and follow up shortly.
+                        <p style={{ fontSize: "15px", color: C.textMuted, margin: "0 0 32px", lineHeight: 1.65, maxWidth: "560px" }}>
+                            Your referral is secure and ready for admissions review. We’ll follow up using the contact details you provided.
                         </p>
 
-                        <div style={{ marginBottom: "24px", maxWidth: "420px", margin: "0 auto 24px auto" }}>
+                        {submittedReferralCode && (
+                            <div
+                                style={{
+                                    backgroundColor: C.shell,
+                                    border: `1px solid ${C.borderLight}`,
+                                    borderRadius: RADIUS.card,
+                                    padding: isMobile ? "20px" : "24px 26px",
+                                    marginBottom: "12px",
+                                }}
+                            >
+                                <p
+                                    style={{
+                                        fontSize: "11px",
+                                        color: C.textMuted,
+                                        margin: "0 0 14px",
+                                        letterSpacing: "0.11em",
+                                        textTransform: "uppercase",
+                                        fontWeight: "700",
+                                    }}
+                                >
+                                    Referral code
+                                </p>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: isMobile ? "column" : "row",
+                                        alignItems: isMobile ? "stretch" : "center",
+                                        justifyContent: "space-between",
+                                        gap: "14px",
+                                    }}
+                                >
+                                    <p
+                                        style={{
+                                            fontSize: isMobile ? "28px" : "32px",
+                                            fontWeight: "700",
+                                            color: C.ash,
+                                            letterSpacing: "0.09em",
+                                            margin: 0,
+                                            fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+                                        }}
+                                    >
+                                        {submittedReferralCode}
+                                    </p>
+                                    <button
+                                        type="button"
+                                        className="referral-secondary-button"
+                                        onClick={copyReferralCode}
+                                        style={{
+                                            ...S.btnSecondary,
+                                            padding: "10px 16px",
+                                            minWidth: "108px",
+                                            color: C.ash,
+                                            backgroundColor: codeCopied ? "#F4FAF9" : C.white,
+                                            borderColor: codeCopied ? C.ash : C.borderLight,
+                                        }}
+                                    >
+                                        {codeCopied ? "Copied" : "Copy code"}
+                                    </button>
+                                </div>
+                                <p style={{ fontSize: "13px", color: C.textMuted, lineHeight: 1.6, margin: "16px 0 0" }}>
+                                    Keep this code for document uploads and any follow-up with admissions.
+                                </p>
+                            </div>
+                        )}
+
+                        {submittedReferralCode && (
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    gap: "10px",
+                                    padding: "12px 2px 24px",
+                                    borderBottom: `1px solid ${C.borderLight}`,
+                                    color: C.warningText,
+                                    fontSize: "13px",
+                                    lineHeight: 1.55,
+                                    fontWeight: 600,
+                                }}
+                            >
+                                <span aria-hidden style={{ flexShrink: 0 }}>!</span>
+                                <span>This code will not be displayed again on this screen. Copy or write it down before leaving.</span>
+                            </div>
+                        )}
+
+                        <div
+                            style={{
+                                padding: "28px 0",
+                                borderBottom: `1px solid ${C.borderLight}`,
+                            }}
+                        >
+                            <p
+                                style={{
+                                    fontSize: "15px",
+                                    fontWeight: "700",
+                                    color: C.ash,
+                                    margin: "0 0 16px",
+                                    letterSpacing: "-0.01em",
+                                }}
+                            >
+                                What happens next
+                            </p>
+                            {[
+                                "Admissions reviews the referral and supporting information.",
+                                "We’ll contact you if anything else is needed.",
+                                "Track status and messages from your referral source portal.",
+                            ].map((item, index) => (
+                                <div
+                                    key={item}
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        gap: "12px",
+                                        marginTop: index === 0 ? 0 : "12px",
+                                        color: C.textMuted,
+                                        fontSize: "13px",
+                                        lineHeight: 1.55,
+                                    }}
+                                >
+                                    <span
+                                        aria-hidden
+                                        style={{
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            width: "22px",
+                                            height: "22px",
+                                            flexShrink: 0,
+                                            border: `1px solid ${C.borderLight}`,
+                                            borderRadius: "50%",
+                                            color: C.ash,
+                                            fontSize: "11px",
+                                            fontWeight: 700,
+                                        }}
+                                    >
+                                        {index + 1}
+                                    </span>
+                                    <span style={{ paddingTop: "1px" }}>{item}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{ paddingTop: "28px" }}>
                             <button
                                 type="button"
+                                className="referral-primary-button"
                                 onClick={() => {
                                     try {
                                         window.location.href = REFERRAL_SOURCE_PORTAL_URL
@@ -3454,182 +3778,60 @@ export default function ReferralForm() {
                                     ...S.btnPrimary,
                                     width: "100%",
                                     padding: "14px 24px",
-                                    fontSize: "15px",
                                     fontWeight: 700,
                                 }}
                             >
                                 Go to referral source portal
                             </button>
-                            <p style={{ fontSize: "13px", color: C.textMuted, marginTop: "10px", lineHeight: 1.5 }}>
-                                The portal is available anytime with this email to track referrals and upload documents. You can copy your referral code below first.
+                            <p style={{ fontSize: "12px", color: C.textMuted, margin: "9px 0 20px", lineHeight: 1.5, textAlign: "center" }}>
+                                Track referrals, messages, and document requests in one place.
                             </p>
-                        </div>
-
-                        {submittedReferralCode && (
-                            <div
-                                style={{
-                                    backgroundColor: C.shell,
-                                    border: `2px solid ${C.moonstone}`,
-                                    borderRadius: "0px",
-                                    padding: "24px",
-                                    marginBottom: "16px",
-                                    maxWidth: "400px",
-                                    margin: "0 auto 16px auto",
-                                }}
-                            >
-                                <p
-                                    style={{
-                                        fontSize: "13px",
-                                        color: C.textMuted,
-                                        marginBottom: "8px",
-                                        letterSpacing: "0.04em",
-                                        textTransform: "uppercase",
-                                        fontWeight: "600",
-                                    }}
-                                >
-                                    Your Referral Code
-                                </p>
-                                <p
-                                    style={{
-                                        fontSize: "32px",
-                                        fontWeight: "700",
-                                        color: C.stoneCloud,
-                                        letterSpacing: "0.1em",
-                                        marginBottom: "12px",
-                                        fontFamily: "monospace",
-                                    }}
-                                >
-                                    {submittedReferralCode}
-                                </p>
+                            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))", gap: "10px" }}>
                                 <button
-                                    onClick={copyReferralCode}
-                                    style={{
-                                        padding: "8px 20px",
-                                        fontSize: "14px",
-                                        fontWeight: "600",
-                                        color: codeCopied ? C.success : C.ash,
-                                        backgroundColor: codeCopied ? C.successBg : "transparent",
-                                        border: `2px solid ${codeCopied ? C.success : C.ash}`,
-                                        borderRadius: "0px",
-                                        cursor: "pointer",
-                                        marginBottom: "12px",
-                                        letterSpacing: "0.02em",
-                                        transition: "all 0.2s ease",
+                                    type="button"
+                                    className="referral-secondary-button"
+                                    onClick={() => {
+                                        setSessionTimeLeft(null)
+                                        try {
+                                            window.location.href = submitReferralsDocumentsPath(submittedReferralCode)
+                                        } catch (_e) {
+                                            // Fallback
+                                        }
                                     }}
+                                    style={{ ...S.btnSecondary, color: C.ash, borderColor: C.borderLight, width: "100%" }}
                                 >
-                                    {codeCopied ? "Copied!" : "Copy Code"}
+                                    Upload documents
                                 </button>
-                                <p style={{ fontSize: "14px", color: C.textMuted, lineHeight: "1.5" }}>
-                                    Save this code to upload documents later. You can visit the
-                                    document upload page and enter this code along with your email
-                                    address to submit additional documents.
-                                </p>
+                                <button
+                                    type="button"
+                                    className="referral-secondary-button"
+                                    onClick={() => { setSessionTimeLeft(null); resetForm() }}
+                                    style={{ ...S.btnSecondary, color: C.ash, borderColor: C.borderLight, width: "100%" }}
+                                >
+                                    Submit another referral
+                                </button>
                             </div>
-                        )}
-
-                        {submittedReferralCode && (
-                            <div
-                                style={{
-                                    ...S.warningCallout,
-                                    maxWidth: "400px",
-                                    margin: "0 auto 24px auto",
-                                    textAlign: "center",
-                                    fontWeight: "600",
-                                }}
-                            >
-                                This code will not be displayed again. Please copy or write it down now.
-                            </div>
-                        )}
-
-                        {/* File upload warning (if some files failed) */}
-                        <div
-                            style={{
-                                backgroundColor: C.infoBg,
-                                border: `1px solid ${C.infoBorder}`,
-                                borderRadius: "0px",
-                                padding: "20px",
-                                marginBottom: "24px",
-                                textAlign: "left",
-                                maxWidth: "500px",
-                                margin: "0 auto 24px auto",
-                            }}
-                        >
-                            <p
-                                style={{
-                                    fontSize: "14px",
-                                    fontWeight: "600",
-                                    color: C.infoText,
-                                    marginBottom: "8px",
-                                }}
-                            >
-                                What Happens Next
-                            </p>
-                            <ul
-                                style={{
-                                    fontSize: "14px",
-                                    color: C.infoText,
-                                    margin: 0,
-                                    paddingLeft: "20px",
-                                    lineHeight: "1.6",
-                                }}
-                            >
-                                <li>Our admissions team will review your referral</li>
-                                <li>We may follow up for additional information</li>
-                                <li>You will receive confirmation at your provided email</li>
-                                <li>Use your referral code to upload supporting documents anytime</li>
-                            </ul>
-                        </div>
-
-                        <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "center" }}>
                             <button
-                                onClick={() => { setSessionTimeLeft(null); resetForm() }}
-                                style={{
-                                    ...S.btnSecondary,
-                                    color: C.success,
-                                    borderColor: C.success,
-                                    width: "100%",
-                                    maxWidth: "320px",
-                                }}
-                            >
-                                Submit Another Referral
-                            </button>
-
-                            <button
-                                onClick={() => {
-                                    setSessionTimeLeft(null)
-                                    try {
-                                        window.location.href = submitReferralsDocumentsPath(submittedReferralCode)
-                                    } catch (_e) {
-                                        // Fallback
-                                    }
-                                }}
-                                style={{
-                                    ...S.btnSecondary,
-                                    color: C.ash,
-                                    borderColor: C.ash,
-                                    width: "100%",
-                                    maxWidth: "320px",
-                                }}
-                            >
-                                Upload Documents
-                            </button>
-
-                            <button
+                                type="button"
+                                className="referral-link-button"
                                 onClick={handleSignOut}
                                 style={{
-                                    padding: "10px 24px",
-                                    fontSize: "14px",
-                                    fontWeight: "500",
+                                    display: "block",
+                                    padding: "12px 16px",
+                                    margin: "14px auto 0",
+                                    fontSize: "13px",
+                                    fontWeight: 500,
                                     color: C.textMuted,
                                     backgroundColor: "transparent",
                                     border: "none",
-                                    borderRadius: "0px",
                                     cursor: "pointer",
+                                    textDecoration: "underline",
+                                    textDecorationColor: "transparent",
+                                    textUnderlineOffset: "3px",
                                     width: "100%",
-                                    maxWidth: "320px",
                                 }}
                             >
-                                Sign Off
+                                Sign out
                             </button>
                         </div>
 

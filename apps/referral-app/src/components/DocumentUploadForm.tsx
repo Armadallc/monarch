@@ -7,46 +7,42 @@ import {
     submitReferralsPath,
 } from "../config/program"
 
-// ----- Inlined design system (Framer cannot resolve ../DesignSystem; keep in sync with Code/DesignSystem.ts) -----
+// ----- Inlined design system (aligned with ReferralForm grayscale marketing palette) -----
 const C = {
-    ash: "#2B2828",
-    ashDark: "#181818",
-    ashMuted: "rgba(43, 40, 40, 0.6)",
-    ashSubtle: "rgba(43, 40, 40, 0.15)",
-    ash50: "rgba(43, 40, 40, 0.5)",
-    coconut: "#E9EDF6",
-    coconut50: "rgba(233, 237, 246, 0.5)",
-    coconut25: "rgba(233, 237, 246, 0.25)",
-    shell: "#F8F6F1",
+    ash: "#171717",
+    ashDark: "#171717",
+    ashMuted: "rgba(23, 23, 23, 0.62)",
+    ashSubtle: "rgba(23, 23, 23, 0.14)",
+    ash50: "rgba(23, 23, 23, 0.52)",
+    coconut: "#FAFAFA",
+    coconut50: "rgba(250, 250, 250, 0.76)",
+    coconut25: "rgba(250, 250, 250, 0.55)",
+    shell: "#FAFAFA",
     white: "#FFFFFF",
-    stoneCloud: "#4F666A",
-    gunmetal: "#45434c",
-    moonstone: "#7EACB5",
-    moonstoneLight: "rgba(126, 172, 181, 0.2)",
-    tangerine: "#FFA089",
-    tangerineLight: "rgba(255, 160, 137, 0.3)",
-    champagne: "#F5E4C8",
-    champagneLight: "rgba(245, 228, 200, 0.3)",
-    success: "#059669",
-    successBg: "#d1fae5",
-    successText: "#059669",
-    error: "#991B1B",
-    errorBg: "#fee2e2",
-    errorText: "#c0392b",
-    warning: "#9A3412",
-    warningBg: "#FFF7ED",
-    warningBorder: "#FED7AA",
-    warningText: "#9A3412",
-    infoBg: "#EFF6FF",
-    infoBorder: "#BFDBFE",
-    infoText: "#1E40AF",
-    border: "rgba(43, 40, 40, 0.12)",
-    borderLight: "#E2E8F0",
-    textMuted: "rgba(43, 40, 40, 0.6)",
-    overlay: "rgba(27, 36, 42, 0.5)",
-    green: "#d1fae5",
-    greenText: "#059669",
-    redText: "#c0392b",
+    stoneCloud: "#3A3A3A",
+    gunmetal: "#2D2A28",
+    moonstone: "#3A3A3A",
+    moonstoneLight: "rgba(58, 58, 58, 0.08)",
+    success: "#2D2A28",
+    successBg: "#FAFAFA",
+    successText: "#2D2A28",
+    error: "#8A2F2F",
+    errorBg: "#FAFAFA",
+    errorText: "#8A2F2F",
+    warning: "#6F4B24",
+    warningBg: "#FAFAFA",
+    warningBorder: "#A8A29E",
+    warningText: "#6F4B24",
+    infoBg: "#FAFAFA",
+    infoBorder: "#D6D3D1",
+    infoText: "#3A3A3A",
+    border: "rgba(23, 23, 23, 0.12)",
+    borderLight: "#D6D3D1",
+    textMuted: "rgba(23, 23, 23, 0.62)",
+    overlay: "rgba(23, 23, 23, 0.45)",
+    green: "#FAFAFA",
+    greenText: "#2D2A28",
+    redText: "#8A2F2F",
 } as const
 
 const RADIUS = {
@@ -62,18 +58,16 @@ const RADIUS = {
 const FONT = `"Montserrat", sans-serif`
 
 const SHADOWS = {
-    card: "0 2px 12px rgba(43, 40, 40, 0.06)",
-    cardHover: "0 4px 20px rgba(43, 40, 40, 0.08)",
-    modal: "0 24px 48px -12px rgba(43, 40, 40, 0.15)",
+    card: "0 1px 2px rgba(23, 23, 23, 0.04), 0 8px 24px rgba(23, 23, 23, 0.04)",
+    cardHover: "0 2px 4px rgba(23, 23, 23, 0.06), 0 16px 36px rgba(23, 23, 23, 0.08)",
+    modal: "0 24px 48px -12px rgba(23, 23, 23, 0.16)",
 } as const
 
 const TRANSITION = "all 0.2s ease"
 
 const FROSTED_GLASS: CSSProperties = {
-    background: C.coconut25,
-    backdropFilter: "blur(14px)",
-    WebkitBackdropFilter: "blur(14px)",
-    border: `1px solid ${C.ashSubtle}`,
+    background: C.white,
+    border: `1px solid ${C.borderLight}`,
     borderRadius: RADIUS.card,
     boxSizing: "border-box",
 }
@@ -83,10 +77,10 @@ const BUTTON_PRIMARY: CSSProperties = {
     fontSize: "15px",
     fontWeight: 600,
     fontFamily: FONT,
-    color: C.shell,
+    color: C.white,
     backgroundColor: C.ash,
     border: "none",
-    borderRadius: RADIUS.input,
+    borderRadius: RADIUS.small,
     cursor: "pointer",
     letterSpacing: "-0.01em",
     transition: TRANSITION,
@@ -99,8 +93,8 @@ const BUTTON_SECONDARY: CSSProperties = {
     fontFamily: FONT,
     color: C.ash,
     backgroundColor: "transparent",
-    border: `2px solid ${C.ashSubtle}`,
-    borderRadius: RADIUS.input,
+    border: `1px solid ${C.ashSubtle}`,
+    borderRadius: RADIUS.small,
     cursor: "pointer",
     letterSpacing: "-0.01em",
     transition: TRANSITION,
@@ -113,12 +107,63 @@ const INPUT_BASE: CSSProperties = {
     fontFamily: FONT,
     color: C.ash,
     border: `1px solid ${C.ashSubtle}`,
-    borderRadius: RADIUS.input,
+    borderRadius: RADIUS.small,
     backgroundColor: C.white,
     outline: "none",
     boxSizing: "border-box",
-    transition: "border-color 0.2s ease",
+    transition: "border-color 0.16s ease, box-shadow 0.16s ease",
 }
+
+const DOCUMENT_UPLOAD_CSS = `
+.doc-upload-shell {
+  background: #FAFAFA;
+  color: #171717;
+  font-family: ${FONT};
+}
+.doc-upload-shell button:focus-visible,
+.doc-upload-shell input:focus-visible,
+.doc-upload-shell select:focus-visible {
+  outline: 3px solid #C7D9F0 !important;
+  outline-offset: 2px;
+}
+.doc-upload-shell input:focus,
+.doc-upload-shell select:focus {
+  border-color: #3A3A3A !important;
+  box-shadow: 0 0 0 3px rgba(199, 217, 240, 0.5);
+}
+.doc-primary-button:hover:not(:disabled) {
+  background: #2D2A28 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(23, 23, 23, 0.16);
+}
+.doc-secondary-button:hover:not(:disabled) {
+  background: #F4FAF9 !important;
+  border-color: #A8A29E !important;
+}
+.doc-link-button:hover:not(:disabled) {
+  color: #171717 !important;
+}
+.doc-primary-button:disabled,
+.doc-secondary-button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.48 !important;
+  box-shadow: none !important;
+}
+.doc-success-card {
+  background: #FFFFFF;
+  border: 1px solid #D6D3D1;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(23, 23, 23, 0.04), 0 18px 48px rgba(23, 23, 23, 0.06);
+}
+@media (prefers-reduced-motion: reduce) {
+  .doc-upload-shell *,
+  .doc-upload-shell *::before,
+  .doc-upload-shell *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+`
 // ----- End inlined design system -----
 
 // ============================================================================
@@ -497,6 +542,8 @@ export default function DocumentUploadForm() {
         paddingBottom: "clamp(32px, 8vh, 96px)",
         paddingLeft: isMobile ? "20px" : "40px",
         paddingRight: isMobile ? "20px" : "40px",
+        background: C.shell,
+        fontFamily: FONT,
     }
 
     const documentUploadInner: React.CSSProperties = {
@@ -511,7 +558,8 @@ export default function DocumentUploadForm() {
     // ========================================================================
     if (authStatus === "checking") {
         return (
-            <div style={documentUploadPageShell}>
+            <div className="doc-upload-shell" style={documentUploadPageShell}>
+                <style>{DOCUMENT_UPLOAD_CSS}</style>
                 <p style={{ color: C.textMuted, fontSize: "16px" }}>Loading...</p>
             </div>
         )
@@ -519,7 +567,8 @@ export default function DocumentUploadForm() {
 
     if (authStatus === "unauthenticated") {
         return (
-            <div style={documentUploadPageShell}>
+            <div className="doc-upload-shell" style={documentUploadPageShell}>
+                <style>{DOCUMENT_UPLOAD_CSS}</style>
                 <div
                     style={{
                         ...FROSTED_GLASS,
@@ -548,7 +597,7 @@ export default function DocumentUploadForm() {
                     </p>
 
                     {authError && (
-                        <div style={{ padding: "10px 14px", backgroundColor: C.errorBg, color: C.error, borderRadius: RADIUS.card, marginBottom: "16px", fontSize: "13px" }}>
+                        <div style={{ padding: "10px 14px", backgroundColor: C.errorBg, color: C.error, border: `1px solid ${C.error}`, borderRadius: RADIUS.small, marginBottom: "16px", fontSize: "13px", lineHeight: 1.5 }}>
                             {authError}
                         </div>
                     )}
@@ -556,6 +605,8 @@ export default function DocumentUploadForm() {
                     {!showMagicLink && !magicLinkSent && (
                         <>
                             <button
+                                type="button"
+                                className="doc-secondary-button"
                                 onClick={handleGoogleLogin}
                                 style={{
                                     ...BUTTON_SECONDARY,
@@ -584,6 +635,8 @@ export default function DocumentUploadForm() {
                             </div>
 
                             <button
+                                type="button"
+                                className="doc-secondary-button"
                                 onClick={() => setShowMagicLink(true)}
                                 style={{ ...BUTTON_SECONDARY, width: "100%", padding: "12px" }}
                             >
@@ -603,12 +656,16 @@ export default function DocumentUploadForm() {
                                 style={{ ...inputStyle, marginBottom: "12px" }}
                             />
                             <button
+                                type="button"
+                                className="doc-primary-button"
                                 onClick={handleMagicLink}
                                 style={{ ...BUTTON_PRIMARY, width: "100%", padding: "12px", marginBottom: "12px" }}
                             >
                                 Send Magic Link
                             </button>
                             <button
+                                type="button"
+                                className="doc-link-button"
                                 onClick={() => { setShowMagicLink(false); setAuthError("") }}
                                 style={{ background: "none", border: "none", color: C.textMuted, cursor: "pointer", fontSize: "13px" }}
                             >
@@ -618,12 +675,12 @@ export default function DocumentUploadForm() {
                     )}
 
                     {magicLinkSent && (
-                        <div style={{ padding: "20px", backgroundColor: C.successBg, borderRadius: RADIUS.card }}>
-                            <p style={{ fontSize: "15px", fontWeight: "600", color: C.success, marginBottom: "8px" }}>
+                        <div style={{ padding: "20px", backgroundColor: C.shell, border: `1px solid ${C.borderLight}`, borderRadius: RADIUS.card, textAlign: "left" }}>
+                            <p style={{ fontSize: "15px", fontWeight: "600", color: C.ash, marginBottom: "8px" }}>
                                 Check your email
                             </p>
-                            <p style={{ fontSize: "14px", color: C.success }}>
-                                We sent a sign-in link to <strong>{magicLinkEmail}</strong>
+                            <p style={{ fontSize: "14px", color: C.textMuted, margin: 0, lineHeight: 1.55 }}>
+                                We sent a sign-in link to <strong style={{ color: C.ash }}>{magicLinkEmail}</strong>
                             </p>
                         </div>
                     )}
@@ -636,7 +693,8 @@ export default function DocumentUploadForm() {
     // RENDER — MAIN CONTENT (Authenticated)
     // ========================================================================
     return (
-        <div style={documentUploadPageShell}>
+        <div className="doc-upload-shell" style={documentUploadPageShell}>
+            <style>{DOCUMENT_UPLOAD_CSS}</style>
             <div style={documentUploadInner}>
             {/* ============================================================ */}
             {/* STEP 1: VERIFY CODE + EMAIL                                  */}
@@ -645,6 +703,7 @@ export default function DocumentUploadForm() {
                 <div>
                     <button
                         type="button"
+                        className="doc-link-button"
                         onClick={() => {
                             try { window.location.href = submitReferralsPath() } catch (_e) {}
                         }}
@@ -662,10 +721,8 @@ export default function DocumentUploadForm() {
                             gap: "4px",
                             fontFamily: "inherit",
                         }}
-                        onMouseEnter={(e) => { e.currentTarget.style.color = C.ash }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = C.textMuted }}
                     >
-                        {"\u2190"} Back to Referral Portal
+                        <span aria-hidden>←</span> Back to referral portal
                     </button>
                     <h1
                         style={{
@@ -673,16 +730,16 @@ export default function DocumentUploadForm() {
                             fontSize: isMobile ? "22px" : "28px",
                             fontWeight: "700",
                             marginBottom: "8px",
-                            letterSpacing: "0.02em",
+                            letterSpacing: "-0.025em",
                         }}
                     >
-                        Upload Documents
+                        Upload documents
                     </h1>
                     <p
                         style={{
                             color: C.textMuted,
                             fontSize: "15px",
-                            marginBottom: "32px",
+                            marginBottom: "28px",
                             lineHeight: "1.5",
                         }}
                     >
@@ -691,14 +748,14 @@ export default function DocumentUploadForm() {
 
                     <div
                         style={{
-                            backgroundColor: C.infoBg,
-                            border: `1px solid ${C.infoBorder}`,
+                            backgroundColor: C.white,
+                            border: `1px solid ${C.borderLight}`,
                             borderRadius: RADIUS.card,
                             padding: "16px",
                             marginBottom: "24px",
                             fontSize: "14px",
-                            color: C.infoText,
-                            lineHeight: "1.5",
+                            color: C.textMuted,
+                            lineHeight: "1.55",
                         }}
                     >
                         Enter the referral code you received when you submitted your
@@ -741,9 +798,11 @@ export default function DocumentUploadForm() {
                                 padding: "12px 16px",
                                 backgroundColor: C.errorBg,
                                 color: C.error,
-                                borderRadius: RADIUS.card,
+                                border: `1px solid ${C.error}`,
+                                borderRadius: RADIUS.small,
                                 marginBottom: "16px",
                                 fontSize: "14px",
+                                lineHeight: 1.5,
                             }}
                         >
                             {verifyError}
@@ -751,6 +810,8 @@ export default function DocumentUploadForm() {
                     )}
 
                     <button
+                        type="button"
+                        className="doc-primary-button"
                         onClick={handleVerify}
                         disabled={isVerifying}
                         style={{
@@ -779,16 +840,16 @@ export default function DocumentUploadForm() {
                             fontSize: isMobile ? "22px" : "28px",
                             fontWeight: "700",
                             marginBottom: "24px",
-                            letterSpacing: "0.02em",
+                            letterSpacing: "-0.025em",
                         }}
                     >
-                        Upload Documents
+                        Upload documents
                     </h1>
 
                     {/* Referral Summary */}
                     <div
                         style={{
-                            backgroundColor: C.shell,
+                            backgroundColor: C.white,
                             border: `1px solid ${C.borderLight}`,
                             borderRadius: RADIUS.card,
                             padding: "16px",
@@ -797,15 +858,15 @@ export default function DocumentUploadForm() {
                     >
                         <p
                             style={{
-                                fontSize: "12px",
+                                fontSize: "11px",
                                 color: C.textMuted,
-                                marginBottom: "4px",
-                                letterSpacing: "0.04em",
+                                marginBottom: "8px",
+                                letterSpacing: "0.11em",
                                 textTransform: "uppercase",
-                                fontWeight: "600",
+                                fontWeight: "700",
                             }}
                         >
-                            Uploading for Referral
+                            Uploading for referral
                         </p>
                         <p
                             style={{
@@ -813,7 +874,7 @@ export default function DocumentUploadForm() {
                                 fontWeight: "700",
                                 color: C.ash,
                                 marginBottom: "4px",
-                                fontFamily: "monospace",
+                                fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
                                 letterSpacing: "0.05em",
                             }}
                         >
@@ -829,15 +890,24 @@ export default function DocumentUploadForm() {
                     {/* Drop Zone */}
                     <div
                         style={{
-                            border: `2px dashed ${C.border}`,
+                            border: `1px dashed #A8A29E`,
                             borderRadius: RADIUS.card,
                             padding: "32px 20px",
                             textAlign: "center",
-                            backgroundColor: C.shell,
+                            backgroundColor: C.white,
                             marginBottom: "16px",
                             cursor: "pointer",
+                            transition: TRANSITION,
                         }}
                         onClick={() => fileInputRef.current?.click()}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.borderColor = C.ash
+                            e.currentTarget.style.backgroundColor = "#F4FAF9"
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.borderColor = "#A8A29E"
+                            e.currentTarget.style.backgroundColor = C.white
+                        }}
                     >
                         <p
                             style={{
@@ -883,8 +953,9 @@ export default function DocumentUploadForm() {
                                     key={index}
                                     style={{
                                         padding: "12px",
-                                        backgroundColor: C.coconut,
-                                        borderRadius: RADIUS.card,
+                                        backgroundColor: C.white,
+                                        border: `1px solid ${C.borderLight}`,
+                                        borderRadius: RADIUS.small,
                                         marginBottom: "6px",
                                     }}
                                 >
@@ -905,6 +976,8 @@ export default function DocumentUploadForm() {
                                             </span>
                                         </div>
                                         <button
+                                            type="button"
+                                            className="doc-link-button"
                                             onClick={() => removeFile(index)}
                                             style={{
                                                 background: "none",
@@ -915,7 +988,7 @@ export default function DocumentUploadForm() {
                                                 fontWeight: "600",
                                             }}
                                         >
-                                            REMOVE
+                                            Remove
                                         </button>
                                     </div>
                                     <select
@@ -926,10 +999,11 @@ export default function DocumentUploadForm() {
                                             width: "100%",
                                             padding: "8px",
                                             fontSize: "14px",
-                                            border: `1px solid ${C.border}`,
-                                            borderRadius: RADIUS.card,
+                                            border: `1px solid ${C.borderLight}`,
+                                            borderRadius: RADIUS.small,
                                             backgroundColor: C.white,
                                             color: C.ash,
+                                            fontFamily: FONT,
                                         }}
                                     >
                                         {DOCUMENT_TYPE_OPTIONS.map((opt) => (
@@ -964,9 +1038,11 @@ export default function DocumentUploadForm() {
                                 padding: "12px 16px",
                                 backgroundColor: C.errorBg,
                                 color: C.error,
-                                borderRadius: RADIUS.card,
+                                border: `1px solid ${C.error}`,
+                                borderRadius: RADIUS.small,
                                 marginBottom: "16px",
                                 fontSize: "14px",
+                                lineHeight: 1.5,
                             }}
                         >
                             {uploadError}
@@ -979,9 +1055,12 @@ export default function DocumentUploadForm() {
                             display: "flex",
                             justifyContent: "space-between",
                             marginTop: "24px",
+                            gap: "12px",
                         }}
                     >
                         <button
+                            type="button"
+                            className="doc-secondary-button"
                             onClick={() => {
                                 setStep("verify")
                                 setFileEntries([])
@@ -992,6 +1071,8 @@ export default function DocumentUploadForm() {
                             ← Back
                         </button>
                         <button
+                            type="button"
+                            className="doc-primary-button"
                             onClick={handleUpload}
                             disabled={isUploading || fileEntries.length === 0}
                             style={{
@@ -999,9 +1080,6 @@ export default function DocumentUploadForm() {
                                 padding: "14px 32px",
                                 opacity: isUploading || fileEntries.length === 0 ? 0.7 : 1,
                                 cursor: isUploading || fileEntries.length === 0 ? "not-allowed" : "pointer",
-                                ...(isUploading || fileEntries.length === 0
-                                    ? { backgroundColor: C.textMuted, color: C.shell }
-                                    : { backgroundColor: C.ash, color: C.shell }),
                             }}
                         >
                             {isUploading ? "Uploading..." : `Upload ${fileEntries.length} File${fileEntries.length !== 1 ? "s" : ""}`}
@@ -1014,58 +1092,63 @@ export default function DocumentUploadForm() {
             {/* STEP 3: SUCCESS                                              */}
             {/* ============================================================ */}
             {step === "success" && (
-                <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div className="doc-success-card" style={{ padding: isMobile ? "28px 20px 24px" : "40px 36px 32px" }}>
                     <a
                         href={PORTAL_DASHBOARD_URL}
+                        className="doc-link-button"
                         style={{
                             display: "inline-block",
-                            marginBottom: "24px",
+                            marginBottom: "22px",
                             fontSize: "14px",
                             fontFamily: FONT,
-                            fontWeight: 600,
-                            color: C.moonstone,
+                            fontWeight: 500,
+                            color: C.textMuted,
                             textDecoration: "none",
                         }}
                     >
-                        ← Return to Dashboard
+                        ← Return to dashboard
                     </a>
                     <div
                         style={{
-                            width: "64px",
-                            height: "64px",
-                            backgroundColor: C.successBg,
+                            width: "48px",
+                            height: "48px",
+                            backgroundColor: C.ash,
+                            color: C.white,
                             borderRadius: "50%",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            margin: "0 auto 24px auto",
-                            fontSize: "28px",
+                            marginBottom: "22px",
                         }}
                     >
-                        ✓
+                        <svg aria-hidden width="22" height="22" viewBox="0 0 24 24" fill="none">
+                            <path d="m6.75 12.25 3.25 3.25 7.5-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
                     </div>
 
                     <h2
                         style={{
-                            fontSize: "24px",
+                            fontSize: isMobile ? "24px" : "28px",
                             fontWeight: "700",
-                            color: C.success,
-                            marginBottom: "12px",
+                            color: C.ash,
+                            letterSpacing: "-0.035em",
+                            margin: "0 0 10px",
                         }}
                     >
-                        Documents Uploaded Successfully
+                        Documents uploaded
                     </h2>
 
                     <p
                         style={{
-                            fontSize: "16px",
+                            fontSize: "15px",
                             color: C.textMuted,
-                            marginBottom: "8px",
+                            margin: "0 0 8px",
+                            lineHeight: 1.55,
                         }}
                     >
                         {uploadedCount} document{uploadedCount !== 1 ? "s" : ""} uploaded
                         for referral{" "}
-                        <strong style={{ fontFamily: "monospace", color: C.ash }}>
+                        <strong style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace", color: C.ash }}>
                             {referralCode}
                         </strong>
                     </p>
@@ -1074,31 +1157,35 @@ export default function DocumentUploadForm() {
                         style={{
                             fontSize: "14px",
                             color: C.textMuted,
-                            marginBottom: "32px",
+                            margin: "0 0 28px",
+                            lineHeight: 1.55,
                         }}
                     >
-                        Our admissions team will be notified of the new documents.
+                        Admissions will be notified of the new documents.
                     </p>
 
                     <div
                         style={{
-                            display: "flex",
-                            gap: "12px",
-                            justifyContent: "center",
-                            flexWrap: "wrap",
+                            display: "grid",
+                            gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                            gap: "10px",
                         }}
                     >
                         <button
+                            type="button"
+                            className="doc-primary-button"
                             onClick={() => {
                                 setFileEntries([])
                                 setUploadError("")
                                 setStep("upload")
                             }}
-                            style={{ ...BUTTON_SECONDARY, padding: "12px 24px" }}
+                            style={{ ...BUTTON_PRIMARY, padding: "12px 24px", width: "100%" }}
                         >
-                            Upload More Documents
+                            Upload more documents
                         </button>
                         <button
+                            type="button"
+                            className="doc-secondary-button"
                             onClick={() => {
                                 setStep("verify")
                                 setReferralCode("")
@@ -1112,11 +1199,11 @@ export default function DocumentUploadForm() {
                             style={{
                                 ...BUTTON_SECONDARY,
                                 padding: "12px 24px",
-                                color: C.textMuted,
-                                border: `1px solid ${C.border}`,
+                                width: "100%",
+                                borderColor: C.borderLight,
                             }}
                         >
-                            Different Referral
+                            Different referral
                         </button>
                     </div>
                 </div>
