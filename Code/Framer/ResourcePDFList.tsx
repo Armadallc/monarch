@@ -3,9 +3,14 @@
  * List of PDFs with View (modal + pdf.js), Download, and Share.
  * Pass items from Framer CMS or override; each item: { id?, title, url }.
  * PDF URLs should be public (e.g. Supabase Storage public bucket).
+ *
+ * Responsive: at ≤809px (phone), cards stack title + full-width actions; modal is full-screen.
  */
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { addPropertyControls, ControlType } from "framer"
+
+// Framer Phone breakpoint — sync with Code/Framer/reference/useMonarchViewport.tsx
+const MOBILE_MAX_PX = 809
 
 // ----- Inlined design system (no import) — site primary #0d0d0d / #fafafa + blues -----
 const COLORS = {
@@ -44,6 +49,14 @@ export default function ResourcePDFList(props: Props) {
     const items = Array.isArray(itemsProp) ? itemsProp.filter((i) => i && i.title && i.url) : []
     const [modalIndex, setModalIndex] = useState<number | null>(null)
     const [shareMenuIndex, setShareMenuIndex] = useState<number | null>(null)
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+        const check = () => setIsMobile(typeof window !== "undefined" && window.innerWidth <= MOBILE_MAX_PX)
+        check()
+        window.addEventListener("resize", check)
+        return () => window.removeEventListener("resize", check)
+    }, [])
 
     const currentItem = modalIndex !== null ? items[modalIndex] ?? null : null
     const pdfViewerUrl = currentItem ? `${PDF_JS_VIEWER}?file=${encodeURIComponent(currentItem.url)}` : ""
@@ -86,8 +99,8 @@ export default function ResourcePDFList(props: Props) {
     }, [])
 
     const buttonBase: React.CSSProperties = {
-        padding: "8px 16px",
-        fontSize: "13px",
+        padding: isMobile ? "12px 16px" : "8px 16px",
+        fontSize: isMobile ? "14px" : "13px",
         fontWeight: 600,
         fontFamily: FONT,
         border: "none",
@@ -95,7 +108,16 @@ export default function ResourcePDFList(props: Props) {
         cursor: "pointer",
         transition: TRANSITION,
         letterSpacing: "-0.01em",
+        minHeight: isMobile ? 44 : undefined,
+        boxSizing: "border-box",
     }
+
+    const actionRowStyle: React.CSSProperties = isMobile
+        ? { display: "flex", flexDirection: "column", gap: "8px", width: "100%" }
+        : { display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }
+
+    const actionButtonStyle = (extra: React.CSSProperties): React.CSSProperties =>
+        isMobile ? { ...extra, width: "100%", justifyContent: "center", display: "inline-flex" } : extra
 
     if (typeof window !== "undefined" && !document.getElementById("montserrat-font")) {
         const link = document.createElement("link")
@@ -106,9 +128,17 @@ export default function ResourcePDFList(props: Props) {
     }
 
     return (
-        <div style={{ width: "100%", maxWidth: width, fontFamily: FONT, boxSizing: "border-box" }}>
+        <div style={{ width: "100%", maxWidth: isMobile ? "100%" : width, fontFamily: FONT, boxSizing: "border-box" }}>
             {listTitle && (
-                <h3 style={{ margin: "0 0 16px", fontSize: "18px", fontWeight: 600, color: COLORS.ink, letterSpacing: "-0.02em" }}>
+                <h3
+                    style={{
+                        margin: isMobile ? "0 0 12px" : "0 0 16px",
+                        fontSize: isMobile ? "16px" : "18px",
+                        fontWeight: 600,
+                        color: COLORS.ink,
+                        letterSpacing: "-0.02em",
+                    }}
+                >
                     {listTitle}
                 </h3>
             )}
@@ -117,17 +147,27 @@ export default function ResourcePDFList(props: Props) {
                     No PDFs added yet. Add items via the component props (or Framer CMS override).
                 </p>
             ) : (
-                <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
+                <ul
+                    style={{
+                        listStyle: "none",
+                        margin: 0,
+                        padding: 0,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: isMobile ? "10px" : "12px",
+                    }}
+                >
                     {items.map((item, index) => (
                         <li
                             key={item.id ?? index}
                             style={{
                                 display: "flex",
-                                alignItems: "center",
+                                flexDirection: isMobile ? "column" : "row",
+                                alignItems: isMobile ? "stretch" : "center",
                                 justifyContent: "space-between",
                                 flexWrap: "wrap",
-                                gap: "12px",
-                                padding: "14px 18px",
+                                gap: isMobile ? "10px" : "12px",
+                                padding: isMobile ? "14px 14px" : "14px 18px",
                                 background: COLORS.paper,
                                 border: `1px solid ${COLORS.inkSubtle}`,
                                 borderRadius: RADIUS.card,
@@ -135,14 +175,28 @@ export default function ResourcePDFList(props: Props) {
                                 boxShadow: SHADOWS.card,
                             }}
                         >
-                            <span style={{ fontSize: "15px", fontWeight: 500, color: COLORS.ink, flex: "1 1 200px", letterSpacing: "-0.01em" }}>
+                            <span
+                                style={{
+                                    fontSize: isMobile ? "14px" : "15px",
+                                    fontWeight: 500,
+                                    color: COLORS.ink,
+                                    flex: isMobile ? "none" : "1 1 200px",
+                                    letterSpacing: "-0.01em",
+                                    lineHeight: 1.4,
+                                    wordBreak: "break-word",
+                                }}
+                            >
                                 {item.title}
                             </span>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+                            <div style={actionRowStyle}>
                                 <button
                                     type="button"
                                     onClick={() => openModal(index)}
-                                    style={{ ...buttonBase, background: COLORS.ink, color: COLORS.paper }}
+                                    style={actionButtonStyle({
+                                        ...buttonBase,
+                                        background: COLORS.ink,
+                                        color: COLORS.paper,
+                                    })}
                                 >
                                     View
                                 </button>
@@ -151,27 +205,26 @@ export default function ResourcePDFList(props: Props) {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     download
-                                    style={{
+                                    style={actionButtonStyle({
                                         ...buttonBase,
                                         background: COLORS.blueLight,
                                         color: COLORS.blueText,
                                         textDecoration: "none",
-                                        display: "inline-flex",
                                         alignItems: "center",
-                                    }}
+                                    })}
                                 >
                                     Download
                                 </a>
-                                <div style={{ position: "relative" }}>
+                                <div style={{ position: "relative", width: isMobile ? "100%" : undefined }}>
                                     <button
                                         type="button"
                                         onClick={() => handleShare(item, index)}
-                                        style={{
+                                        style={actionButtonStyle({
                                             ...buttonBase,
                                             background: COLORS.paperElevated,
                                             color: COLORS.ink,
                                             border: `1px solid ${COLORS.inkSubtle}`,
-                                        }}
+                                        })}
                                     >
                                         Share
                                     </button>
@@ -191,20 +244,29 @@ export default function ResourcePDFList(props: Props) {
                                             />
                                             <div
                                                 style={{
-                                                    position: "absolute",
-                                                    top: "100%",
-                                                    right: 0,
-                                                    marginTop: "4px",
+                                                    position: isMobile ? "fixed" : "absolute",
+                                                    ...(isMobile
+                                                        ? {
+                                                              left: 16,
+                                                              right: 16,
+                                                              bottom: 16,
+                                                              top: "auto",
+                                                          }
+                                                        : {
+                                                              top: "100%",
+                                                              right: 0,
+                                                              marginTop: "4px",
+                                                          }),
                                                     padding: "8px",
                                                     background: COLORS.paperElevated,
                                                     border: `1px solid ${COLORS.inkSubtle}`,
-                                                    borderRadius: RADIUS.small,
-                                                    boxShadow: SHADOWS.card,
+                                                    borderRadius: RADIUS.card,
+                                                    boxShadow: SHADOWS.modal,
                                                     zIndex: 9999,
                                                     display: "flex",
                                                     flexDirection: "column",
                                                     gap: "4px",
-                                                    minWidth: "140px",
+                                                    minWidth: isMobile ? undefined : "140px",
                                                 }}
                                             >
                                                 <button
@@ -286,10 +348,10 @@ export default function ResourcePDFList(props: Props) {
                         bottom: 0,
                         background: COLORS.overlay,
                         display: "flex",
-                        alignItems: "center",
+                        alignItems: isMobile ? "stretch" : "center",
                         justifyContent: "center",
                         zIndex: 10000,
-                        padding: "20px",
+                        padding: isMobile ? "0" : "20px",
                         boxSizing: "border-box",
                         backdropFilter: "blur(8px)",
                     }}
@@ -298,12 +360,13 @@ export default function ResourcePDFList(props: Props) {
                     <div
                         style={{
                             background: COLORS.paperElevated,
-                            borderRadius: RADIUS.modal,
+                            borderRadius: isMobile ? 0 : RADIUS.modal,
                             boxShadow: SHADOWS.modal,
-                            border: `1px solid ${COLORS.inkSubtle}`,
-                            maxWidth: "96vw",
-                            width: 900,
-                            maxHeight: "90vh",
+                            border: isMobile ? "none" : `1px solid ${COLORS.inkSubtle}`,
+                            maxWidth: isMobile ? "100%" : "96vw",
+                            width: isMobile ? "100%" : 900,
+                            maxHeight: isMobile ? "100%" : "90vh",
+                            height: isMobile ? "100%" : undefined,
                             display: "flex",
                             flexDirection: "column",
                             overflow: "hidden",
@@ -312,24 +375,34 @@ export default function ResourcePDFList(props: Props) {
                     >
                         <div
                             style={{
-                                padding: "16px 20px",
+                                padding: isMobile ? "12px 14px" : "16px 20px",
                                 borderBottom: `1px solid ${COLORS.inkSubtle}`,
                                 background: COLORS.paper,
                                 display: "flex",
-                                alignItems: "center",
-                                gap: "16px",
+                                flexDirection: isMobile ? "column" : "row",
+                                alignItems: isMobile ? "stretch" : "center",
+                                gap: isMobile ? "10px" : "16px",
                                 flexWrap: "wrap",
                             }}
                         >
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px", flex: "1 1 200px", minWidth: 0 }}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "8px",
+                                    flex: isMobile ? "none" : "1 1 200px",
+                                    minWidth: 0,
+                                }}
+                            >
                                 <button
                                     type="button"
                                     onClick={goPrev}
                                     style={{
                                         ...buttonBase,
-                                        padding: "6px 12px",
+                                        padding: isMobile ? "10px 14px" : "6px 12px",
                                         background: COLORS.blueMuted,
                                         color: COLORS.ink,
+                                        flexShrink: 0,
                                     }}
                                     aria-label="Previous PDF"
                                 >
@@ -340,56 +413,76 @@ export default function ResourcePDFList(props: Props) {
                                     onClick={goNext}
                                     style={{
                                         ...buttonBase,
-                                        padding: "6px 12px",
+                                        padding: isMobile ? "10px 14px" : "6px 12px",
                                         background: COLORS.blueMuted,
                                         color: COLORS.ink,
+                                        flexShrink: 0,
                                     }}
                                     aria-label="Next PDF"
                                 >
                                     &#8250;
                                 </button>
-                                <span style={{ fontSize: "16px", fontWeight: 600, color: COLORS.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                <span
+                                    style={{
+                                        fontSize: isMobile ? "14px" : "16px",
+                                        fontWeight: 600,
+                                        color: COLORS.ink,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: isMobile ? "normal" : "nowrap",
+                                        lineHeight: 1.35,
+                                        flex: 1,
+                                        minWidth: 0,
+                                    }}
+                                >
                                     {currentItem.title}
                                 </span>
                             </div>
-                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <div
+                                style={
+                                    isMobile
+                                        ? { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px", width: "100%" }
+                                        : { display: "flex", alignItems: "center", gap: "8px" }
+                                }
+                            >
                                 <a
                                     href={currentItem.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     download
-                                    style={{
+                                    style={actionButtonStyle({
                                         ...buttonBase,
                                         padding: "8px 16px",
                                         background: COLORS.blueLight,
                                         color: COLORS.blueText,
                                         textDecoration: "none",
-                                    }}
+                                    })}
                                 >
                                     Download
                                 </a>
                                 <button
                                     type="button"
                                     onClick={() => handleShare(currentItem, modalIndex)}
-                                    style={{
+                                    style={actionButtonStyle({
                                         ...buttonBase,
                                         padding: "8px 16px",
                                         background: COLORS.paperElevated,
                                         color: COLORS.ink,
                                         border: `1px solid ${COLORS.inkSubtle}`,
-                                    }}
+                                    })}
                                 >
                                     Share
                                 </button>
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    style={{
+                                    style={actionButtonStyle({
                                         ...buttonBase,
                                         padding: "8px 16px",
                                         background: COLORS.ink,
                                         color: COLORS.paper,
-                                    }}
+                                        ...(isMobile ? { gridColumn: "1 / -1" } : {}),
+                                    })}
                                 >
                                     Close
                                 </button>
@@ -399,7 +492,12 @@ export default function ResourcePDFList(props: Props) {
                             <iframe
                                 src={pdfViewerUrl}
                                 title={currentItem.title}
-                                style={{ width: "100%", flex: 1, minHeight: "60vh", border: "none" }}
+                                style={{
+                                    width: "100%",
+                                    flex: 1,
+                                    minHeight: isMobile ? "0" : "60vh",
+                                    border: "none",
+                                }}
                             />
                         </div>
                     </div>

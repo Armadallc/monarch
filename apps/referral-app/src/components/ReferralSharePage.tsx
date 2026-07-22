@@ -96,6 +96,7 @@ declare global {
                     "data-email"?: string
                     "data-name"?: string
                     "data-minimize"?: string
+                    "data-expand"?: string
                     "data-order-as-on-page"?: string
                     "data-go-to-last"?: string
                     "data-autoscroll-fields"?: string
@@ -177,6 +178,8 @@ const DOCUSEAL_EMBED_CSS = `
 
 .steps-form {
   max-width: min(420px, 92vw) !important;
+  max-height: min(22vh, 220px) !important;
+  overflow-y: auto !important;
   background: #FFFFFF !important;
   border: 1px solid rgba(43, 40, 40, 0.12) !important;
   border-radius: 12px !important;
@@ -526,6 +529,7 @@ export default function ReferralSharePage() {
                             data-email={signerEmail || undefined}
                             data-name={signerName || undefined}
                             data-minimize="true"
+                            data-expand="false"
                             data-order-as-on-page="true"
                             data-go-to-last="true"
                             data-autoscroll-fields="true"

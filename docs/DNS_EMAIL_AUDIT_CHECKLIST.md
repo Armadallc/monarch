@@ -1,5 +1,7 @@
 # Monarch DNS & email audit — verification checklist
 
+**Master reference (records, done/TODO, migration plan):** [`DNS_AND_EMAIL_REFERENCE.md`](DNS_AND_EMAIL_REFERENCE.md)
+
 **Purpose:** Fill this in during a 30–45 minute pass through Google Admin, GoDaddy, Wix, and Dan. Brings the “messy picture” down to facts before any DNS migration.
 
 **Audit date:** _______________  
