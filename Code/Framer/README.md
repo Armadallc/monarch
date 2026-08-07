@@ -1,6 +1,17 @@
 # Framer code components (single source of truth)
 
-All active site code components for paste into Framer live here. **`Code/Framer/` was removed** — do not recreate it; edit files in this folder only.
+Active paste targets for Framer live here. Multi-brand layout:
+
+| Folder | Brand |
+|--------|--------|
+| `*.tsx` (flat root) | **Competency** legacy paste targets (keep; do not bulk-move) |
+| `competency/` | New Competency-only marketing components |
+| `mental-health/` | Monarch Mental Health marketing |
+| `sober-living/` | Monarch Sober Living marketing |
+| `shared/` | Brand-agnostic helpers only |
+| `Workshop/`, `reference/` | Experiments / sync references |
+
+See `.cursor/rules/multi-brand.mdc`.
 
 ## Paste into Framer (production)
 

@@ -10,6 +10,7 @@ alwaysApply: true
 1. **Confirm scope** — If the user is explaining context or correcting terminology, treat it as **read-only** unless they explicitly ask for code changes.
 2. **Minimal diffs** — Fix only what was requested. No repo-wide renames, refactors, or "while I'm here" cleanups.
 3. **Ask** when unsure whether Framer editor vs `apps/referral-app` vs `Code/Framer` is the edit target.
+4. **Ask which brand** (Competency / Mental Health / Sober Living / shared) when the target is ambiguous — see `multi-brand` rule.
 
 ## Clarifications are not commands
 

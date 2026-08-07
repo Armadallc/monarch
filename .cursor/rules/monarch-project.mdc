@@ -5,13 +5,16 @@ alwaysApply: true
 
 # Monarch project map
 
-## Two products in one repo
+## Products in one repo
 
 | Area | Path | Hosting |
 |------|------|---------|
 | **PHI referral app** (local dev + Vercel) | `apps/referral-app/` | Staging: `https://monarch-two-theta.vercel.app` |
-| **Framer code components** (export/sync source) | `Code/Framer/*.tsx` | Marketing: `https://www.monarchcompetency.com` |
-| **Supabase** | `supabase/migrations/` | Shared backend |
+| **Framer code (Competency, legacy flat)** | `Code/Framer/*.tsx` | Marketing: `https://www.monarchcompetency.com` |
+| **Framer code (by brand)** | `Code/Framer/{competency,mental-health,sober-living,shared}/` | Separate `www` domains per brand |
+| **Supabase** | `supabase/migrations/` | Shared backend (program-scoped later) |
+
+Brand map and edit rules: see `multi-brand` rule.
 
 **Local PHI dev:** `npm run dev` from repo root → `apps/referral-app` on **port 5173**.  
 Do **not** use `npm run dev:ui` for the real app (playground also wants 5173).

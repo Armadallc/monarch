@@ -1,0 +1,28 @@
+---
+description: Multi-brand Monarch sites — Competency, Mental Health, Sober Living
+alwaysApply: true
+---
+
+# Multi-brand work (Cursor monorepo)
+
+Three public marketing brands share this repo. One PHI app and one Supabase project come later, program-scoped.
+
+| Brand | Domain (marketing) | Code folder | Docs |
+|-------|--------------------|-------------|------|
+| **Competency** | `www.monarchcompetency.com` | `Code/Framer/` (legacy flat) + `Code/Framer/competency/` | existing `docs/*` |
+| **Mental Health** | `www.monarchmentalhealth.org` | `Code/Framer/mental-health/` | `docs/mental-health/` |
+| **Sober Living** | TBD | `Code/Framer/sober-living/` | `docs/sober-living/` |
+
+Shared, brand-agnostic helpers: `Code/Framer/shared/`.
+
+## Before editing
+
+1. **Ask which brand** if the user did not name Competency / Mental Health / Sober Living (or “shared”).
+2. Put **new** brand-specific Framer components under that brand’s folder — do not dump MH/SL work into the Competency flat root.
+3. Do **not** move or rename existing Competency flat files unless explicitly asked.
+4. Marketing folders stay **PHI-free** (no Supabase keys, no portal/dashboard embeds destined for `www`).
+5. Cross-brand footers/links are fine; do not share homepage/hero design as a default.
+
+## Later (not marketing go-live)
+
+Referrals live in `apps/referral-app/` → one Vercel app, program-scoped (`competency` \| `mental_health` \| `sober_living` \| …).
