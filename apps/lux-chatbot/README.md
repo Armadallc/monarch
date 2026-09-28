@@ -10,8 +10,9 @@ This is **not** the PHI referral app. Lux is public-site navigation and program 
 
 ```
 apps/lux-chatbot/
-├── api/chat.js      # Vercel serverless handler + ABOUT_ME knowledge base
-├── vercel.json      # CORS headers for /api/*
+├── api/chat.js      # Vercel serverless handler + system prompt rules
+├── knowledge/       # Lux's knowledge base, one topic per file (joined in order into ABOUT_ME)
+├── vercel.json      # CORS headers for /api/* + bundles knowledge/** with the function
 └── README.md
 ```
 
@@ -21,13 +22,12 @@ Related sources elsewhere in the monorepo:
 |---|---|
 | Framer component (repo mirror) | `Code/Framer/lux_chatbot.tsx` |
 | Framer code file in project | `Lux_Chat_1.tsx` (`ov0_xWB`) |
-| Knowledge-base mirror (sync with `api/chat.js`) | `docs/LUX_CHATBOT.md` |
 
 ## How it works
 
 1. Visitor opens Ask Lux on the marketing site (Framer).
 2. Widget `POST`s to `backendUrl` with the question and recent history.
-3. `api/chat.js` builds a system prompt from `ABOUT_ME` (Parts 1–4), calls OpenRouter (`google/gemini-3.1-flash-lite` by default), and parses a JSON payload.
+3. `api/chat.js` builds a system prompt from `ABOUT_ME` (the `knowledge/` files, Parts 1–4), calls OpenRouter (`google/gemini-3.1-flash-lite` by default), and parses a JSON payload.
 4. Response shape: `{ reply, followUps, limited? }`.
 5. Widget shows `reply` and replaces suggestion chips with `followUps` (0–3).
 
@@ -97,14 +97,7 @@ No other secrets are required for the chat handler.
 
 ## Deploy
 
-From this directory:
-
-```bash
-cd apps/lux-chatbot
-vercel --prod
-```
-
-Or link this folder as its own Vercel project root (root directory = `apps/lux-chatbot`, or deploy this folder alone). Production URL used by Framer should remain:
+The Vercel project `monarch-d9py` deploys from the `Armadallc/monarch` repo with root directory `apps/lux-chatbot`. Pushing to `main` deploys it; pushes that don't touch this folder are skipped. Production URL used by Framer should remain:
 
 `https://monarch-d9py.vercel.app/api/chat`
 
@@ -122,21 +115,24 @@ Repo defaults live in `Code/Framer/lux_chatbot.tsx` property controls. Sync that
 
 ## Training / knowledge updates
 
-Lux’s facts and behavior live in `ABOUT_ME` inside `api/chat.js`:
+Lux’s facts live in `knowledge/`, one topic per file. `api/chat.js` joins them in the order listed in `KNOWLEDGE_FILES` (blank line between files) into `ABOUT_ME`:
 
-1. **Part 1** — identity, boundaries, crisis, writing examples  
-2. **Part 2** — Monarch programs, funding, admissions/referral paths  
-3. **Part 3** — website page map / links  
-4. **Part 4** — visitor types (pros, self, family)
+1. **Part 1** — `01-who-i-am.md`: identity, boundaries, crisis, writing examples  
+2. **Part 2** — `02` to `11`: Monarch programs, funding, referrals, packing, money, transport, contacts  
+3. **Part 3** — `12-website.md`: website page map / links  
+4. **Part 4** — `13-visitors.md`: visitor types (pros, self, family)
+
+Behavior rules (voice, output format, follow-ups, expressions) stay in the system prompt inside `api/chat.js`.
+
+Adding a file: create it in `knowledge/` and add its name to `KNOWLEDGE_FILES`. A missing or empty file makes the function fail to load on purpose, so a bad deploy is obvious rather than silently answering without that knowledge.
 
 Workflow used in practice:
 
 1. Test on the live site (or Preview).
 2. Capture Q → reply → notes.
-3. Patch `ABOUT_ME` and/or system prompt rules in `api/chat.js`.
-4. Copy the same file to `docs/LUX_CHATBOT.md` so docs stay in sync.
-5. Redeploy Vercel.
-6. Retest.
+3. Patch the relevant `knowledge/` file and/or system prompt rules in `api/chat.js`.
+4. Commit and push to `main` (Vercel deploys automatically).
+5. Retest.
 
 Hard rules worth remembering when editing:
 
