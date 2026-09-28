@@ -21,7 +21,7 @@ Related sources elsewhere in the monorepo:
 | Piece | Path |
 |---|---|
 | Framer component (repo mirror) | `Code/Framer/lux_chatbot.tsx` |
-| Framer code file in project | `Lux_Chat_1.tsx` (`ov0_xWB`) |
+| Framer code file in project | `lux_chatbot.tsx` (`ov0_xWB`) |
 
 ## How it works
 
@@ -111,7 +111,7 @@ On each Ask Lux instance:
 2. **Assistant Name** = `Lux`
 3. **Trigger Text** = `Ask Lux` (or empty for icon-only)
 
-Repo defaults live in `Code/Framer/lux_chatbot.tsx` property controls. Sync that file into Framer (`Lux_Chat_1.tsx`) when the UI changes.
+Repo defaults live in `Code/Framer/lux_chatbot.tsx` property controls. Sync that file into Framer (`lux_chatbot.tsx`) when the UI changes.
 
 ## Training / knowledge updates
 
