@@ -89,7 +89,7 @@ Set in the Vercel project for this app:
 
 Free models (`openrouter/free`) have low shared rate limits; the paid default does not. When OpenRouter returns 429, Lux retries once, then asks the visitor to wait a minute (without locking the chat session).
 
-**Crisis / self-harm messages are answered locally** with 988 / Colorado Crisis resources and never call the LLM, so those replies still work when the free tier is exhausted.
+**Crisis / self-harm messages are answered locally** with 911 / 988 / 1-844-CO-LIFTS resources and never call the LLM, so those replies still work if the upstream model is rate limited or unavailable.
 
 The Framer widget also caps at **10 questions per open session** (`MAX_QUESTIONS_PER_SESSION`) — that is separate from OpenRouter limits.
 
