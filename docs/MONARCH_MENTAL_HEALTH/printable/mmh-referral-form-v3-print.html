@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Referral to Monarch Mental Health (Print) — v3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1f2a2e;
+      --text: #2b2b2b;
+      --muted: #5f6468;
+      --faint: #a9adb0;
+      --label: #f7f4ef;
+      --line: #e2ded7;
+      --rule: #c9c9c9;
+      --box: #8d9194;
+    }
+    * { box-sizing: border-box; }
+    html { background: #e9ebed; }
+    body {
+      margin: 0;
+      font-family: "Libre Franklin", "Segoe UI", system-ui, sans-serif;
+      font-size: 8.6pt;
+      line-height: 1.3;
+      color: var(--text);
+    }
+    .toolbar {
+      position: sticky; top: 0; z-index: 10;
+      padding: 12px 16px; background: #fff; border-bottom: 1px solid var(--line);
+      display: flex; gap: 10px; align-items: center; justify-content: center;
+    }
+    .toolbar button {
+      font: 600 13px "Libre Franklin", sans-serif; padding: 9px 18px; border-radius: 8px;
+      border: 1px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer;
+    }
+    .toolbar span { font-size: 12px; color: var(--muted); }
+
+    .page {
+      position: relative;
+      width: 8.5in; height: 11in;
+      margin: 0.3in auto;
+      padding: 0.55in 0.55in 0.9in;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      text-align: left;
+    }
+    @media print {
+      @page { size: letter; margin: 0; }
+      html { background: #fff; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .no-print { display: none !important; }
+      .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+      .page:last-child { break-after: auto; page-break-after: auto; }
+    }
+
+    /* Running header + footer */
+    .ph { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.42in; }
+    .ph .t { font: 700 7.4pt "Lato", sans-serif; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink); }
+    .ph .who { display: flex; align-items: center; gap: 0.06in; font-size: 7.8pt; color: var(--muted); }
+    .ph .who span.b { width: 2.45in; height: 0.2in; border: 1px solid var(--line); }
+    .pf {
+      position: absolute; left: 0.55in; right: 0.55in; bottom: 0.42in;
+      display: flex; justify-content: space-between;
+      border-top: 1px solid var(--line); padding-top: 0.08in;
+      font: 400 7.6pt "Lato", sans-serif; color: var(--muted);
+    }
+
+    /* Page 1 masthead */
+    .mast { display: flex; align-items: center; gap: 0.25in; margin-bottom: 0.2in; }
+    .mast img { width: 2.05in; height: auto; display: block; }
+    .mast h1 { margin: 0; font: 500 18.5pt "Libre Franklin", sans-serif; color: var(--ink); letter-spacing: -0.01em; }
+    .mast p { margin: 0.03in 0 0; font: 400 8.6pt "Lato", sans-serif; color: var(--text); }
+    .intro {
+      background: var(--label); border: 1px solid var(--line); border-radius: 6px;
+      padding: 0.1in 0.12in; font-size: 7.9pt; margin-bottom: 0.08in;
+    }
+    .intro p { margin: 0 0 0.07in; }
+    .intro p:last-child { margin-bottom: 0; }
+    .intro .h { font-weight: 500; margin-bottom: 0.03in; font-size: 8.2pt; }
+    .instr { font-size: 7.9pt; margin: 0.06in 0.12in 0; }
+
+    /* Section headings */
+    h2 {
+      margin: 0.2in 0 0.1in; padding-bottom: 0.04in;
+      font: 900 8.2pt "Lato", sans-serif; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--ink); border-bottom: 1px solid var(--rule);
+    }
+    .ph + h2, .instr + h2 { margin-top: 0.1in; }
+    .note { margin: 0.06in 0 0.05in; font-size: 7.9pt; color: var(--text); }
+    .sub { margin: 0.12in 0 0.04in; font-size: 8.8pt; font-weight: 500; color: var(--ink); }
+
+    /* Label / value boxes */
+    .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 0.12in; margin: 0.06in 0; align-items: start; }
+    table.kv { width: 100%; border-collapse: collapse; margin: 0.06in 0; table-layout: fixed; }
+    .cols2 table.kv { margin: 0; }
+    table.kv th, table.kv td { border: 1px solid var(--line); height: 0.245in; padding: 0 0.06in; font-size: 7.8pt; text-align: left; vertical-align: middle; }
+    table.kv th { background: var(--label); font-weight: 500; color: var(--text); width: 1.4in; white-space: nowrap; }
+    table.kv th.w15 { width: 1.75in; }
+    table.kv th.w17 { width: 2.05in; }
+    table.kv th.w09 { width: 1.05in; }
+    table.kv td.ph-date::before { content: "(MM/DD/YYYY)"; color: var(--faint); font-style: italic; }
+    table.kv.area th { width: auto; white-space: normal; }
+    table.kv td.a1 { height: 0.36in; }
+    table.kv td.a2 { height: 0.5in; }
+    table.kv td.a3 { height: 0.62in; }
+    table.kv.num col.n { width: 0.3in; }
+    table.kv.num th { width: auto; text-align: center; background: var(--label); }
+    .roi { margin: 0.04in 0 0.06in; font-size: 8.4pt; }
+    .roi .o { margin: 0.035in 0; }
+    .roi .d { color: var(--muted); font-size: 7.8pt; }
+    .roi .one { margin: 0.04in 0 0 0; font-size: 8.2pt; }
+    .roi .ind { padding-left: 0.22in; }
+    ol.legal { margin: 0.04in 0 0; padding-left: 0.18in; font-size: 7.9pt; }
+    ol.legal > li { margin: 0.09in 0 0; }
+    ol.legal .opts { margin-top: 0.03in; }
+    ol.legal .d { color: var(--muted); font-size: 7.8pt; }
+
+    /* Choice questions */
+    .q { margin: 0.1in 0 0.03in; break-inside: avoid; }
+    .ql { font-size: 7.9pt; color: var(--text); margin-bottom: 0.02in; }
+    .opts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.035in 0.1in; font-size: 8.6pt; }
+    .opts.g3 { grid-template-columns: repeat(3, 1fr); }
+    .opts.g2 { grid-template-columns: repeat(2, 1fr); }
+    .opts.g5 { grid-template-columns: repeat(5, 1fr); }
+    .o { display: flex; align-items: flex-start; }
+    .o::before, .bx {
+      content: ""; flex-shrink: 0; display: inline-block;
+      width: 10.5px; height: 10.5px; margin: 0.012in 0.06in 0 0;
+      border: 1px solid var(--box); background: #fff;
+    }
+    .bx { margin: 0; vertical-align: middle; }
+    .span2 { grid-column: span 2; }
+    .specify { display: inline-block; border-bottom: 1px solid var(--line); width: 1.6in; margin-left: 0.08in; font-size: 7pt; font-style: italic; color: var(--faint); }
+
+    /* Grid tables */
+    table.grid { width: 100%; border-collapse: collapse; margin: 0.06in 0; table-layout: fixed; }
+    table.grid th, table.grid td { border: 1px solid var(--line); font-size: 7.8pt; padding: 0 0.05in; vertical-align: middle; }
+    table.grid th { background: var(--label); font-weight: 500; text-align: center; height: 0.24in; }
+    table.grid th small { display: block; font-size: 6pt; color: var(--muted); font-weight: 400; }
+    table.grid td { height: 0.27in; }
+    table.grid td.c { text-align: center; }
+    table.grid td.lbl { font-weight: 400; }
+    table.grid td.lbl.o { display: table-cell; }
+    table.grid td.lbl.o::before { vertical-align: -1px; }
+    table.grid th.l { text-align: left; }
+    .legend { font: 400 6.6pt "Lato", sans-serif; color: var(--muted); margin: 0.02in 0 0.06in; line-height: 1.45; }
+
+    /* Contacts (section 11) */
+    .ct { font-size: 8.4pt; font-weight: 500; color: var(--ink); margin: 0.1in 0 0.05in; }
+    table.contact { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    table.contact th, table.contact td { border: 1px solid var(--line); height: 0.235in; padding: 0 0.06in; font-size: 7.8pt; text-align: left; }
+    table.contact th { background: var(--label); font-weight: 500; white-space: nowrap; }
+    table.contact td.can { font-size: 8.4pt; }
+    table.contact td.can .o { display: inline-flex; margin-left: 0.15in; }
+
+    table.grid.dense td { height: 0.25in; }
+    .tight h2 { margin-top: 0.14in; }
+    .star { font-weight: 600; }
+    .attest { font-size: 8pt; margin: 0.06in 0 0.08in; }
+    .office-t { font: 500 8pt "Libre Franklin", sans-serif; text-transform: uppercase; margin: 0.08in 0 0.02in; letter-spacing: 0.02em; }
+  </style>
+</head>
+<body>
+  <div class="toolbar no-print">
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+    <span>Letter size · margins: none · background graphics: on</span>
+  </div>
+
+  <!-- ================= PAGE 1 ================= -->
+  <section class="page">
+    <div class="mast">
+      <img src="assets/mmh-dark-logo.svg" alt="Monarch Mental Health" />
+      <div>
+        <h1>Referral to Monarch Mental Health</h1>
+        <p>Colorado · For referring professionals and authorized representatives</p>
+      </div>
+    </div>
+
+    <div class="intro">
+      <p class="h">Submit this referral by:</p>
+      <p>Email the completed form and any attachments to referrals@monarchmentalhealth.org, or call 1 (800) 618-8719 (Admissions ext. 0). Secure online submission is also available on our website.</p>
+      <p>We accept incomplete referrals. Send what you have now; you can send the rest later. Attachments help us decide faster.</p>
+      <p>Not sure about a question? Call us at 1 (800) 618-8719 (Admissions ext. 0) or email referrals@monarchmentalhealth.org. We are glad to help you complete this form.</p>
+    </div>
+    <p class="instr">Instructions:&nbsp; Type in the fields, or print and use black or blue ink. If an item does not apply, write “N/A” or leave it blank. Check every box that applies. Items labeled “mark one”, check only one option.</p>
+
+    <h2>1 · Referral source</h2>
+    <div class="cols2">
+      <table class="kv"><tr><th>First name</th><td></td></tr><tr><th>Organization / agency</th><td></td></tr><tr><th>Phone</th><td></td></tr></table>
+      <table class="kv"><tr><th>Last name</th><td></td></tr><tr><th>Position / title</th><td></td></tr><tr><th>Email</th><td></td></tr></table>
+    </div>
+    <div class="q">
+      <div class="ql">Your relationship to the individual being referred (mark one)</div>
+      <div class="opts g3">
+        <span class="o">CMA case manager</span><span class="o">State hospital staff</span><span class="o">Hospital or facility clinician</span>
+        <span class="o">Social worker</span><span class="o">Other licensed provider</span><span class="o">Other professional</span>
+        <span class="o">Family member</span><span class="o">Attorney / legal representative</span><span class="o">POA / guardian</span>
+        <span class="o">Self (the individual)</span><span class="o">Other</span>
+      </div>
+    </div>
+    <table class="kv"><tr><th class="w15">If other, specify</th><td></td></tr></table>
+    <div class="q">
+      <div class="opts g2"><span class="o span2">I am the individual’s authorized signer / representative (power of attorney, guardian, court-appointed, or other legal authority). Attach supporting documents.</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Has this individual been referred to Monarch Mental Health before? (mark one)</div>
+      <div class="opts g3"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+
+    <h2>2 · Level of care</h2>
+    <p class="note">Professionals: please indicate the level of care determination if known. If you are unsure, or you are referring yourself or a loved one, leave this section blank.</p>
+    <div class="q">
+      <div class="ql">Level of care (LOC) assessment completed? (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Acuity / level determination (mark one)</div>
+      <div class="opts g3"><span class="o">Level 1</span><span class="o">Level 2</span><span class="o">Not determined / not sure</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">CMHS – Home and Community-Based Services Waiver Status (mark one)</div>
+      <div class="opts"><span class="o">Enrolled</span><span class="o">Application pending</span><span class="o">Not enrolled</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="cols2" style="margin-top:0.1in">
+      <table class="kv"><tr><th class="w17">CMA or county</th><td></td></tr><tr><th class="w17">CMA case manager (if not you)</th><td></td></tr></table>
+      <table class="kv"><tr><th class="w15">Date of LOC assessment</th><td class="ph-date"></td></tr><tr><th class="w15">Case manager phone</th><td></td></tr><tr><th class="w15">Case manager email</th><td></td></tr></table>
+    </div>
+    <table class="contact" style="margin-top:0.06in">
+      <colgroup><col style="width:2.05in" /><col /></colgroup>
+      <tr><th>CMA case manager ROI permission</th><td class="can"><span style="font-size:7.8pt;color:var(--muted)">If listed, mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 1 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 2 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <h2>3 · Individual being referred: demographics</h2>
+    <p class="note">Provide what is available. Admissions may follow up on missing items.</p>
+    <div class="cols2">
+      <table class="kv"><tr><th>Legal first name</th><td></td></tr><tr><th>Legal last name</th><td></td></tr><tr><th>Date of birth</th><td class="ph-date"></td></tr></table>
+      <table class="kv"><tr><th>Legal middle name</th><td></td></tr><tr><th>Chosen name</th><td></td></tr><tr><th>SSN (if available)</th><td></td></tr></table>
+    </div>
+    <div class="cols2">
+      <table class="kv"><tr><th>Phone</th><td></td></tr></table>
+      <table class="kv"><tr><th>Email</th><td></td></tr></table>
+    </div>
+    <table class="kv"><tr><th class="w15">Current mailing address</th><td></td></tr></table>
+
+    <div class="q">
+      <div class="ql">Gender identity (check all that apply)</div>
+      <div class="opts">
+        <span class="o">Male</span><span class="o">Female</span><span class="o">Transgender male</span><span class="o">Transgender female</span>
+        <span class="o">Non-binary / genderqueer</span><span class="o">Prefer not to say</span><span class="o span2">Another identity <span class="specify">(please specify)</span></span>
+      </div>
+    </div>
+    <div class="q">
+      <div class="ql">Sex assigned at birth (mark one)</div>
+      <div class="opts"><span class="o">Male</span><span class="o">Female</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Preferred pronouns (mark one)</div>
+      <div class="opts"><span class="o">He / him</span><span class="o">She / her</span><span class="o">They / them</span><span class="o">Other / specify</span></div>
+    </div>
+    <div class="cols2" style="margin-top:0.08in">
+      <table class="kv"><tr><th>Primary language</th><td></td></tr></table>
+      <div></div>
+    </div>
+    <div class="q">
+      <div class="ql">English proficiency (mark one)</div>
+      <div class="opts g5"><span class="o">Fluent</span><span class="o">Conversational</span><span class="o">Limited</span><span class="o">None</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Interpreter needed? (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Race (check all that apply)</div>
+      <div class="opts g3">
+        <span class="o">American Indian or Alaska Native</span><span class="o">Asian</span><span class="o">Black or African American</span>
+        <span class="o">Native Hawaiian or Other Pacific Islander</span><span class="o">White</span><span class="o">Decline to specify</span>
+      </div>
+    </div>
+    <div class="q">
+      <div class="ql">Ethnicity (mark one)</div>
+      <div class="opts g3"><span class="o">Hispanic or Latino</span><span class="o">Not Hispanic or Latino</span><span class="o">Decline to specify</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Marital status (mark one)</div>
+      <div class="opts"><span class="o">Married</span><span class="o">Unmarried</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Military affiliation (mark one)</div>
+      <div class="opts g3">
+        <span class="o">None</span><span class="o">Veteran</span><span class="o">Active duty / Guard / Reserve</span>
+        <span class="o">Military family</span><span class="o">Unknown</span>
+      </div>
+    </div>
+    <div class="q">
+      <div class="ql">Is the individual aware of, and do they consent to, this referral? (mark one)</div>
+      <div class="opts g3"><span class="o">Yes</span><span class="o">No</span><span class="o">Unable to consent / unknown</span></div>
+    </div>
+
+    <h2>4 · Coverage</h2>
+    <p class="note">Admission requires active Health First Colorado enrollment.</p>
+    <div class="q">
+      <div class="ql">Currently enrolled in Health First Colorado? (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">If not enrolled: is the individual eligible to enroll?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv" style="margin-top:0.08in"><tr><th class="w17">Health First Colorado member ID</th><td></td></tr></table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 2 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 3 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <div class="q" style="margin-top:0">
+      <div class="ql">Medicaid RAE (mark one)</div>
+      <div class="opts g2">
+        <span class="o">RAE 1 – Rocky Mountain Health Plans</span><span class="o">RAE 2 – Northeast Health Partners</span>
+        <span class="o">RAE 3 – Colorado Community Health Alliance</span><span class="o">RAE 4 – Colorado Access</span>
+        <span class="o">Unknown</span>
+      </div>
+    </div>
+    <p class="sub">Referring Case Management Agency (CMA)</p>
+    <table class="kv" style="margin-top:0">
+      <tr><th class="w15">CMA agency name</th><td colspan="3"></td></tr>
+      <tr><th class="w15">Assigned case manager name</th><td></td><th class="w15">Case manager phone / email</th><td></td></tr>
+    </table>
+    <div class="q">
+      <div class="ql">Does this individual have private insurance? (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <p class="note" style="margin-top:0.1in">Medicaid pays only what private insurance does not cover, so please tell us about both.</p>
+    <div class="cols2">
+      <table class="kv"><tr><th>If yes: insurance carrier</th><td></td></tr></table>
+      <table class="kv"><tr><th>If yes: member ID</th><td></td></tr></table>
+    </div>
+    <table class="kv area"><tr><th>If yes: describe the coverage</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Medicare status (mark one)</div>
+      <div class="opts"><span class="o">Active</span><span class="o">Pending</span><span class="o">Not eligible</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv" style="margin-top:0.08in"><tr><th class="w15">Medicare beneficiary ID</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">SSI / SSDI status (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Receiving SSI</span><span class="o">Receiving SSDI</span><span class="o">Receiving SSI and SSDI</span>
+        <span class="o">Applied / pending</span><span class="o">Not receiving</span><span class="o">Unknown</span>
+      </div>
+    </div>
+    <table class="kv area"><tr><th>Additional benefits information</th></tr><tr><td class="a1"></td></tr></table>
+
+    <h2>5 · Current location and housing</h2>
+    <div class="q">
+      <div class="ql">Current location (mark one)</div>
+      <div class="opts g3">
+        <span class="o">State hospital</span><span class="o">Psychiatric hospital</span><span class="o">Medical hospital</span>
+        <span class="o">Treatment facility</span><span class="o">Residential program</span><span class="o">Jail / detention</span>
+        <span class="o">Community, housed</span><span class="o">Shelter / unhoused</span><span class="o">Other</span>
+      </div>
+    </div>
+    <p class="note" style="margin-top:0.1in">If the individual is currently in a facility or program:</p>
+    <table class="kv" style="margin-bottom:0"><tr><th>Facility name</th><td></td><th>Facility phone</th><td></td></tr></table>
+    <table class="kv" style="margin:0"><tr><th>Facility address</th><td></td></tr></table>
+    <table class="kv" style="margin-top:0"><tr><th>Facility contact person</th><td></td><th>Patient / resident ID</th><td></td></tr><tr><th>Expected discharge date</th><td class="ph-date"></td><td colspan="2" style="border:0"></td></tr></table>
+    <div class="q">
+      <div class="ql">Housing before the current situation (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Rent / own</span><span class="o">Assisted living</span><span class="o">Homeless with shelter</span>
+        <span class="o">Living with friend / relative</span><span class="o">Homeless</span><span class="o">Host home</span>
+        <span class="o">Supportive housing</span><span class="o">Other</span>
+      </div>
+    </div>
+    <table class="kv area"><tr><th>Housing notes</th></tr><tr><td class="a1"></td></tr></table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 3 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 4 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <h2>6 · Mental health and clinical information</h2>
+    <table class="kv area" style="margin-bottom:0"><tr><th>Reason for referral (brief)</th></tr><tr><td class="a3"></td></tr></table>
+    <table class="kv num" style="margin-top:0">
+      <colgroup><col class="n" /><col /></colgroup>
+      <tr><th colspan="2" style="text-align:left">Current mental health diagnoses and any co-occurring substance use diagnoses (most recent)</th></tr>
+      <tr><th>1</th><td></td></tr><tr><th>2</th><td></td></tr><tr><th>3</th><td></td></tr>
+      <tr><th>4</th><td></td></tr><tr><th>5</th><td></td></tr><tr><th>6</th><td></td></tr>
+    </table>
+    <div class="cols2">
+      <table class="kv">
+        <tr><th class="w17">Date of most recent evaluation</th><td class="ph-date"></td></tr>
+        <tr><th class="w17">Type</th><td><span class="o" style="display:inline-flex;margin-right:0.2in">Psychiatric</span><span class="o" style="display:inline-flex">Psychological</span></td></tr>
+      </table>
+      <table class="kv"><tr><th>Evaluator</th><td></td></tr><tr><th>Organization</th><td></td></tr></table>
+    </div>
+    <table class="kv area" style="margin-top:0.16in"><tr><th>Current psychiatric medications (name, dose, frequency)</th></tr><tr><td class="a3"></td></tr></table>
+    <div class="q">
+      <div class="ql">Medication adherence (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Taking as prescribed</span><span class="o">Partially adherent</span><span class="o">Not taking / refusing</span>
+        <span class="o">Not currently prescribed</span><span class="o">Unknown</span>
+      </div>
+    </div>
+    <table class="kv area"><tr><th>Medication barriers (if partially adherent or not taking)</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Will the individual be on court-ordered medications upon discharge? (attach documentation if available)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Will the individual be on an outpatient certification upon discharge (C.R.S. 27-65-111)? (attach documentation if available)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">If yes:</div>
+      <div class="opts"><span class="o">Long term</span><span class="o">Short term</span></div>
+    </div>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 4 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 5 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <table class="kv area" style="margin-top:0;margin-bottom:0"><tr><th>Psychiatric history</th></tr><tr><td class="a3"></td></tr></table>
+    <div class="cols2" style="margin-top:0">
+      <table class="kv"><tr><th>Psychiatric prescriber</th><td></td></tr></table>
+      <table class="kv"><tr><th>Prescriber phone</th><td></td></tr></table>
+    </div>
+    <p class="sub">Current outpatient provider information</p>
+    <p class="note" style="margin-top:0">Please provide contact information for the applicant’s current treating therapist, if applicable.</p>
+    <div class="cols2">
+      <table class="kv"><tr><th>Therapist name</th><td></td></tr><tr><th>Phone number</th><td></td></tr></table>
+      <table class="kv"><tr><th>Agency / clinic</th><td></td></tr><tr><th>Email</th><td></td></tr></table>
+    </div>
+    <div class="roi">
+      <div class="ql" style="margin-top:0.08in"><strong style="font-weight:600">ROI intent and scope of disclosure</strong> (mark one). If a therapist is listed above, please indicate how the applicant wishes to authorize Monarch Mental Health to communicate with them, following an Authorization for Release of Information (ROI):</div>
+      <span class="o"><span>Bilateral exchange (both send and receive): <span class="d">Authorizes Monarch and the therapist to freely share, discuss, and request protected health information (PHI) to coordinate care.</span></span></span>
+      <div class="one">One-way disclosure only (select one below):</div>
+      <div class="ind">
+        <span class="o"><span>Send only: <span class="d">Authorizes Monarch to send updates / records to the therapist.</span></span></span>
+        <span class="o"><span>Receive only: <span class="d">Authorizes Monarch to request / receive records from the therapist.</span></span></span>
+      </div>
+    </div>
+    <div class="q" style="margin-top:0.16in">
+      <div class="ql">History of traumatic brain injury (TBI)? (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Suspected</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv"><tr><th>TBI details</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">Intellectual / developmental disability (IDD)? (mark one)</div>
+      <div class="opts g2"><span class="o">Yes, documented</span><span class="o">Yes, undocumented / suspected</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">If IDD: does the individual also have a co-occurring serious mental illness?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+
+    <p class="sub">Treatment history</p>
+    <div class="opts"><span class="o">No treatment history</span></div>
+    <p class="note">Tick each level of care that applies and fill in its row. For more than one stay at the same level, use the notes line.</p>
+    <table class="grid">
+      <colgroup>
+        <col style="width:19%" /><col style="width:16.5%" /><col style="width:15%" /><col style="width:8.6%" /><col style="width:8.6%" />
+        <col style="width:6.4%" /><col style="width:5.7%" /><col style="width:5.7%" /><col style="width:5.7%" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th rowspan="2">Level of care (tick)</th>
+          <th rowspan="2">Facility</th>
+          <th rowspan="2">Treated for</th>
+          <th rowspan="2">Admit<small>(MM/DD/YYYY)</small></th>
+          <th rowspan="2">Discharge<small>(MM/DD/YYYY)</small></th>
+          <th colspan="4">Discharge type (mark one)</th>
+        </tr>
+        <tr><th style="font-size:6.6pt;padding:0">Completed</th><th style="font-size:6.6pt;padding:0">Self</th><th style="font-size:6.6pt;padding:0">Unknown</th><th style="font-size:6.6pt;padding:0">Other</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="lbl o">Inpatient</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Outpatient / IOP / PHP</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Residential</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Detox</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Hospital</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Therapist</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl o">Other:</td><td></td><td></td><td></td><td></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+      </tbody>
+    </table>
+    <table class="kv area"><tr><th>Notes (more stays, outcomes)</th></tr><tr><td class="a1"></td></tr></table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 5 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 6 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <h2>7 · Substance use history</h2>
+    <p class="note">Tell us about any current substance use problems and any history of misuse, by category. Tick each category that applies and fill in its row.</p>
+    <div class="opts"><span class="o">No history of substance use</span></div>
+    <table class="grid dense">
+      <colgroup><col style="width:24%" /><col style="width:11.5%" /><col style="width:19.5%" /><col style="width:17.5%" /><col /></colgroup>
+      <thead><tr><th>Category (mark all that apply)</th><th>Last use</th><th>Frequency</th><th>Route</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl o">Alcohol</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Opioids</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Benzodiazepines / sedatives</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Stimulants</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">THC / cannabis</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Hallucinogens</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Synthetic drugs</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Inhalants</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Tobacco / nicotine</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Other:</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td class="lbl o">Unknown</td><td></td><td></td><td></td><td></td></tr>
+      </tbody>
+    </table>
+    <p class="legend">Frequency: Hourly · Daily · Weekly · Monthly · Yearly · 1-2 times in the past month · 1-2 times in the past week · 3-6 times in the past week · No use in the past month · Other.<br />Route: Oral · Intravenous · Intranasal · Intramuscular · Inhaled · Sublingual · Subcutaneous · Topical · Rectal · Other.</p>
+    <table class="kv area"><tr><th>Overall notes (recent use, recovery status, treatment)</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Needs medically supervised detox or inpatient stabilization?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Possibly / under evaluation</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv"><tr><th>Detox details</th><td></td></tr></table>
+
+    <h2>8 · Medical and nursing information</h2>
+    <table class="kv num" style="margin-bottom:0">
+      <colgroup><col class="n" /><col /></colgroup>
+      <tr><th colspan="2" style="text-align:left">Medical / somatic diagnoses</th></tr>
+      <tr><th>1</th><td></td></tr><tr><th>2</th><td></td></tr><tr><th>3</th><td></td></tr>
+      <tr><th>4</th><td></td></tr><tr><th>5</th><td></td></tr><tr><th>6</th><td></td></tr>
+    </table>
+    <table class="kv area" style="margin-top:0"><tr><th>Notes</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Are these conditions controlled by current medications? (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Yes, well controlled</span><span class="o">Partially controlled</span><span class="o">No, uncontrolled</span>
+        <span class="o">Not applicable</span><span class="o">Unknown</span>
+      </div>
+    </div>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 6 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 7 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <table class="kv area" style="margin-top:0;margin-bottom:0"><tr><th>Non-psychiatric medications</th></tr><tr><td class="a2"></td></tr></table>
+    <table class="kv area" style="margin-top:0"><tr><th>Medication allergies</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Mobility / assistive devices (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Fully independent</span><span class="o">Cane / walker</span><span class="o">Wheelchair</span>
+        <span class="o">Bedbound / limited mobility</span><span class="o">Other</span>
+      </div>
+    </div>
+    <table class="kv area" style="margin-bottom:0"><tr><th>Support needed with activities of daily living (ADLs), and any other assistive needs</th></tr><tr><td class="a1"></td></tr></table>
+    <table class="kv area" style="margin-top:0"><tr><th>Acute medical needs</th></tr><tr><td class="a1"></td></tr></table>
+    <div class="q">
+      <div class="ql">Does the individual require 24/7 nursing or medical care? (attach documentation if available)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv"><tr><th class="w17">Special dietary needs / restrictions</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">Tobacco use (mark one)</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+
+    <h2>9 · Safety and exclusionary screen</h2>
+    <p class="note">Select the timeframe that best describes the most recent occurrence of each item.</p>
+    <table class="grid dense">
+      <colgroup><col style="width:28%" /><col /><col /><col /><col /></colgroup>
+      <thead><tr><th></th><th>Within 30 days</th><th>Within 6 months</th><th>Within 12 months</th><th>No history</th></tr></thead>
+      <tbody>
+        <tr><td class="lbl">Suicide / self-harm / ideation</td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl">Violence / aggression / ideation</td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl">Elopement / AMA</td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl">Restraints (chemical or otherwise)</td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+        <tr><td class="lbl">Isolation / seclusion</td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td><td class="c"><span class="bx"></span></td></tr>
+      </tbody>
+    </table>
+    <table class="kv area"><tr><th>Details of any suicide, violence, elopement, ideation history</th></tr><tr><td class="a2"></td></tr></table>
+    <div class="q">
+      <div class="ql">Any behaviors that may require a locked facility?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <div class="q">
+      <div class="ql">Any documented incidents in the past six (6) months?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <table class="kv"><tr><th class="w15">Describe incident(s)</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">Arson history or charges?</div>
+      <div class="opts"><span class="o">Yes, current charges</span><span class="o">Yes, historical</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 7 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 8 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <table class="kv" style="margin-top:0"><tr><th class="w15">Arson details</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">Registered sex offender (RSO) status?</div>
+      <div class="opts"><span class="o">Yes, currently registered</span><span class="o">Yes, pending charges</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+    <table class="kv"><tr><th class="w15">RSO details</th><td></td></tr></table>
+    <table class="kv area"><tr><th>Additional safety information</th></tr><tr><td class="a2"></td></tr></table>
+
+    <h2>10 · Legal and court-ordered mandates</h2>
+    <p class="note">Please complete this section if the applicant has any active, pending, or unresolved legal cases or court mandates.</p>
+    <div class="q">
+      <div class="ql">Does the individual have an active court case?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span></div>
+    </div>
+    <table class="kv area" style="margin-top:0.1in;margin-bottom:0"><tr><th>Charges (brief summary)</th></tr><tr><td class="a2"></td></tr></table>
+    <table class="kv" style="margin:0"><tr><th class="w09">County</th><td></td><th class="w09">Case number</th><td></td><th class="w09">Next court date</th><td class="ph-date"></td></tr></table>
+    <table class="contact" style="margin-bottom:0.06in">
+      <colgroup><col style="width:13%" /><col style="width:22%" /><col style="width:8%" /><col style="width:18%" /><col style="width:8%" /><col /></colgroup>
+      <tr><th>Attorney name</th><td></td><th>Phone</th><td></td><th>Email</th><td></td></tr>
+      <tr><th>ROI permission</th><td colspan="5" class="can"><span style="font-size:7.8pt;color:var(--muted)">If an attorney is listed, mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+    <table class="kv area"><tr><th>Legal history summary</th></tr><tr><td class="a2"></td></tr></table>
+    <p class="sub" style="margin-top:0.14in">Protection / restraining orders</p>
+    <ol class="legal">
+      <li>Is the applicant currently subject to any active temporary or permanent protection / restraining orders?
+        <div class="opts" style="grid-template-columns:2.2in 1fr"><span class="o">No (if no, skip to supervision)</span><span class="o">Yes</span></div>
+      </li>
+      <li>What is the applicant’s status under this order? (check all that apply)
+        <div class="opts g2" style="gap:0.03in 0.15in">
+          <span class="o"><span>Restrained party <span class="d">(the applicant is legally prohibited from contacting another individual)</span></span></span>
+          <span class="o"><span>Protected party <span class="d">(the applicant is the individual being protected from someone else)</span></span></span>
+        </div>
+      </li>
+      <li>If the applicant is the restrained party, please provide the legal name(s) of the protected party(ies). <span class="d">This information is required by Monarch Mental Health to monitor court-ordered communication boundaries and ensure program compliance.</span>
+        <table class="kv" style="margin:0.04in 0 0"><tr><th class="w17">Protected party name(s)</th><td></td></tr><tr><th class="w17">Order / case number</th><td></td></tr></table>
+      </li>
+      <li>Please attach a full copy of the active protection order to this referral packet.
+        <div class="opts" style="grid-template-columns:0.9in 1fr"><span class="o">Attached</span><span class="o"><span>Unavailable (please explain reason): <span class="specify" style="width:3.4in"></span></span></span></div>
+      </li>
+    </ol>
+    <div class="q" style="margin-top:0.16in">
+      <div class="ql">Supervision (mark one)</div>
+      <div class="opts"><span class="o">None</span><span class="o">On probation</span><span class="o">On parole</span><span class="o">Pretrial</span></div>
+    </div>
+    <table class="kv"><tr><th class="w15">Officer name / contact</th><td></td></tr></table>
+    <div class="q">
+      <div class="ql">Active warrants?</div>
+      <div class="opts"><span class="o">Yes</span><span class="o">No</span><span class="o">Unknown</span></div>
+    </div>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 8 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 9 ================= -->
+  <section class="page">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <h2>11 · Contacts and payee</h2>
+    <p class="note">For each contact, mark how the applicant wishes to authorize Monarch to share information with them. Contacts listed here are added to the Authorization for Release of Information (ROI) with these permissions; Monarch can only share information once a signed ROI covers them. <strong style="font-weight:600">Bilateral exchange:</strong> Monarch and this person may share, discuss, and request information to coordinate care. <strong style="font-weight:600">Send only:</strong> Monarch may send updates / records to this person. <strong style="font-weight:600">Receive only:</strong> Monarch may request / receive records from this person.</p>
+
+    <!-- contact block template repeated 7× -->
+    <p class="ct">Emergency contact (please provide an emergency contact)</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Guardian (if any)</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Guardian (if any)</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Payee (if any)</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Additional professional contact 1</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Additional professional contact 2</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <p class="ct">Additional professional contact 3</p>
+    <table class="contact">
+      <colgroup><col style="width:13%" /><col style="width:16%" /><col style="width:10%" /><col style="width:16%" /><col style="width:11%" /><col style="width:10%" /><col /></colgroup>
+      <tr><th>Name</th><td colspan="2"></td><th>Relationship</th><td></td><th>Organization</th><td></td></tr>
+      <tr><th>Phone</th><td colspan="2"></td><th>Email</th><td colspan="2"></td><td style="padding:0"><table style="width:100%;border-collapse:collapse"><tr><th style="border:0;border-right:1px solid var(--line);width:40%">Role</th><td style="border:0"></td></tr></table></td></tr>
+      <tr><th>ROI permission</th><td colspan="6" class="can"><span style="font-size:7.8pt;color:var(--muted)">Mark one</span><span class="o">Bilateral exchange</span><span style="font-size:7.8pt;color:var(--muted);margin-left:0.3in">One-way only:</span><span class="o">Send only</span><span class="o">Receive only</span></td></tr>
+    </table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 9 of 10</span></div>
+  </section>
+
+  <!-- ================= PAGE 10 ================= -->
+  <section class="page tight">
+    <div class="ph"><span class="t">Referral to Monarch Mental Health</span><span class="who">Applicant name (identifies this page if separated): <span class="b"></span></span></div>
+
+    <h2>12 · Documents and checklist</h2>
+    <p class="note">Mark all that apply and attach what is available. Missing items do not prevent submission. <span class="star">*</span> Please attach if available — needed before a final decision.</p>
+    <div class="opts g2" style="gap:0.03in 0.2in">
+      <span class="o"><span class="star">*</span>&nbsp;Current medication list (MAR), including PRN</span>
+      <span class="o"><span class="star">*</span>&nbsp;Most recent social work progress notes</span>
+      <span class="o"><span class="star">*</span>&nbsp;Most recent psychiatric progress notes. Please review for anything relevant to sections 9 and 10</span>
+      <span class="o">Most recent nursing notes</span>
+      <span class="o">Health First Colorado / Medicare cards</span>
+      <span class="o">Most recent psychiatric / psychological evaluation</span>
+      <span class="o">Incident reports</span>
+      <span class="o">Legal history</span>
+      <span class="o">Court-ordered medication or outpatient certification documentation</span>
+      <span class="o">LOC assessment / CMHS waiver documentation</span>
+      <span class="o">Collateral (biopsychosocial assessments, treatment plans, therapy notes)</span>
+      <span class="o">Signed ROI(s)</span>
+      <span class="o">Authorized-representative documents (POA, guardianship, court appointment)</span>
+      <span class="o">ID: Colorado ID, Social Security card, birth certificate</span>
+    </div>
+    <table class="kv area"><tr><th>Document notes / descriptions</th></tr><tr><td style="height:0.28in"></td></tr></table>
+
+    <h2>13 · Timeline and notes</h2>
+    <div class="q" style="margin-top:0.04in">
+      <div class="ql">Referral urgency (mark one)</div>
+      <div class="opts"><span class="o">Immediate</span><span class="o">Within 1–2 weeks</span><span class="o">Within 1–3 months</span><span class="o">Planning ahead</span></div>
+    </div>
+    <table class="kv" style="margin-top:0.08in;margin-bottom:0"><tr><th class="w17">Request earliest placement by</th><td class="ph-date"></td></tr></table>
+    <table class="kv area" style="margin:0"><tr><th>Reason for urgency (if immediate or within 1–2 weeks)</th></tr><tr><td style="height:0.25in"></td></tr></table>
+    <table class="kv area" style="margin-top:0"><tr><th>Additional notes or special considerations</th></tr><tr><td style="height:0.26in"></td></tr></table>
+    <div class="q">
+      <div class="ql">How did you hear about Monarch Mental Health? (mark one)</div>
+      <div class="opts g3">
+        <span class="o">Colleague / professional referral</span><span class="o">Website / online search</span><span class="o">Previous experience with Monarch</span>
+        <span class="o">Conference / training</span><span class="o">Other</span>
+      </div>
+    </div>
+    <table class="kv"><tr><th class="w15">If other, specify</th><td></td></tr></table>
+
+    <h2>14 · Attestation and signature</h2>
+    <p class="attest">I attest that the information provided is accurate to the best of my knowledge, and that I am authorized to submit this referral. I authorize Monarch to receive the protected health information included in this referral, and to contact the applicant or their legally authorized representative.</p>
+    <div class="cols2">
+      <table class="kv"><tr><th>Printed name</th><td></td></tr><tr><th>Signature</th><td style="height:0.45in"></td></tr></table>
+      <table class="kv"><tr><th>Organization</th><td></td></tr><tr><th>Role</th><td></td></tr><tr><th>Date</th><td class="ph-date"></td></tr></table>
+    </div>
+    <p class="office-t">For Monarch use only</p>
+    <div class="cols2">
+      <table class="kv"><tr><th>Reference code</th><td></td></tr><tr><th>Received by</th><td></td></tr></table>
+      <table class="kv"><tr><th>Date received</th><td></td></tr><tr><th>Referral status</th><td></td></tr></table>
+    </div>
+    <table class="kv area" style="margin-top:0"><tr><th>Notes</th></tr><tr><td style="height:0.26in"></td></tr></table>
+
+    <div class="pf"><span>Monarch Mental Health • Program Referral</span><span>Page 10 of 10</span></div>
+  </section>
+</body>
+</html>

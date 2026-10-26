@@ -1206,6 +1206,7 @@ function persistPortalLoginBucketHint(): void {
     }
 }
 const SUBMIT_REFERRALS_URL = "/submit-referrals"
+const SUBMIT_MH_REFERRALS_URL = "/submit-referrals/mental-health"
 const UPLOAD_DOCS_URL = "/submit-referrals/documents"
 
 /** Referring-source help page: customize for production. */
@@ -7462,9 +7463,12 @@ export default function ReferralSourcePortal() {
                             Track status, request updates via messages, or archive from your view — admissions still sees archived referrals.
                         </p>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-                        <a href={SUBMIT_REFERRALS_URL} title="New referral" aria-label="New referral" style={portalQuickActionStyle}>
-                            + New referral
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0, flexWrap: "wrap" }}>
+                        <a href={SUBMIT_REFERRALS_URL} title="New Competency referral" aria-label="New Competency referral" style={portalQuickActionStyle}>
+                            + Competency
+                        </a>
+                        <a href={SUBMIT_MH_REFERRALS_URL} title="New Mental Health referral" aria-label="New Mental Health referral" style={portalQuickActionStyle}>
+                            + Mental Health
                         </a>
                         <a href={UPLOAD_DOCS_URL} title="Upload documents" aria-label="Upload documents" style={{ ...portalQuickActionStyle, padding: "8px 12px" }}>
                             <PortalUploadIcon />

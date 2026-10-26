@@ -174,8 +174,8 @@ Expected (verified 2026-07-03 via Google DNS 8.8.8.8): SPF `include:_spf.google.
 | Domain | DNS host | Issue | Action |
 |--------|----------|-------|--------|
 | `monarchmentalhealth.org` | Wix | DKIM + DMARC | Repeat Google Admin + Wix TXT flow (SPF done) |
-| `monarchmentalhealth.org` | Wix | **`www` still Wix CDN** | CNAME → `sites.framer.app` when MH Framer ready |
-| `monarchsoberlivinghomes.com` | GoDaddy | Mail on **GoDaddy/PPE**, not Google | Decide G1: migrate to Google or keep hybrid |
+| `monarchmentalhealth.org` | Wix | **`www` still Wix CDN** (`cdn3.wixdns.net` as of 2026-10-26) | CNAME → Framer when MH Framer ready |
+| `monarchsoberlivinghomes.com` | **Cloudflare** NS | Google MX; SPF still hybrid (PPE + secureserver) | Framer cutover + SPF cleanup; WP still on GoDaddy IP |
 | `monarchmentalhealth.com` | Dan.com | For sale / redirect? | Section E in audit checklist |
 
 ### P3 — After DNS moves off Wix
@@ -232,9 +232,11 @@ Wix sometimes limits custom TXT on subdomains; **Cloudflare migration unblocks R
 |--------|-----|------|---------|
 | `monarchcompetency.com` | Wix | Google Workspace | Framer (`www`) |
 | `monarchmentalhealth.org` | Wix | Google Workspace | **Wix site live** — Framer cutover pending |
-| `monarchsoberlivinghomes.com` | GoDaddy | GoDaddy/PPE (not Google) | WordPress (GoDaddy hosting) |
-| `monarchsoberliving.com` | — | — | Parking |
+| `monarchsoberlivinghomes.com` | **Cloudflare** | Google MX (`smtp.google.com`); SPF still includes PPE/secureserver | **WordPress** on GoDaddy IP `107.180.50.177` — Framer cutover pending |
+| `monarchsoberliving.com` | Dan | GoDaddy mail | Parking |
 | `monarchmentalhealth.com` | Dan | — | For sale / TBD |
+
+**Checklists:** MH [`MONARCH_MENTAL_HEALTH/...MIGRATION_CHECKLIST.md`](MONARCH_MENTAL_HEALTH/MONARCH_MENTAL_HEALTH_FRAMER_VERCEL_MIGRATION_CHECKLIST.md) · SL [`MONARCH_SOBER_LIVING/...MIGRATION_CHECKLIST.md`](MONARCH_SOBER_LIVING/MONARCH_SOBER_LIVING_FRAMER_VERCEL_MIGRATION_CHECKLIST.md)
 
 ---
 
@@ -242,11 +244,13 @@ Wix sometimes limits custom TXT on subdomains; **Cloudflare migration unblocks R
 
 | ID | Decision | Choice (2026-07-03) |
 |----|----------|---------------------|
-| G1 | Single mail system | **Hybrid for now** — Competency + MH on Google; sober living on GoDaddy mail |
-| G2 | DNS provider target | **Cloudflare** (intent; not migrated yet) |
+| G1 | Single mail system | Competency + MH + SL **MX on Google** (2026-10-26); SL SPF still hybrid until PPE/secureserver dropped |
+| G2 | DNS provider target | **One Monarch-owned Cloudflare account** (new) — not personal accounts; one zone per domain. SL is currently on a private CF account (email/DNS only) → **move zone into Monarch account later**. Competency + MH still Wix NS until cutover into the Monarch CF account. |
 | G3 | Canonical — Competency | `monarchcompetency.com` |
 | G4 | Canonical — Mental health | `.org` (assumed; confirm in Admin) |
+| G5 | Canonical — Sober living | `monarchsoberlivinghomes.com` |
 | G6 | Website — Competency | **Framer** (live on `www`) |
+| G7 | Website — MH / SL | MH **Wix**; SL **WordPress** — both Framer pending |
 | G8 | hello@ / contact | Target `hello@monarchcompetency.com`; site also shows `info@` — **pick one canonical** |
 
 ---

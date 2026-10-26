@@ -7,6 +7,10 @@
 **DNS today:** Update records in **Wix** (nameservers stay on Wix). **Do not change MX** — Google mail unchanged.  
 **Related:** `docs/MARKETING_GO_LIVE_MONDAY.md`, `docs/PRODUCTION_STRATEGY_FRAMER_VERCEL.md` § 10A, `docs/DNS_EMAIL_AUDIT_CHECKLIST.md`
 
+**Other brands (gather / cutover — not this Competency runbook):**  
+- Mental Health — [`MONARCH_MENTAL_HEALTH/MONARCH_MENTAL_HEALTH_FRAMER_VERCEL_MIGRATION_CHECKLIST.md`](MONARCH_MENTAL_HEALTH/MONARCH_MENTAL_HEALTH_FRAMER_VERCEL_MIGRATION_CHECKLIST.md) (Wix → Framer)  
+- Sober Living — [`MONARCH_SOBER_LIVING/MONARCH_SOBER_LIVING_FRAMER_VERCEL_MIGRATION_CHECKLIST.md`](MONARCH_SOBER_LIVING/MONARCH_SOBER_LIVING_FRAMER_VERCEL_MIGRATION_CHECKLIST.md) (WordPress + Cloudflare DNS → Framer)
+
 ---
 
 ## Before you start (5 min)

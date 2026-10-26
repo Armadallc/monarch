@@ -10,8 +10,8 @@ Three public marketing brands share this repo. One PHI app and one Supabase proj
 | Brand | Domain (marketing) | Code folder | Docs |
 |-------|--------------------|-------------|------|
 | **Competency** | `www.monarchcompetency.com` | `Code/Framer/` (legacy flat) + `Code/Framer/competency/` | existing `docs/*` |
-| **Mental Health** | `www.monarchmentalhealth.org` | `Code/Framer/mental-health/` | `docs/mental-health/` |
-| **Sober Living** | TBD | `Code/Framer/sober-living/` | `docs/sober-living/` |
+| **Mental Health** | `www.monarchmentalhealth.org` | `Code/Framer/mental-health/` | `docs/MONARCH_MENTAL_HEALTH/` |
+| **Sober Living** | TBD | `Code/Framer/sober-living/` | `docs/MONARCH_SOBER_LIVING/` |
 
 Shared, brand-agnostic helpers: `Code/Framer/shared/`.
 

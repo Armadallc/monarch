@@ -3,6 +3,7 @@ import AuthGateway from "./components/AuthGateway"
 import DocumentUploadFormPage from "./pages/DocumentUploadFormPage"
 import ReferralSharePageRoute from "./pages/ReferralSharePageRoute"
 import ReferralFormPage from "./pages/ReferralFormPage"
+import MentalHealthReferralFormPage from "./pages/MentalHealthReferralFormPage"
 import ReferralDashboardPage from "./pages/ReferralDashboardPage"
 import ReferralSourcePortalPage from "./pages/ReferralSourcePortalPage"
 import { RouteShell } from "./components/RouteShell"
@@ -13,7 +14,8 @@ function HomePage() {
         ["/admin", "Staff sign-in"],
         ["/portal", "Referral source portal"],
         ["/dashboard", "Admissions dashboard"],
-        ["/submit-referrals", "Secure referral form"],
+        ["/submit-referrals", "Competency referral form"],
+        ["/submit-referrals/mental-health", "Mental Health referral form"],
         ["/submit-referrals/documents", "Document upload"],
         ["/r", "ROI share link (?token=)"],
     ] as const
@@ -52,6 +54,7 @@ export default function App() {
             <Route path="/portal" element={<ReferralSourcePortalPage />} />
             <Route path="/dashboard" element={<ReferralDashboardPage />} />
             <Route path="/submit-referrals" element={<ReferralFormPage />} />
+            <Route path="/submit-referrals/mental-health" element={<MentalHealthReferralFormPage />} />
             <Route path="/submit-referrals/documents" element={<DocumentUploadFormPage />} />
             <Route path="/r" element={<ReferralSharePageRoute />} />
             <Route

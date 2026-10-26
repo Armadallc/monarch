@@ -7,7 +7,6 @@ HTML sources for **Print → Save as PDF** — same workflow as the professional
 | `referral-form-professional-print.html` | Professional referral PDF (download) | Court, attorneys, clinicians — full packet |
 | `referral-form-print.html` | Optional long reference / backup | Full step 0–13 questionnaire |
 | **`public-inquiry-form-print.html`** | **General inquiry & self-referral PDF** | Individuals, families — matches `PublicInquiryForm` |
-| **`mental-health-admission-application-print.html`** | **Monarch Mental Health admission application (PDF)** | MHTL admissions — host on Competency Resources or MH site |
 | **`roi-v2-2-print.html`** | **ROI v2.2 — Authorization for Release of PHI (PDF)** | Signable release; portal e-sign preferred, else email Referrals@ |
 | **`what-to-bring-checklist-print.html`** | **What to Bring — packing checklist (PDF)** | Clients & families preparing for admission |
 
@@ -39,16 +38,7 @@ Reference source: `docs/Monarch Competency ROI v2.2 Docuseal.pdf` (content only 
 3. Destination: **Save as PDF**.
 4. Save as e.g. `Monarch-General-Inquiry-Self-Referral.pdf`.
 
-## Generate the Mental Health admission application PDF
-
-1. Open `mental-health-admission-application-print.html` in Chrome or Safari.
-2. Print → **Save as PDF** as e.g. `Monarch-Mental-Health-Admission-Application.pdf`.
-3. Upload to Supabase **`assets`** (include `monarch-mental-health-logo.png` if hosting logo separately).
-4. Add to **`ResourcePDFList`** on the Competency Resources page (or Mental Health site when live).
-
-Contact on form: **hello@monarchmentalhealth.org** · **1 (800) 618-8719** (Admissions EXT 0 · Case mgmt EXT 1 · Clinical EXT 2)
-
-Logo loads from `assets/monarch-mental-health-logo.png` beside this file.
+The Monarch Mental Health printables live in `docs/MONARCH_MENTAL_HEALTH/printable/`.
 
 ## Host the PDF (pick one)
 

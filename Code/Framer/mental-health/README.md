@@ -6,4 +6,4 @@ Paste/sync Framer code components for the Monarch Mental Health marketing site l
 
 - No PHI routes or secrets in these files.
 - Shared helpers → `../shared/`
-- Go-live / DNS docs → `docs/mental-health/`
+- Go-live / DNS docs → `docs/MONARCH_MENTAL_HEALTH/`
